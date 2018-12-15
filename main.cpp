@@ -36,8 +36,18 @@ int Database_user_2[M][N];
 
 void main()
 {
-	testFunction();
+	const int I = 2, H = 25, W = 80;
+	char Map[I][H][W];
+	bool doContinue = true;
+	getTheMapFromTheFile(Map, firstMap);
+	addEconomics(Map);
+	addGunsList(Map);
+	fillIndexesInTheMAp(Map);
+	drowTheMap(Map);
+	while (doContinue)
+	{
 
-	system("pause");
+	}
 	return;
+}
 }
