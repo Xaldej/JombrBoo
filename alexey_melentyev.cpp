@@ -5,5 +5,5 @@ void testFunction();
 
 void testFunction()
 {
-	cout << "Test" << endl;
+	cout << "Test 14/12/18" << endl;
 }
