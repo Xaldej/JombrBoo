@@ -1,6 +1,5 @@
 #include"head.h"
-extern HANDLE toPaint;// = GetStdHandle(STD_OUTPUT_HANDLE);
-//using namespace std;
+extern HANDLE toPaint;
 /*
 Get the map from the .txt file and write it to the Array "Map"
 Arguments:
