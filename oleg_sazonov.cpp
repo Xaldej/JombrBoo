@@ -1,3 +1,3 @@
-/*#include"head.h"
-using namespace std;
-*/
+#include"head.h"
+
+
