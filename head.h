@@ -22,3 +22,37 @@ void drowTheMap(char MapMapArray[][H][W]);
 void addEconomics(char MapArray[][H][W], int resourse1Amount1stp = 111, int resourse2Amount1stp = 99, int resourse1Amount2ndp = 77, int resourse2Amouny2ndp = 4); // default values are spubs
 void fillIndexesInTheMAp(char MapArray[][H][W]);
 void addGunsList(char MapArray[][H][W], int gunSet = 1, int gunCost1 = 50, int gunCost2 = 10); // 1 is the stub
+
+const int players_data_array_width = 6, players_data_array_long = 100;
+int Player_1_Data[players_data_array_width][players_data_array_width] = { 0 }; // {0} to make it empty
+int Player_2_Data[players_data_array_width][players_data_array_width] = { 0 }; // {0} to make it empty
+/****************************************************************************************************************
+all data about users' elements is stored in Player_1_Data and Player_2_Data arrays according to next rules:
+each column is different info about the same element:
+0 line: type of element
+	1 - gun
+	2 - wall
+	3 - ...
+1 line: amount of shots
+2 line: shoots direction
+	 1 - from left to right
+	-1 - from right to left
+3 line: amount of hp
+4 line: horisontal position
+5 line: vertical position
+****************************************************************************************************************/
+
+const int player_shots_array_width = 4, player_shots_array_long = 500;
+int Player_1_Shots[player_shots_array_width][player_shots_array_long] = { 0 }; // {0} to make it empty
+int Player_2_Shots[player_shots_array_width][player_shots_array_long] = { 0 }; // {0} to make it empty
+/****************************************************************************************************************
+all data about active shots stored in Player_1_Shots and Player_2_Shots arrays with the samw logic as for users' elements
+0 line: type of shot
+	1 - usual
+	2 - maybe other types in future
+1 line: direction
+	 1 - from left to right
+	-1 - from right to left
+2 line: horisontal position
+3 line: vertical position
+****************************************************************************************************************/
