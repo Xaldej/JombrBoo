@@ -8,7 +8,7 @@ mapFileName - name of the file we take info from
 void getTheMapFromTheFile(char MapArray[][H][W], string mapFileName)
 {
 	char TempMapRow[W + 1];
-	ifstream fileMapIn(mapFileName);
+	extern ifstream fileMapIn;
 	if (fileMapIn.is_open())
 	{
 		for (int h = 0; h < H && !fileMapIn.eof(); h++)
@@ -23,7 +23,7 @@ void getTheMapFromTheFile(char MapArray[][H][W], string mapFileName)
 	}
 	else
 	{
-		printf("Error\! The map file was not found\n");
+		printf("Error! The map file was not found\n");
 		return;
 	}
 	return;
