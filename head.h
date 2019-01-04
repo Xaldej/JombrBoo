@@ -23,9 +23,9 @@ void addEconomics(char MapArray[][H][W], int resourse1Amount1stp = 111, int reso
 void fillIndexesInTheMAp(char MapArray[][H][W]);
 void addGunsList(char MapArray[][H][W], int gunSet = 1, int gunCost1 = 50, int gunCost2 = 10); // 1 is the stub
 
-const int players_data_array_width = 6, players_data_array_long = 100;
-const int player_shots_array_width = 4, player_shots_array_long = 500;
-extern int Player_1_Data[players_data_array_width][players_data_array_width];
-extern int Player_2_Data[players_data_array_width][players_data_array_width];
-extern int Player_1_Shots[player_shots_array_width][player_shots_array_long];
-extern int Player_2_Shots[player_shots_array_width][player_shots_array_long];
+const int data_M = 6, data_N = 100;
+const int shots_M = 4, shots_N = 500;
+extern int Player_1_Data[data_M][data_N];
+extern int Player_2_Data[data_M][data_N];
+extern int Player_1_Shots[shots_M][shots_N];
+extern int Player_2_Shots[shots_M][shots_N];
