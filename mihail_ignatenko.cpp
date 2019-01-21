@@ -1,4 +1,6 @@
 #include"head.h"
+HANDLE toPaint = GetStdHandle(STD_OUTPUT_HANDLE);
+
 /*
 Get the map from the .txt file and write it to the Array "Map"
 Arguments:
