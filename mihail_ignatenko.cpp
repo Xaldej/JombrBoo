@@ -9,6 +9,7 @@ mapFileName - name of the file we take info from
 */
 void getTheMapFromTheFile(char MapArray[][H][W], string mapFileName)
 {
+	system("mode CON: lines=25 cols=80");
 	char TempMapRow[W + 1];
 	ifstream fileMapIn(mapFileName);
 	if (fileMapIn.is_open())
