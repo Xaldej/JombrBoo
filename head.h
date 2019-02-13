@@ -16,6 +16,8 @@ const int Gun1ArrayCost1 = 10, Gun1ArrayCost2 = 101;
 enum color { BLACK = 0, BLUE = 1, GREEN = 2, CYAN = 3, RED = 4, MAGENTA = 5, BROWN = 6, LIGHTGRAY = 7, DARKGRAY = 8, LIGHTBLUE = 9, LIGHTGREEN = 10, LIGHTCYAN = 11, LIGHTRED = 12, LIGHTMAGENTA = 13, YELLOW = 14, WHITE = 15 };
 const int shots_M = 4, shots_N = 500; //size of array for data about shots
 const int data_M = 6, data_N = 100; //size of array for data about elements
+int money_player_1 = 1000;
+int money_player_2 = 1000;
 
 void getTheMapFromTheFile(char MapMapArray[][H][W], string mapFileName);
 void drowTheMap(char MapMapArray[][H][W]);
