@@ -45,14 +45,6 @@ void main()
 	3 line: vertical position
 	****************************************************************************************************************/
 
-	getTheMapFromTheFile(Map, firstMap);
-	addEconomics(Map);
-	addGunsList(Map);
-	fillIndexesInTheMAp(Map);
-	drowTheMap(Map);
-	while (doContinue)
-	{
 
-	}
 	return;
 }
