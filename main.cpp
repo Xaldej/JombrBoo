@@ -14,7 +14,7 @@ int main()
 
 	o_fill_batle_field_after_start();
 	o_display_batle_field(panel_width, field_height, field_width);
-
+	
 
 	return 0;
 }
@@ -40,7 +40,7 @@ void o_fill_batle_field_after_start()
 	{
 		for (int w = 0; w < field_width; w++)
 		{
-			if (w == (field_width / 2) + 1)
+			if (w == (field_width/2)+1)
 			{
 				Batle_field[main_f][h][w] = '.';
 				Batle_field[copy_f][h][w] = '.';
@@ -100,7 +100,7 @@ void o_get_main_screen_actions() // принимает клавиши действий на главном игрово
 		button = _getwch();
 		switch (button)
 		{
-		case 'P': case 'p':  o_fill_shop(); o_display_marker_in_store(building_type); break;
+		case 'P': case 'p':  o_fill_shop(); o_display_marker_in_store(building_type); break; 
 		case 'Y': case 'y':  o_display_h_coordinates_field();	break;
 		case 'X': case 'x':  o_display_w_coordinates_field();	break;
 		case 'I': case 'i':  print_objects_info();				break;
@@ -151,14 +151,14 @@ void o_move_elements(char player, char building_type)
 	system("cls");
 
 	o_print_copy_batle_field();
-
+	
 
 	char movement_to = 'X';
 	while (true)
 	{
 		switch (movement_to)
 		{
-		case '>': o_move_elements('R', building_type);  break;
+		case '>': o_move_elements('R', building_type);  break;   
 		case '<': o_move_elements('L', building_type);  break;
 		case 'X': o_get_field_copy(); current_position_h++;	o_move_up(player, building_type); break;
 		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);		break;
@@ -167,18 +167,18 @@ void o_move_elements(char player, char building_type)
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
 		case 'p': case 'P':  o_fill_shop(); o_display_marker_in_store(building_type);	break;
 		case '9': o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
-			o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
-			o_push_batle_field_from_copy();
-			o_display_batle_field(panel_width, field_height, field_width); break;  //после нажатия на 9 записываем данные с экрана в основной массив;
+				o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
+				o_push_batle_field_from_copy();
+				o_display_batle_field(panel_width, field_height, field_width); break;  //после нажатия на 9 записываем данные с экрана в основной массив;
 		case '0':		o_display_batle_field(panel_width, field_height, field_width);		 break;
-		case'n': case'N':
+		case'n': case'N': 
 			building_type++; building_type == '5' ? building_type = '1' : building_type;
 			current_position_h++;	o_move_up(player, building_type);
 			break;
 
 		default: break;
 		}
-		movement_to = _getwch();
+		 movement_to = _getwch();
 	}
 	return;
 }
@@ -200,7 +200,7 @@ void o_move_up(char player, char building_type)
 		{
 			if (current_position_h > 0)
 			{
-				current_position_h--;
+				current_position_h--; 
 				coordinate_h = current_position_h;  //принимаем координаты для записи положения обьектов в координатый массив
 				for (int shift = 0; shift < Building_height; shift++)
 				{
@@ -240,7 +240,7 @@ void o_move_down(char player, char building_type)
 	{
 		for (int w = 0; w > -1; w--)
 		{
-			if (current_position_h < field_height - 3)
+			if (current_position_h < field_height-3)
 			{
 				current_position_h++;
 				coordinate_h = current_position_h; //принимаем координаты для записи положения обьектов в координатый массив
@@ -426,7 +426,7 @@ int *o_building_select(char player, char building_type) //переключает здание в з
 	case 'R':
 		if (building_type == '1')
 		{
-			int Gun2[Building_height*Building_width] = { 178,178,178,205,185,178,178,178,178 };
+			int Gun2[Building_height*Building_width] = { 178,178,178,205,185,178,178,178,178 }; 
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Gun2[i];
@@ -508,7 +508,7 @@ int o_display_shop()
 	{
 		Shop_field[h0 + 1][w0 + 0] = 178; Shop_field[h0 + 1][w0 + 1] = 204; Shop_field[h0 + 1][w0 + 2] = 205;
 	}
-	else if (player == 'R')
+	else if (player == 'R')  
 	{
 		Shop_field[h0 + 1][w0 + 0] = 205; Shop_field[h0 + 1][w0 + 1] = 185; Shop_field[h0 + 1][w0 + 2] = 178;
 	}
@@ -518,11 +518,11 @@ int o_display_shop()
 	if (player == 'L')
 	{
 		Shop_field[h0 + 1][w0 + 0] = 176; Shop_field[h0 + 1][w0 + 1] = 199; Shop_field[h0 + 1][w0 + 2] = 196;
-	}
+	} 
 	else if (player == 'R')
 	{
 		Shop_field[h0 + 1][w0 + 0] = 196; Shop_field[h0 + 1][w0 + 1] = 182; Shop_field[h0 + 1][w0 + 2] = 176;
-	}
+	} 
 	Shop_field[h0 + 2][w0 + 0] = 176; Shop_field[h0 + 2][w0 + 1] = 176; Shop_field[h0 + 2][w0 + 2] = 176;
 	w0 = w0 + 7;
 	Shop_field[h0 + 0][w0 + 0] = 32; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 32;
@@ -563,7 +563,7 @@ int o_display_shop()
 		printf("\n");
 	}
 	printf("          Select building: [1-4];       Confirm: [9];    Cancel: [0]; ");
-	o_get_shop_actions();
+	o_get_shop_actions();   
 	return 0;
 }
 
@@ -645,7 +645,7 @@ void o_display_w_coordinates_field()
 
 	for (int h = 0; h < field_height; h++)
 	{
-		printf("%3d", h);
+		printf("%3d",h);
 		printf("      |");
 		for (int w = 0; w < field_width; w++)
 		{
@@ -661,7 +661,7 @@ void o_display_w_coordinates_field()
 			{
 				printf("%c", '+');
 			}
-
+			
 		}
 		printf("|         ");
 		printf("\n");
@@ -687,11 +687,11 @@ void o_display_w_coordinates_field()
 	return;
 }
 
-void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w)
+void o_put_coordinates( char player, char building_type, int coordinate_h, int coordinate_w)
 {
-
-
-	if (player == 'L')
+	
+	
+	if (player == 'L') 
 	{
 		if (building_type == '1')
 		{
@@ -699,8 +699,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] =  coordinate_h+1;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] =  coordinate_w+1;
 
 				}
 			}
@@ -711,8 +711,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] =  coordinate_h+1;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] =  coordinate_w+1;
 				}
 			}
 		}
@@ -724,8 +724,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				{
 					if (w == 1)
 					{
-						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h+1;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w+1;
 					}
 				}
 			}
@@ -738,8 +738,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				{
 					if (w == 1)
 					{
-						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h+1;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w+1;
 					}
 				}
 			}
@@ -754,8 +754,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h+1;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w+1;
 				}
 			}
 		}
@@ -765,8 +765,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h+1;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w+1;
 				}
 			}
 		}
@@ -778,8 +778,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				{
 					if (w == 1)
 					{
-						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h+1;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w+1;
 					}
 				}
 			}
@@ -792,8 +792,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				{
 					if (w == 1)
 					{
-						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h+1;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w+1;
 					}
 				}
 			}
@@ -805,14 +805,14 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 
 void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w)
 {
-	coordinate_h = coordinate_h + 1;
-	coordinate_w = coordinate_w + 1;
+		coordinate_h = coordinate_h + 1;
+		coordinate_w = coordinate_w + 1;
 
 	if (player == 'L')
 	{
 		element_number_l++;
 		Elements_Info_Player_Left[b_type][element_number_l] = building_type;
-
+	
 		if (building_type == '1')
 		{
 			Elements_Info_Player_Left[shots][element_number_l] = shots_1;
@@ -1005,8 +1005,8 @@ void o_get_shop_actions() // принимает клавиши действий в магазине
 		action_in_shop = _getwch();
 		switch (action_in_shop)
 		{
-		case '<': player = 'L'; break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
-		case '>': player = 'R'; break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
+		case '<': player = 'L';  o_display_marker_in_store(building_type); break; break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
+		case '>': player = 'R';  o_display_marker_in_store(building_type); break; break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
 		case '1': building_type = '1'; o_display_marker_in_store(building_type); break;
 		case '2': building_type = '2'; o_display_marker_in_store(building_type); break;
 		case '3': building_type = '3'; o_display_marker_in_store(building_type); break;
