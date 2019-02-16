@@ -4,11 +4,12 @@ alexey melentyev
 oleg sazonov
 date: 10.12
 */
+
 #include "head.h"
 
 int main()
 {
-	//player = 'R';
+	player = 'L';
 
 	o_fill_batle_field_after_start();
 	o_display_batle_field(panel_width, field_height, field_width);
@@ -16,8 +17,6 @@ int main()
 
 	return 0;
 }
-
-
 
 
 void o_fill_batle_field_after_start()
@@ -85,8 +84,9 @@ void o_get_main_screen_actions() // принимает клавиши действий на главном игрово
 		button = _getwch();
 		switch (button)
 		{
-		case 'P': case 'p':  case 'З':  case 'з':  o_fill_shop(); o_display_shop();  break;
-		case 'C': case 'c': case 'С': case 'с': o_display_coordinates_field(); break;
+		case 'P': case 'p':  o_fill_shop(); o_display_shop();  break;
+		case 'Y': case 'y': case 'H': case 'h':  o_display_h_coordinates_field(); break;
+		case 'X': case 'x': case 'w': case 'W': o_display_w_coordinates_field(); break;
 		default: break;
 		}
 	}
@@ -139,13 +139,13 @@ void o_move_elements(char player, char building_type)
 
 		switch (movement_to)
 		{
-		case 'w': case 'W': case 'ц': case 'Ц':			o_get_field_copy(); o_move_up(player, building_type);		break;
-		case 's': case 'S': case 'ы': case 'Ы': case 'X':		o_get_field_copy(); o_move_down(player, building_type);		break;
-		case 'a': case 'A': case 'ф': case 'Ф':			o_get_field_copy(); o_move_left(player, building_type);		break;
-		case 'd': case 'D': case 'в': case 'В':			o_get_field_copy(); o_move_right(player, building_type);	break;
-		case 'p': case 'P': case 'з': case 'З':			o_fill_shop(); o_display_shop(); break;
-		case '9':		o_put_coordinates(player, building_type, coordinate_h, coordinate_w); o_push_batle_field_from_copy();  break;  //после нажатия на 9 записываем данные с экрана в основной массив;
-		case '0': o_display_batle_field(panel_width, field_height, field_width);		 break;
+		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);		break;
+		case 's': case 'S':	o_get_field_copy(); o_move_down(player, building_type);		break;
+		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
+		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
+		case 'p': case 'P': o_fill_shop(); o_display_shop();							break;
+		case '9': o_put_coordinates(player, building_type, coordinate_h, coordinate_w); o_push_batle_field_from_copy(); o_display_batle_field(panel_width, field_height, field_width); break;  //после нажатия на 9 записываем данные с экрана в основной массив;
+		case '0':		o_display_batle_field(panel_width, field_height, field_width);		 break;
 		default: break;
 		}
 		movement_to = _getwch();
@@ -591,6 +591,16 @@ void o_fill_shop()
 */
 void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w)
 {
+	int number_of_writings = 0;
+	int coordinate_h_centre;
+	int coordinate_w_centre;
+
+	if (number_of_writings == 0)
+	{
+		coordinate_h_centre = coordinate_h + 1;
+		coordinate_w_centre = coordinate_w + 1;
+	}
+
 	if (player == 'L')
 	{
 		if (building_type == '1')
@@ -599,7 +609,10 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'G';
+
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
+
 				}
 			}
 		}
@@ -609,7 +622,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'g';
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
 				}
 			}
 		}
@@ -620,7 +634,10 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				for (int w = 0; w < Building_width; w++)
 				{
 					if (w == 1)
-						Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'W';
+					{
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
+					}
 				}
 			}
 		}
@@ -631,7 +648,10 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				for (int w = 0; w < Building_width; w++)
 				{
 					if (w == 1)
-						Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'w';
+					{
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
+					}
 				}
 			}
 		}
@@ -646,7 +666,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				for (int w = 0; w < Building_width; w++)
 				{
 
-					Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'P';
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
 				}
 			}
 		}
@@ -656,8 +677,8 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-
-					Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'p';
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
 				}
 			}
 		}
@@ -668,7 +689,10 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				for (int w = 0; w < Building_width; w++)
 				{
 					if (w == 1)
-						Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 'S';
+					{
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
+					}
 				}
 			}
 		}
@@ -679,7 +703,10 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 				for (int w = 0; w < Building_width; w++)
 				{
 					if (w == 1)
-						Batle_field[cors_f][coordinate_h + h][coordinate_w + w] = 's';
+					{
+						Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_h_centre;
+						Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = (char)coordinate_w_centre;
+					}
 				}
 			}
 		}
@@ -688,10 +715,11 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 	return;
 }
 
-void o_display_coordinates_field()
+void o_display_h_coordinates_field()
 {
 	system("cls");
-	for (int h = 0; h < field_height; h++) {
+	for (int h = 0; h < field_height; h++)
+	{
 		for (int lp = 0; lp < panel_width; lp++)
 		{
 			printf("%c", Left_panel[h][lp]);
@@ -699,7 +727,7 @@ void o_display_coordinates_field()
 
 		for (int w = 0; w < field_width; w++)
 		{
-			printf("%c", (char)Batle_field[cors_f][h][w]);
+			printf("%c", Batle_field[h_cors_f][h][w]);
 		}
 
 		for (int rp = 0; rp < panel_width; rp++)
@@ -719,6 +747,48 @@ void o_display_coordinates_field()
 		switch (input_but)
 		{
 		case '0': o_display_batle_field(panel_width, field_height, field_width);  break;
+		case'y': case 'Y': case'H': case'h':	o_display_h_coordinates_field(); break;
+		default: break;
+		}
+	}
+	return;
+}
+
+void o_display_w_coordinates_field()
+{
+	system("cls");
+
+	for (int h = 0; h < field_height; h++)
+	{
+		for (int lp = 0; lp < panel_width; lp++)
+		{
+			printf("%c", Left_panel[h][lp]);
+		}
+
+		for (int w = 0; w < field_width; w++)
+		{
+			printf("%c", Batle_field[w_cors_f][h][w]);
+		}
+
+		for (int rp = 0; rp < panel_width; rp++)
+		{
+			printf("%c", Right_panel[h][rp]);
+		}
+		printf("\n");
+	}
+
+	//123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
+	printf("                     Back to main field:   [0]     ");
+
+
+	char input_but;
+	while (true)
+	{
+		input_but = _getwch();
+		switch (input_but)
+		{
+		case '0': o_display_batle_field(panel_width, field_height, field_width);  break;
+		case'x': case 'X': case'w': case'W':	o_display_w_coordinates_field(); break;
 
 		default: break;
 		}
@@ -726,5 +796,3 @@ void o_display_coordinates_field()
 
 	return;
 }
-
-
