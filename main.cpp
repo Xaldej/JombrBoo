@@ -25,7 +25,14 @@ void o_fill_batle_field_after_start()
 	{
 		for (int w = 0; w < panel_width; w++)
 		{
-			Left_panel[h][w] = char(177);
+			if (w == panel_width - 1)
+			{
+				Left_panel[h][w] = '|';
+			}
+			else
+			{
+				Left_panel[h][w] = ' ';
+			}
 		}
 	}
 
@@ -33,20 +40,29 @@ void o_fill_batle_field_after_start()
 	{
 		for (int w = 0; w < field_width; w++)
 		{
-			if (w == 29 && h % 2 == 0)
+			if (w == (field_width / 2) + 1)
 			{
-				Batle_field[main_f][h][w] = '|';
-				Batle_field[copy_f][h][w] = '|';
+				Batle_field[main_f][h][w] = '.';
+				Batle_field[copy_f][h][w] = '.';
 			}
 			else
+			{
 				Batle_field[main_f][h][w] = ' ';
+			}
 		}
 	}
 
 	for (int h = 0; h < panel_height; h++) {
 		for (int w = 0; w < panel_width; w++)
 		{
-			Right_panel[h][w] = char(176);
+			if (w == 0)
+			{
+				Right_panel[h][w] = '|';
+			}
+			else
+			{
+				Right_panel[h][w] = ' ';
+			}
 		}
 
 	}
@@ -84,10 +100,10 @@ void o_get_main_screen_actions() // принимает клавиши действий на главном игрово
 		button = _getwch();
 		switch (button)
 		{
-		case 'P': case 'p':  o_fill_shop(); o_display_shop();  break;
-		case 'Y': case 'y': case 'H': case 'h':  o_display_h_coordinates_field(); break;
-		case 'X': case 'x': case 'w': case 'W': o_display_w_coordinates_field(); break;
-		case 'i': case 'I': print_objects_info(); break;
+		case 'P': case 'p':  o_fill_shop(); o_display_marker_in_store(building_type); break;
+		case 'Y': case 'y':  o_display_h_coordinates_field();	break;
+		case 'X': case 'x':  o_display_w_coordinates_field();	break;
+		case 'I': case 'i':  print_objects_info();				break;
 		default: break;
 		}
 	}
@@ -133,19 +149,23 @@ void o_move_elements(char player, char building_type)
 	}
 
 	system("cls");
+
 	o_print_copy_batle_field();
+
 
 	char movement_to = 'X';
 	while (true)
 	{
 		switch (movement_to)
 		{
-		case'X': current_position_h++;	o_move_up(player, building_type); break;
+		case '>': o_move_elements('R', building_type);  break;
+		case '<': o_move_elements('L', building_type);  break;
+		case 'X': o_get_field_copy(); current_position_h++;	o_move_up(player, building_type); break;
 		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);		break;
 		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type); break;
 		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
-		case 'p': case 'P': o_fill_shop(); o_display_shop();							break;
+		case 'p': case 'P':  o_fill_shop(); o_display_marker_in_store(building_type);	break;
 		case '9': o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
 			o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
 			o_push_batle_field_from_copy();
@@ -483,11 +503,26 @@ int o_display_shop()
 
 	int h0 = 8, w0 = 30, w1 = w0;  //стартовые позиции для отрисовки обьектов в магазине
 	Shop_field[h0 + 0][w0 + 0] = 178; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 178;
-	Shop_field[h0 + 1][w0 + 0] = 178; Shop_field[h0 + 1][w0 + 1] = 204; Shop_field[h0 + 1][w0 + 2] = 205;
+
+	if (player == 'L')
+	{
+		Shop_field[h0 + 1][w0 + 0] = 178; Shop_field[h0 + 1][w0 + 1] = 204; Shop_field[h0 + 1][w0 + 2] = 205;
+	}
+	else if (player == 'R')
+	{
+		Shop_field[h0 + 1][w0 + 0] = 205; Shop_field[h0 + 1][w0 + 1] = 185; Shop_field[h0 + 1][w0 + 2] = 178;
+	}
 	Shop_field[h0 + 2][w0 + 0] = 178; Shop_field[h0 + 2][w0 + 1] = 178; Shop_field[h0 + 2][w0 + 2] = 178;
 	w0 = w0 + 7;
 	Shop_field[h0 + 0][w0 + 0] = 176; Shop_field[h0 + 0][w0 + 1] = 176; Shop_field[h0 + 0][w0 + 2] = 176;
-	Shop_field[h0 + 1][w0 + 0] = 176; Shop_field[h0 + 1][w0 + 1] = 199; Shop_field[h0 + 1][w0 + 2] = 196;
+	if (player == 'L')
+	{
+		Shop_field[h0 + 1][w0 + 0] = 176; Shop_field[h0 + 1][w0 + 1] = 199; Shop_field[h0 + 1][w0 + 2] = 196;
+	}
+	else if (player == 'R')
+	{
+		Shop_field[h0 + 1][w0 + 0] = 196; Shop_field[h0 + 1][w0 + 1] = 182; Shop_field[h0 + 1][w0 + 2] = 176;
+	}
 	Shop_field[h0 + 2][w0 + 0] = 176; Shop_field[h0 + 2][w0 + 1] = 176; Shop_field[h0 + 2][w0 + 2] = 176;
 	w0 = w0 + 7;
 	Shop_field[h0 + 0][w0 + 0] = 32; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 32;
@@ -573,26 +608,23 @@ void o_display_h_coordinates_field()
 	system("cls");
 	for (int h = 0; h < field_height; h++)
 	{
-		for (int lp = 0; lp < panel_width; lp++)
-		{
-			printf("%c", Left_panel[h][lp]);
-		}
-
+		printf("         |");
 		for (int w = 0; w < field_width; w++)
 		{
-			printf("%c", Batle_field[h_cors_f][h][w]);
+			if (Batle_field[h_cors_f][h][w] == 0)
+			{
+				printf("%c", (char)32);
+			}
+			else
+			{
+				printf("%c", '+');
+			}
 		}
-
-		for (int rp = 0; rp < panel_width; rp++)
-		{
-			printf("%c", Right_panel[h][rp]);
-		}
+		printf("|         ");
 		printf("\n");
 	}
-	//123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-	printf("                     Back to main field:   [0]     ");
-
-
+	//123456789.123456789.123456789.123456789|123456789.123456789.123456789.123456789.
+	printf("                     Back - [0]    X_cors - [X]   ");
 	char input_but;
 	while (true)
 	{
@@ -600,7 +632,7 @@ void o_display_h_coordinates_field()
 		switch (input_but)
 		{
 		case '0': o_display_batle_field(panel_width, field_height, field_width);  break;
-		case'y': case 'Y': case'H': case'h':	o_display_h_coordinates_field(); break;
+		case'x': case 'X':	o_display_w_coordinates_field(); break;
 		default: break;
 		}
 	}
@@ -613,25 +645,30 @@ void o_display_w_coordinates_field()
 
 	for (int h = 0; h < field_height; h++)
 	{
-		for (int lp = 0; lp < panel_width; lp++)
-		{
-			printf("%c", Left_panel[h][lp]);
-		}
-
+		printf("%3d", h);
+		printf("      |");
 		for (int w = 0; w < field_width; w++)
 		{
-			printf("%c", Batle_field[w_cors_f][h][w]);
-		}
+			if (Batle_field[w_cors_f][h][w] == 0)
+			{
+				printf("%c", (char)32);
+			}
+			else if (h == 23)
+			{
+				printf("%d", w % 10);
+			}
+			else
+			{
+				printf("%c", '+');
+			}
 
-		for (int rp = 0; rp < panel_width; rp++)
-		{
-			printf("%c", Right_panel[h][rp]);
 		}
+		printf("|         ");
 		printf("\n");
 	}
 
 	//123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-	printf("                     Back to main field:   [0]     ");
+	printf("                     Back - [0]    Y_cors - [Y]   ");
 
 
 	char input_but;
@@ -641,7 +678,7 @@ void o_display_w_coordinates_field()
 		switch (input_but)
 		{
 		case '0': o_display_batle_field(panel_width, field_height, field_width);  break;
-		case'x': case 'X': case'w': case'W':	o_display_w_coordinates_field(); break;
+		case'y': case 'Y':	o_display_h_coordinates_field(); break;
 
 		default: break;
 		}
@@ -652,6 +689,7 @@ void o_display_w_coordinates_field()
 
 void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w)
 {
+
 
 	if (player == 'L')
 	{
@@ -973,7 +1011,8 @@ void o_get_shop_actions() // принимает клавиши действий в магазине
 		case '2': building_type = '2'; o_display_marker_in_store(building_type); break;
 		case '3': building_type = '3'; o_display_marker_in_store(building_type); break;
 		case '4': building_type = '4'; o_display_marker_in_store(building_type); break;
-		case '9': o_move_elements(player, building_type); break;
+		case 'N': case'n':  building_type++; building_type == '5' ? building_type = '1' : building_type;  o_display_marker_in_store(building_type); break;
+		case '9':   o_move_elements(player, building_type); break;
 		case '0': o_display_batle_field(panel_width, field_height, field_width);	break;
 		default: break;
 		}
