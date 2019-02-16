@@ -29,8 +29,42 @@ char Right_panel[field_height][panel_width];
 int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
 int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
 
+//согласовать вычитание номера обьекта при перемещении данных  ?????????????????????????????????????????????????????????????????
 
+int element_number_l = -1; // -1 потому что сразу при входе в функцию делается ++ и для первого раза значение будет 0
+int element_number_r = -1;
+const int info_h = 6;
+const int info_w = 20;
 
+int Elements_Info_Player_Left[info_h][info_w];
+int Elements_Info_Player_Right[info_h][info_w];
+
+//параметры обьектов
+
+//выстрелы
+const int shots_1 = 20;
+const int shots_2 = 10;
+const int shots_3 = 0;
+const int shots_4 = 0;
+//направление выстрела
+const int sh_route_l = 1;
+const int sh_route_r = -1;
+const int sh_route_3 = 0;
+const int sh_route_4 = 0;
+
+//количество 
+const int HP_1 = 10;
+const int HP_2 = 5;
+const int HP_3 = 20;
+const int HP_4 = 10;
+
+//строки для info
+const int b_type = 0;	// тип элемента
+const int shots = 1;	// количество выстрелов
+const int sh_route = 2; // направление выстрела
+const int HP = 3;		// количество жизней
+const int h_cor = 4;    // h координата центра обекта (высота  || Y)
+const int w_cor = 5;     // w координата центра обекта (ширина || X)
 
 //размеры зданий
 const int Building_width = 3;
@@ -76,3 +110,6 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 
 void o_display_h_coordinates_field(); //отображает координатное поле со значениями по высоте (у координаты)
 void o_display_w_coordinates_field(); //отображает координатное поле со значениями по ширине (x координаты)
+
+void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w);  // записывает данные об обьектах игрока
+void print_objects_info();
