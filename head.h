@@ -7,9 +7,6 @@
 #include <ctime>
 using namespace std;
 
-
-
-
 //размеры полей
 const int field_height = 24;
 const int field_width = 59;
@@ -30,9 +27,9 @@ char Left_panel[field_height][panel_width];
 char Right_panel[field_height][panel_width];
 
 const int name_lenght = 7;
+
 char Name_P1[name_lenght] = " Jombr";
 char Name_P2[name_lenght] = " Boo  ";
-
 
 
 int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
@@ -59,7 +56,7 @@ const int wall_2_price = 100;
 int total_money_left = 1200;
 int total_money_right = 1200;
 
-wint_t sec;
+
 //end_финансы
 
 //выстрелы
@@ -96,9 +93,6 @@ char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
 
 int *arr = new int[(Building_height*Building_width)];
 int Building[Building_height][Building_width];
-
-
-
 
 int current_position_h;
 int current_position_w;
@@ -140,5 +134,5 @@ void o_fill_pannels();
 
 int o_calculate_money(char player, char building_type);
 int o_item_price(char building_type);
-bool give_money(); 
+bool give_money();
 void money_have();

@@ -1,12 +1,5 @@
-
-/*JoombrBoo
-authours:
-alexey melentyev
-oleg sazonov
-date: 10.12
-*/
-
 #include "head.h"
+
 
 
 //ok
@@ -22,7 +15,6 @@ int main()
 
 	return 0;
 }
-
 
 void o_fill_batle_field_after_start()
 {
@@ -105,8 +97,6 @@ void o_get_main_screen_actions() // принимает клавиши действий на главном игрово
 	{
 		if (give_money() == true)
 		{
-			total_money_left += 10;
-			total_money_right += 10;
 			o_display_batle_field(panel_width, field_height, field_width);
 		}
 		button = _getwch();
@@ -168,13 +158,12 @@ void o_move_elements(char player, char building_type)
 	char movement_to = 'X';
 	while (true)
 	{
+		/*
 		if (give_money() == true)
 		{
-			total_money_left += 10;
-			total_money_right += 10;
 			money_have();
 			current_position_h++;	o_move_up(player, building_type);
-		}
+		}*/
 
 		switch (movement_to)
 		{
@@ -190,14 +179,11 @@ void o_move_elements(char player, char building_type)
 			if (o_calculate_money(player, building_type) == -1)
 			{
 				o_get_field_copy();
-				break;
 			}
 			else if (o_calculate_money(player, building_type) == 0)
 			{
 				o_calculate_money(player, building_type);
-
-				break;
-			}	break;
+			};	break;
 		case '0':		o_display_batle_field(panel_width, field_height, field_width);		 break;
 		case'n': case'N':
 			building_type++; building_type == '5' ? building_type = '1' : building_type;
@@ -1073,8 +1059,13 @@ void o_fill_pannels()
 		Right_panel[3][w + 1] = '-';
 		Left_panel[8][w] = '-';
 		Right_panel[8][w + 1] = '-';
+		Left_panel[23][w] = 196;
+		Right_panel[23][w + 1] = 196;
 
 	}
+	Left_panel[23][9] = 217;
+	Right_panel[23][0] = 192;
+
 	Left_panel[6][2] = '$';
 	Right_panel[6][3] = '$';
 	const int money_lenght = 7;
@@ -1150,15 +1141,18 @@ int o_item_price(char building_type)
 
 bool  give_money()
 {
+	wint_t sec = time(NULL);
+	int period = 20;
 
-	int period = 10;
-	sec = time(NULL);
 	if (sec%period != 0)
 	{
 		return false;
 	}
 	else if (sec%period == 0)
 	{
+		total_money_left += 5;
+		total_money_right += 5;
+		money_have();
 		return true;
 	}
 
@@ -1179,8 +1173,6 @@ void money_have()
 	int r3 = (total_money_right - r1 * 1000 - r2 * 100) / 10;
 	int r4 = (total_money_right - r1 * 1000 - r2 * 100 - r3 * 10);
 
-	int x = 0;
-
 	char L1 = 48 + n4;	char L2 = 48 + n3;	char L3 = 48 + n2;	char L4 = 48 + n1;
 	char R1 = 48 + r4; 	char R2 = 48 + r3; 	char R3 = 48 + r2; 	char R4 = 48 + r1;
 
@@ -1190,13 +1182,10 @@ void money_have()
 	Left_panel[6][4] = L3;
 	Left_panel[6][3] = L4;
 
-
 	Right_panel[6][7] = R1;
 	Right_panel[6][6] = R2;
 	Right_panel[6][5] = R3;
 	Right_panel[6][4] = R4;
 
-
 	return;
-
 }
