@@ -13,6 +13,7 @@ int main()
 	player = 'L';
 
 	o_fill_batle_field_after_start();
+	o_fill_pannels();
 	o_display_batle_field(panel_width, field_height, field_width);
 
 
@@ -70,7 +71,7 @@ void o_fill_batle_field_after_start()
 }
 void o_display_batle_field(int panel_width, int field_height, int field_width)
 {
-	o_fill_pannels();
+	money_have();
 	system("cls");
 	for (int h = 0; h < field_height; h++) {
 		for (int lp = 0; lp < panel_width; lp++)
@@ -167,7 +168,7 @@ void o_move_elements(char player, char building_type)
 		{
 			total_money_left += 10;
 			total_money_right += 10;
-			o_fill_pannels();
+			money_have();
 			current_position_h++;	o_move_up(player, building_type);
 		}
 
@@ -1071,21 +1072,6 @@ void o_fill_pannels()
 
 	}
 
-	int n1 = (total_money_left / 1000);
-	int n2 = (total_money_left - n1 * 1000) / 100;
-	int n3 = (total_money_left - n1 * 1000 - n2 * 100) / 10;
-	int n4 = (total_money_left - n1 * 1000 - n2 * 100 - n3 * 10);
-
-	int r1 = (total_money_right / 1000);
-	int r2 = (total_money_right - r1 * 1000) / 100;
-	int r3 = (total_money_right - r1 * 1000 - r2 * 100) / 10;
-	int r4 = (total_money_right - r1 * 1000 - r2 * 100 - r3 * 10);
-
-	int x = 0;
-
-	char L1 = 48 + n4;	char L2 = 48 + n3;	char L3 = 48 + n2;	char L4 = 48 + n1;
-	char R1 = 48 + r4; 	char R2 = 48 + r3; 	char R3 = 48 + r2; 	char R4 = 48 + r1;
-
 	const int money_lenght = 7;
 	char coins[money_lenght] = "Money:";
 	for (int w = 0; w < money_lenght; w++)
@@ -1093,21 +1079,7 @@ void o_fill_pannels()
 		Left_panel[5][w + 1] = coins[w];
 		Right_panel[5][w + 2] = coins[w];
 	}
-
-	Left_panel[6][6] = L1;
-	Left_panel[6][5] = L2;
-	Left_panel[6][4] = L3;
-	Left_panel[6][3] = L4;
-	Left_panel[6][2] = '$';
-
-	Right_panel[6][7] = R1;
-	Right_panel[6][6] = R2;
-	Right_panel[6][5] = R3;
-	Right_panel[6][4] = R4;
-	Right_panel[6][3] = '$';
-
-
-
+	money_have();
 	return;
 }
 
@@ -1175,7 +1147,7 @@ bool  give_money()
 {
 
 	int period = 10;
-	int sec = time(NULL);
+	sec = time(NULL);
 	if (sec%period != 0)
 	{
 		return false;
@@ -1186,5 +1158,40 @@ bool  give_money()
 	}
 
 
-	return true;
+	return false;
+}
+
+void money_have()
+{
+
+	int n1 = (total_money_left / 1000);
+	int n2 = (total_money_left - n1 * 1000) / 100;
+	int n3 = (total_money_left - n1 * 1000 - n2 * 100) / 10;
+	int n4 = (total_money_left - n1 * 1000 - n2 * 100 - n3 * 10);
+
+	int r1 = (total_money_right / 1000);
+	int r2 = (total_money_right - r1 * 1000) / 100;
+	int r3 = (total_money_right - r1 * 1000 - r2 * 100) / 10;
+	int r4 = (total_money_right - r1 * 1000 - r2 * 100 - r3 * 10);
+
+	int x = 0;
+
+	char L1 = 48 + n4;	char L2 = 48 + n3;	char L3 = 48 + n2;	char L4 = 48 + n1;
+	char R1 = 48 + r4; 	char R2 = 48 + r3; 	char R3 = 48 + r2; 	char R4 = 48 + r1;
+
+
+	Left_panel[6][6] = L1;
+	Left_panel[6][5] = L2;
+	Left_panel[6][4] = L3;
+	Left_panel[6][3] = L4;
+	Left_panel[6][2] = '$';
+
+	Right_panel[6][7] = R1;
+	Right_panel[6][6] = R2;
+	Right_panel[6][5] = R3;
+	Right_panel[6][4] = R4;
+	Right_panel[6][3] = '$';
+
+	return;
+
 }
