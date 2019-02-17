@@ -8,18 +8,21 @@ date: 10.12
 
 #include "head.h"
 
+
+//ok
 int main()
 {
+
 	player = 'L';
 
 	o_fill_batle_field_after_start();
+	o_fill_pannels();
 	o_display_batle_field(panel_width, field_height, field_width);
 
 
 	return 0;
 }
-<<<<<<< HEAD
-=======
+
 
 void o_fill_batle_field_after_start()
 {
@@ -72,7 +75,7 @@ void o_fill_batle_field_after_start()
 }
 void o_display_batle_field(int panel_width, int field_height, int field_width)
 {
-	o_fill_pannels();
+	money_have();
 	system("cls");
 	for (int h = 0; h < field_height; h++) {
 		for (int lp = 0; lp < panel_width; lp++)
@@ -169,7 +172,7 @@ void o_move_elements(char player, char building_type)
 		{
 			total_money_left += 10;
 			total_money_right += 10;
-			o_fill_pannels();
+			money_have();
 			current_position_h++;	o_move_up(player, building_type);
 		}
 
@@ -587,7 +590,7 @@ int o_display_shop()
 		}
 		printf("\n");
 	}
-	printf("          Select building: [1-4];       Confirm: [9];    Cancel: [0]; ");
+	printf("          Select building: [1-4] / [N];       Confirm: [9];    Cancel: [0]; ");
 	o_get_shop_actions();
 	return 0;
 }
@@ -724,7 +727,7 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 			{
 				for (int w = 0; w < Building_width; w++)
 				{
-					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;  //для центра +1 потому что берутся координаты [0][0]
 					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
 
 				}
@@ -1030,8 +1033,8 @@ void o_get_shop_actions() // принимает клавиши действий в магазине
 		action_in_shop = _getwch();
 		switch (action_in_shop)
 		{
-		case '<': player = 'L'; break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
-		case '>': player = 'R'; break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
+		case '<': player = 'L'; o_display_marker_in_store(building_type); break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
+		case '>': player = 'R'; o_display_marker_in_store(building_type); break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
 		case '1': building_type = '1'; o_display_marker_in_store(building_type); break;
 		case '2': building_type = '2'; o_display_marker_in_store(building_type); break;
 		case '3': building_type = '3'; o_display_marker_in_store(building_type); break;
@@ -1072,22 +1075,8 @@ void o_fill_pannels()
 		Right_panel[8][w + 1] = '-';
 
 	}
-
-	int n1 = (total_money_left / 1000);
-	int n2 = (total_money_left - n1 * 1000) / 100;
-	int n3 = (total_money_left - n1 * 1000 - n2 * 100) / 10;
-	int n4 = (total_money_left - n1 * 1000 - n2 * 100 - n3 * 10);
-
-	int r1 = (total_money_right / 1000);
-	int r2 = (total_money_right - r1 * 1000) / 100;
-	int r3 = (total_money_right - r1 * 1000 - r2 * 100) / 10;
-	int r4 = (total_money_right - r1 * 1000 - r2 * 100 - r3 * 10);
-
-	int x = 0;
-
-	char L1 = 48 + n4;	char L2 = 48 + n3;	char L3 = 48 + n2;	char L4 = 48 + n1;
-	char R1 = 48 + r4; 	char R2 = 48 + r3; 	char R3 = 48 + r2; 	char R4 = 48 + r1;
-
+	Left_panel[6][2] = '$';
+	Right_panel[6][3] = '$';
 	const int money_lenght = 7;
 	char coins[money_lenght] = "Money:";
 	for (int w = 0; w < money_lenght; w++)
@@ -1095,21 +1084,7 @@ void o_fill_pannels()
 		Left_panel[5][w + 1] = coins[w];
 		Right_panel[5][w + 2] = coins[w];
 	}
-
-	Left_panel[6][6] = L1;
-	Left_panel[6][5] = L2;
-	Left_panel[6][4] = L3;
-	Left_panel[6][3] = L4;
-	Left_panel[6][2] = '$';
-
-	Right_panel[6][7] = R1;
-	Right_panel[6][6] = R2;
-	Right_panel[6][5] = R3;
-	Right_panel[6][4] = R4;
-	Right_panel[6][3] = '$';
-
-
-
+	money_have();
 	return;
 }
 
@@ -1177,7 +1152,7 @@ bool  give_money()
 {
 
 	int period = 10;
-	int sec = time(NULL);
+	sec = time(NULL);
 	if (sec%period != 0)
 	{
 		return false;
@@ -1188,6 +1163,40 @@ bool  give_money()
 	}
 
 
-	return true;
+	return false;
 }
->>>>>>> parent of 3776868... РёСЃРїСЂР°РІРёР» Р°Р»РіРѕСЂРёС‚Рј Р·Р°РїРѕР»РЅРµРЅРёСЏ РїР°РЅРµР»РµР№
+
+void money_have()
+{
+
+	int n1 = (total_money_left / 1000);
+	int n2 = (total_money_left - n1 * 1000) / 100;
+	int n3 = (total_money_left - n1 * 1000 - n2 * 100) / 10;
+	int n4 = (total_money_left - n1 * 1000 - n2 * 100 - n3 * 10);
+
+	int r1 = (total_money_right / 1000);
+	int r2 = (total_money_right - r1 * 1000) / 100;
+	int r3 = (total_money_right - r1 * 1000 - r2 * 100) / 10;
+	int r4 = (total_money_right - r1 * 1000 - r2 * 100 - r3 * 10);
+
+	int x = 0;
+
+	char L1 = 48 + n4;	char L2 = 48 + n3;	char L3 = 48 + n2;	char L4 = 48 + n1;
+	char R1 = 48 + r4; 	char R2 = 48 + r3; 	char R3 = 48 + r2; 	char R4 = 48 + r1;
+
+
+	Left_panel[6][6] = L1;
+	Left_panel[6][5] = L2;
+	Left_panel[6][4] = L3;
+	Left_panel[6][3] = L4;
+
+
+	Right_panel[6][7] = R1;
+	Right_panel[6][6] = R2;
+	Right_panel[6][5] = R3;
+	Right_panel[6][4] = R4;
+
+
+	return;
+
+}

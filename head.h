@@ -1,10 +1,13 @@
 #pragma once
-using namespace std;
+//ok
 
 #include <iostream>
 #include <conio.h>
 #include <Windows.h>
 #include <ctime>
+using namespace std;
+
+
 
 
 //размеры полей
@@ -27,8 +30,8 @@ char Left_panel[field_height][panel_width];
 char Right_panel[field_height][panel_width];
 
 const int name_lenght = 7;
-char Name_P1[name_lenght] = "xxxxxx";
-char Name_P2[name_lenght] = "xxxxxx";
+char Name_P1[name_lenght] = " Jombr";
+char Name_P2[name_lenght] = " Boo  ";
 
 
 
@@ -55,6 +58,8 @@ const int wall_2_price = 100;
 
 int total_money_left = 1200;
 int total_money_right = 1200;
+
+wint_t sec;
 //end_финансы
 
 //выстрелы
@@ -135,9 +140,5 @@ void o_fill_pannels();
 
 int o_calculate_money(char player, char building_type);
 int o_item_price(char building_type);
-<<<<<<< HEAD
 bool give_money();
 void money_have();
-=======
-bool give_money(); 
->>>>>>> parent of 3776868... РёСЃРїСЂР°РІРёР» Р°Р»РіРѕСЂРёС‚Рј Р·Р°РїРѕР»РЅРµРЅРёСЏ РїР°РЅРµР»РµР№
