@@ -4,7 +4,7 @@ using namespace std;
 #include <iostream>
 #include <conio.h>
 #include <Windows.h>
-
+#include <ctime>
 
 
 //размеры полей
@@ -53,8 +53,8 @@ const int gun_2_price = 400;
 const int wall_1_price = 200;
 const int wall_2_price = 100;
 
-int total_money_left = 101;
-int total_money_right = 2000;
+int total_money_left = 1200;
+int total_money_right = 1200;
 //end_финансы
 
 //выстрелы
@@ -91,6 +91,7 @@ char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
 
 int *arr = new int[(Building_height*Building_width)];
 int Building[Building_height][Building_width];
+
 
 
 
@@ -134,3 +135,4 @@ void o_fill_pannels();
 
 int o_calculate_money(char player, char building_type);
 int o_item_price(char building_type);
+bool give_money(); 

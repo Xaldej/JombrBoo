@@ -12,10 +12,6 @@ int main()
 {
 	player = 'L';
 
-
-
-
-
 	o_fill_batle_field_after_start();
 	o_display_batle_field(panel_width, field_height, field_width);
 
@@ -93,7 +89,7 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 		}
 		printf("\n");
 	}
-	printf("                                 Open Shop: [P];");
+	printf("                               Open Shop:    [P];");
 	o_get_main_screen_actions();
 	return;
 }
@@ -102,6 +98,12 @@ void o_get_main_screen_actions() // принимает клавиши действий на главном игрово
 	char button;
 	while (true)
 	{
+		if (give_money() == true)
+		{
+			total_money_left += 10;
+			total_money_right += 10;
+			o_display_batle_field(panel_width, field_height, field_width);
+		}
 		button = _getwch();
 		switch (button)
 		{
@@ -145,7 +147,7 @@ void o_move_elements(char player, char building_type)
 	if (player == 'L')
 	{
 		current_position_h = 9;
-		current_position_w = 1;
+		current_position_w = 0;
 	}
 	else if (player == 'R')
 	{
@@ -161,6 +163,14 @@ void o_move_elements(char player, char building_type)
 	char movement_to = 'X';
 	while (true)
 	{
+		if (give_money() == true)
+		{
+			total_money_left += 10;
+			total_money_right += 10;
+			o_fill_pannels();
+			current_position_h++;	o_move_up(player, building_type);
+		}
+
 		switch (movement_to)
 		{
 		case '>': o_move_elements('R', building_type);  break;
@@ -1159,4 +1169,22 @@ int o_item_price(char building_type)
 	}
 
 	return item_price;
+}
+
+bool  give_money()
+{
+
+	int period = 10;
+	int sec = time(NULL);
+	if (sec%period != 0)
+	{
+		return false;
+	}
+	else if (sec%period == 0)
+	{
+		return true;
+	}
+
+
+	return true;
 }
