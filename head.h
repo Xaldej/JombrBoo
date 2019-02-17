@@ -26,6 +26,12 @@ const int w_cors_f = 3;
 char Left_panel[field_height][panel_width];
 char Right_panel[field_height][panel_width];
 
+const int name_lenght = 7;
+char Name_P1[name_lenght] = "xxxxxx";
+char Name_P2[name_lenght] = "xxxxxx";
+
+
+
 int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
 int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
 
@@ -40,6 +46,16 @@ int Elements_Info_Player_Left[info_h][info_w];
 int Elements_Info_Player_Right[info_h][info_w];
 
 //параметры обьектов
+
+//финансы_start
+const int gun_1_price = 600;
+const int gun_2_price = 400;
+const int wall_1_price = 200;
+const int wall_2_price = 100;
+
+int total_money_left = 101;
+int total_money_right = 2000;
+//end_финансы
 
 //выстрелы
 const int shots_1 = 20;
@@ -113,3 +129,8 @@ void o_display_w_coordinates_field(); //отображает координатное поле со значения
 
 void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w);  // записывает данные об обьектах игрока
 void print_objects_info();
+
+void o_fill_pannels();
+
+int o_calculate_money(char player, char building_type);
+int o_item_price(char building_type);
