@@ -1,3 +1,4 @@
+#pragma once
 #include "head.h"
 
 void o_fill_batle_field_after_start()
