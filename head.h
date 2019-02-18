@@ -23,27 +23,27 @@ const int w_cors_f = 3;
 
 
 //левая и правая панели;
-char Left_panel[field_height][panel_width];
-char Right_panel[field_height][panel_width];
+extern char Left_panel[field_height][panel_width];
+extern char Right_panel[field_height][panel_width];
 
 const int name_lenght = 7;
 
-char Name_P1[name_lenght] = " Jombr";
-char Name_P2[name_lenght] = " Boo  ";
+extern char Name_P1[name_lenght];
+extern char Name_P2[name_lenght];
 
 
-int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
-int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
+extern int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
+extern int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
 
 //согласовать вычитание номера обьекта при перемещении данных  ????????????????????????????????????????????????????????????????
-int element_number_l = -1; // -1 потому что сразу при входе в функцию делается ++ и для первого раза значение будет 0
-int element_number_r = -1;
+extern int element_number_l; // -1 потому что сразу при входе в функцию делается ++ и для первого раза значение будет 0
+extern int element_number_r;
 
 const int info_h = 6;
 const int info_w = 20;
 
-int Elements_Info_Player_Left[info_h][info_w];
-int Elements_Info_Player_Right[info_h][info_w];
+extern int Elements_Info_Player_Left[info_h][info_w];
+extern int Elements_Info_Player_Right[info_h][info_w];
 
 //параметры обьектов
 
@@ -53,8 +53,8 @@ const int gun_2_price = 400;
 const int wall_1_price = 200;
 const int wall_2_price = 100;
 
-int total_money_left = 1200;
-int total_money_right = 1200;
+extern int total_money_left;
+extern int total_money_right;
 
 
 //end_финансы
@@ -88,18 +88,18 @@ const int w_cor = 5;     // w координата центра обекта (ширина || X)
 const int Building_width = 3;
 const int Building_height = 3;
 
-char building_type;  // тип здания. инициализируется при выборе в магазине // передается в функцию прорисовки/перемещении обьекта
-char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
+extern char building_type;  // тип здания. инициализируется при выборе в магазине // передается в функцию прорисовки/перемещении обьекта
+extern char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
 
-int *arr = new int[(Building_height*Building_width)];
-int Building[Building_height][Building_width];
+extern int *arr;
+extern int Building[Building_height][Building_width];
 
-int current_position_h;
-int current_position_w;
-int current_pos_extr_w;
+extern int current_position_h;
+extern int current_position_w;
+extern int current_pos_extr_w;
 
-int coordinate_h;
-int coordinate_w;
+extern int coordinate_h;
+extern int coordinate_w;
 
 //функции
 void o_get_field_copy();						//отображает копию основного екрана в момент перемещения обьектов(пушек)
