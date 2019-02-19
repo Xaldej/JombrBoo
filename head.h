@@ -136,7 +136,7 @@ int o_calculate_money(char player, char building_type);
 int o_item_price(char building_type);
 bool give_money();
 void money_have();
-
+void play();
 
 /***********alexey_melentyev****************/
 

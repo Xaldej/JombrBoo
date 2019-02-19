@@ -109,7 +109,7 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 		printf("\n");
 	}
 	printf("    Open Shop:    [P];\t\tSkip the turn:\t[-]");
-	
+
 	return;
 }
 void o_get_main_screen_actions() // принимает клавиши действий на главном игровом поле
@@ -131,8 +131,8 @@ void o_get_main_screen_actions() // принимает клавиши действий на главном игрово
 		case 'I': case 'i':  print_objects_info();				break;
 		default: break;
 		}
-	} while (button != 'p' && button != 'P'); 
-	
+	} while (button != 'p' && button != 'P');
+
 	return;
 }
 void o_print_copy_batle_field()
@@ -163,7 +163,7 @@ void o_print_copy_batle_field()
 void o_move_elements(char player, char building_type)
 {
 	int temp_value;
-	
+
 	if (player == 'L')
 	{
 		current_position_h = 9;
@@ -199,18 +199,26 @@ void o_move_elements(char player, char building_type)
 		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type); break;
 		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
-		case 'p': case 'P':  o_fill_shop(); o_display_marker_in_store(building_type);	break;		
+		case 'p': case 'P':  o_fill_shop(); o_display_shop(); break;
 		case '9':
 			temp_value = o_calculate_money(player, building_type);
 			if (temp_value == -1)
 			{
+				printf("\r                                Not enough money                            ");
+				Sleep(1500);
 				o_get_field_copy();
+				o_print_copy_batle_field();
+				current_position_h++; o_move_up(player, building_type);
 			}
 			else if (temp_value == 0)
 			{
-				return;			
-			}	break;
-		case '0':		o_display_batle_field(panel_width, field_height, field_width);		 break;
+				return;
+			}
+			o_display_batle_field(panel_width, field_height, field_width);
+			return;
+			break;
+
+		case '0':		o_display_batle_field(panel_width, field_height, field_width);	return;	 break;
 		case'n': case'N':
 			building_type++; building_type == '5' ? building_type = '1' : building_type;
 			current_position_h++;	o_move_up(player, building_type);
@@ -531,6 +539,7 @@ void o_fill_shop()
 
 int o_display_shop()
 {
+	o_display_marker_in_store(building_type);
 	system("cls");
 	char item_1_price[] = "$600";
 	char item_2_price[] = "$400";
@@ -602,13 +611,21 @@ int o_display_shop()
 		}
 		printf("\n");
 	}
-	printf("          Select building: [1-4] / [N];       Confirm: [9];    Cancel: [0]; ");
-	
+	printf("          Select building: [1-4] / [N];       Confirm: [9];    Cancel: [G]; ");
+
 	return 0;
 }
 
 void o_display_marker_in_store(char building_type)
 {
+	if ((building_type == NULL))
+	{
+		Shop_field[12][25] = '{'; Shop_field[12][27] = '}';
+	}
+	else
+	{
+		Shop_field[12][25] = ' '; Shop_field[12][27] = ' ';
+	}
 	if (building_type == '1')
 	{
 		Shop_field[12][30] = '{'; Shop_field[12][32] = '}';
@@ -636,7 +653,7 @@ void o_display_marker_in_store(char building_type)
 		Shop_field[12][37] = ' '; Shop_field[12][39] = ' ';
 		Shop_field[12][44] = ' '; Shop_field[12][46] = ' ';
 		Shop_field[12][51] = '{'; Shop_field[12][53] = '}';
-	}	   	
+	}
 	return;
 }
 
@@ -1042,15 +1059,24 @@ void o_get_shop_actions() // принимает клавиши действий в магазине
 		action_in_shop = _getwch();
 		switch (action_in_shop)
 		{
-		case '<': player = 'L'; o_display_marker_in_store(building_type); break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
-		case '>': player = 'R'; o_display_marker_in_store(building_type); break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
-		case '1': building_type = '1'; o_display_marker_in_store(building_type); o_display_shop(); break;
-		case '2': building_type = '2'; o_display_marker_in_store(building_type); o_display_shop(); break;
-		case '3': building_type = '3'; o_display_marker_in_store(building_type); o_display_shop(); break;
-		case '4': building_type = '4'; o_display_marker_in_store(building_type); o_display_shop(); break;
-		case 'N': case'n':  building_type++; building_type == '5' ? building_type = '1' : building_type;  o_display_marker_in_store(building_type); break;
-		case '9':   o_move_elements(player, building_type); break;
-		case '0': o_display_batle_field(panel_width, field_height, field_width);	break;
+		case '<': player = 'L';  o_display_shop(); break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
+		case '>': player = 'R';  o_display_shop(); break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
+		case '1': building_type = '1'; o_display_shop(); break;
+		case '2': building_type = '2'; o_display_shop(); break;
+		case '3': building_type = '3'; o_display_shop(); break;
+		case '4': building_type = '4';  o_display_shop(); break;
+		case 'N': case'n':  building_type++; building_type == '5' ? building_type = '1' : building_type; o_display_shop();   break;
+		case '9':
+			if (building_type == NULL)
+			{
+				break;
+			}
+			else
+			{
+				o_move_elements(player, building_type); break;
+			}
+		case 'G': case 'g': play();	break;
+
 		default: break;
 		}
 	} while (action_in_shop != '9');
@@ -1116,9 +1142,9 @@ int o_calculate_money(char player, char building_type)
 			total_money_left = total_money_left - o_item_price(building_type);
 			o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
 			o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
-			o_push_batle_field_from_copy();			
+			o_push_batle_field_from_copy();
 			return 0;
-			o_display_batle_field(panel_width, field_height, field_width);
+
 		}
 	}
 	else if (player == 'R')
@@ -1134,7 +1160,7 @@ int o_calculate_money(char player, char building_type)
 			o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
 			o_push_batle_field_from_copy();
 			return 0;
-			o_display_batle_field(panel_width, field_height, field_width);
+
 		}
 	}
 	return 0;
@@ -1183,7 +1209,7 @@ bool  give_money()
 		return true;
 	}
 
-	
+
 	return false;*/
 	return true;
 }

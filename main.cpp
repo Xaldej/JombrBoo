@@ -9,17 +9,23 @@ int main()
 	
 	o_fill_batle_field_after_start();
 	o_fill_pannels();
+	play();
 	
+	return 0;
+}
+void play()
+{
+
 	do
 	{
 		//player 1 (L) turn
-		player = 'L';		
+		player = 'L';
 		o_display_batle_field(panel_width, field_height, field_width);
 		printf("\t\tPlayer 1 turn");
 		o_get_main_screen_actions();
 
 		//player 2 (R) turn
-		player = 'R';		
+		player = 'R';
 		o_display_batle_field(panel_width, field_height, field_width);
 		printf("\t\tPlayer 2 turn");
 		o_get_main_screen_actions();
@@ -31,5 +37,7 @@ int main()
 		give_money();
 	} while (1); //1 will be changet to function check win
 
-	return 0;
+
+
+	return;
 }
