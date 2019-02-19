@@ -108,30 +108,31 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 		}
 		printf("\n");
 	}
-	printf("                               Open Shop:    [P];");
-	o_get_main_screen_actions();
+	printf("    Open Shop:    [P];\t\tSkip the turn:\t[-]");
+	
 	return;
 }
 void o_get_main_screen_actions() // принимает клавиши действий на главном игровом поле
 {
 	char button;
-	while (true)
+	do
 	{
-		if (give_money() == true)
+		/*if (give_money() == true)
 		{
 			o_display_batle_field(panel_width, field_height, field_width);
-		}
+		}*/
 		button = _getwch();
 		switch (button)
 		{
-		case 'P': case 'p':  o_fill_shop(); o_display_marker_in_store(building_type); break;
+		case 'P': case 'p':  o_fill_shop(); o_display_shop(); o_get_shop_actions(); break;
+		case '-': return;
 		case 'Y': case 'y':  o_display_h_coordinates_field();	break;
 		case 'X': case 'x':  o_display_w_coordinates_field();	break;
 		case 'I': case 'i':  print_objects_info();				break;
 		default: break;
 		}
-	}
-
+	} while (button != 'p' && button != 'P'); 
+	
 	return;
 }
 void o_print_copy_batle_field()
@@ -161,6 +162,8 @@ void o_print_copy_batle_field()
 
 void o_move_elements(char player, char building_type)
 {
+	int temp_value;
+	
 	if (player == 'L')
 	{
 		current_position_h = 9;
@@ -196,16 +199,17 @@ void o_move_elements(char player, char building_type)
 		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type); break;
 		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
-		case 'p': case 'P':  o_fill_shop(); o_display_marker_in_store(building_type);	break;
+		case 'p': case 'P':  o_fill_shop(); o_display_marker_in_store(building_type);	break;		
 		case '9':
-			if (o_calculate_money(player, building_type) == -1)
+			temp_value = o_calculate_money(player, building_type);
+			if (temp_value == -1)
 			{
 				o_get_field_copy();
 			}
-			else if (o_calculate_money(player, building_type) == 0)
+			else if (temp_value == 0)
 			{
-				o_calculate_money(player, building_type);
-			};	break;
+				return;			
+			}	break;
 		case '0':		o_display_batle_field(panel_width, field_height, field_width);		 break;
 		case'n': case'N':
 			building_type++; building_type == '5' ? building_type = '1' : building_type;
@@ -599,7 +603,7 @@ int o_display_shop()
 		printf("\n");
 	}
 	printf("          Select building: [1-4] / [N];       Confirm: [9];    Cancel: [0]; ");
-	o_get_shop_actions();
+	
 	return 0;
 }
 
@@ -632,10 +636,7 @@ void o_display_marker_in_store(char building_type)
 		Shop_field[12][37] = ' '; Shop_field[12][39] = ' ';
 		Shop_field[12][44] = ' '; Shop_field[12][46] = ' ';
 		Shop_field[12][51] = '{'; Shop_field[12][53] = '}';
-	}
-
-
-	o_display_shop();
+	}	   	
 	return;
 }
 
@@ -1036,23 +1037,23 @@ void print_objects_info()
 void o_get_shop_actions() // принимает клавиши действий в магазине
 {
 	char action_in_shop;
-	while (true)
+	do
 	{
 		action_in_shop = _getwch();
 		switch (action_in_shop)
 		{
 		case '<': player = 'L'; o_display_marker_in_store(building_type); break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
 		case '>': player = 'R'; o_display_marker_in_store(building_type); break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
-		case '1': building_type = '1'; o_display_marker_in_store(building_type); break;
-		case '2': building_type = '2'; o_display_marker_in_store(building_type); break;
-		case '3': building_type = '3'; o_display_marker_in_store(building_type); break;
-		case '4': building_type = '4'; o_display_marker_in_store(building_type); break;
+		case '1': building_type = '1'; o_display_marker_in_store(building_type); o_display_shop(); break;
+		case '2': building_type = '2'; o_display_marker_in_store(building_type); o_display_shop(); break;
+		case '3': building_type = '3'; o_display_marker_in_store(building_type); o_display_shop(); break;
+		case '4': building_type = '4'; o_display_marker_in_store(building_type); o_display_shop(); break;
 		case 'N': case'n':  building_type++; building_type == '5' ? building_type = '1' : building_type;  o_display_marker_in_store(building_type); break;
 		case '9':   o_move_elements(player, building_type); break;
 		case '0': o_display_batle_field(panel_width, field_height, field_width);	break;
 		default: break;
 		}
-	}
+	} while (action_in_shop != '9');
 
 	return;
 }
@@ -1115,7 +1116,8 @@ int o_calculate_money(char player, char building_type)
 			total_money_left = total_money_left - o_item_price(building_type);
 			o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
 			o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
-			o_push_batle_field_from_copy();
+			o_push_batle_field_from_copy();			
+			return 0;
 			o_display_batle_field(panel_width, field_height, field_width);
 		}
 	}
@@ -1131,6 +1133,7 @@ int o_calculate_money(char player, char building_type)
 			o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
 			o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
 			o_push_batle_field_from_copy();
+			return 0;
 			o_display_batle_field(panel_width, field_height, field_width);
 		}
 	}
@@ -1163,7 +1166,9 @@ int o_item_price(char building_type)
 
 bool  give_money()
 {
-	wint_t sec = time(NULL);
+	total_money_left += 100;
+	total_money_right += 100;
+	/*wint_t sec = time(NULL);
 	int period = 20;
 
 	if (sec%period != 0)
@@ -1178,8 +1183,9 @@ bool  give_money()
 		return true;
 	}
 
-
-	return false;
+	
+	return false;*/
+	return true;
 }
 
 void money_have()

@@ -5,13 +5,29 @@
 //ok
 int main()
 {
-
-	player = 'L';
+	system("mode CON: lines=25 cols=80"); //to make sure that console has right size
+	
 
 	o_fill_batle_field_after_start();
 	o_fill_pannels();
-	o_display_batle_field(panel_width, field_height, field_width);
+	
+	do
+	{
+		//player 1 (L) turn
+		player = 'L';		
+		o_display_batle_field(panel_width, field_height, field_width);
+		printf("\t\tPlayer 1 turn");
+		o_get_main_screen_actions();
 
+		//player 2 (R) turn
+		player = 'R';		
+		o_display_batle_field(panel_width, field_height, field_width);
+		printf("\t\tPlayer 2 turn");
+		o_get_main_screen_actions();
+
+		//give money to both players
+		give_money();
+	} while (1); //1 will be changet to function check win
 
 	return 0;
 }
