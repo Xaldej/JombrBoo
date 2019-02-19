@@ -136,3 +136,41 @@ int o_calculate_money(char player, char building_type);
 int o_item_price(char building_type);
 bool give_money();
 void money_have();
+
+
+/***********alexey_melentyev****************/
+
+//some code was written separatly from Oleg's code. Because of this I used define Not to rename elements
+#define Player_1_Data Elements_Info_Player_Left
+#define Player_2_Data Elements_Info_Player_Right
+#define data_M info_h
+#define data_N info_w
+#define MainField Batle_field[0]
+
+
+const int shots_M = 4, shots_N = 500;
+extern int Player_1_Shots[shots_M][shots_N]; // {0} to make it empty
+extern int Player_2_Shots[shots_M][shots_N]; // {0} to make it empty	
+/****************************************************************************************************************
+all data about active shots stored in Player_1_Shots and Player_2_Shots arrays with the samw logic as for users' elements
+0 line: type of shot
+	1 - usual
+	2 - maybe other types in future
+1 line: direction
+	 1 - from left to right
+	-1 - from right to left
+2 line: horisontal position
+3 line: vertical position
+****************************************************************************************************************/
+
+//functions alexey_melentyev
+
+void MovementMechanichs(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][data_N], int Player_1_Shots[shots_M][shots_N], int Player_2_Shots[shots_M][shots_N]);
+void MakeAShot(int Player_Data[data_M][data_N], int Player_Shots[shots_M][shots_N], int number_of_element);
+int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][data_N], int Player_Shots[shots_M][shots_N], int number, int player_number);
+void MakeADamage(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][data_N], int Player_Shot[shots_M][shots_N], int number_of_shot, int player_number, int number_of_element_to_damage);
+void DeleteInfoFromShots(int Array[shots_M][shots_N], int shot_number, int player_number);
+int FindElementToDamage(int Player_Data[data_M][data_N], int m, int n);
+int CheckElementDestroy(int Player_Data[data_M][data_N], int number_of_element);
+void DeleteInfoFromData(int Player_Data[data_M][data_N], int number_of_element);
+
