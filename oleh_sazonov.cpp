@@ -700,7 +700,7 @@ int o_display_shop()
 
 void o_display_marker_in_store(char building_type)
 {
-	int h = 13; int w0 = 26;
+	int h = 11; int w0 = 26;
 	int w11 = w0 + 0; int w12 = w0 + 2;
 	int w21 = w0 + 7; int w22 = w0 + 9;
 	int w31 = w0 + 14; int w32 = w0 + 16;
