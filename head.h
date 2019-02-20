@@ -136,7 +136,7 @@ void o_fill_pannels();
 
 int o_calculate_money(char player, char building_type);
 int o_item_price(char building_type);
-bool give_money();
+void give_money();
 void money_have();
 void play();
 bool o_check_free_zone(int current_position_h, int current_position_w, char building_type); //провер€ет свободно ли поле дл€ установки обьекта;
@@ -177,5 +177,7 @@ void MakeADamage(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 void DeleteInfoFromShots(int Array[shots_M][shots_N], int shot_number, int player_number);
 int FindElementToDamage(int Player_Data[data_M][data_N], int m, int n);
 int CheckElementDestroy(int Player_Data[data_M][data_N], int number_of_element);
-void DeleteInfoFromData(int Player_Data[data_M][data_N], int number_of_element);
+void DeleteInfoFromField(int Player_Data[data_M][data_N], int number_of_element);
+void DeleteInfoFromData(int Player_Data[data_M][data_N], int number_of_element, int player_number);
+bool check_win();
 

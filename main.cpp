@@ -9,7 +9,7 @@ int main()
 
 	o_fill_batle_field_after_start();
 	o_fill_pannels();
-
+	
 	play();
 
 	return 0;
@@ -37,7 +37,7 @@ void play()
 
 		//give money to both players
 		give_money();
-	} while (1); //1 will be changet to function check win
+	} while (check_win());
 
 
 

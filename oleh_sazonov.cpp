@@ -1167,7 +1167,7 @@ int o_item_price(char building_type)
 	return item_price;
 }
 
-bool  give_money()
+/*bool  give_money()
 {
 	total_money_left += 100;
 	total_money_right += 100;
@@ -1187,9 +1187,9 @@ bool  give_money()
 	}
 
 
-	return false;*/
+	return false;
 	return true;
-}
+}*/
 
 void money_have()
 {
