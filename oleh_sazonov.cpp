@@ -186,7 +186,7 @@ void o_move_elements(char player, char building_type) //action_in
 
 
 	char movement_to = 'X';
-	while (movement_to != '9' || movement_to != '0')
+	while (movement_to != '9' || movement_to != '-')
 	{
 		/*
 		if (give_money() == true)
@@ -204,7 +204,7 @@ void o_move_elements(char player, char building_type) //action_in
 		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type); break;
 		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
-		case 'p': case 'P':  o_fill_shop(); o_display_shop(); return; break;
+		case 'p': case 'P':  o_fill_shop(); o_display_shop(); o_get_shop_actions(); return; break;
 		case '9':
 			if (o_check_free_zone(current_position_h, current_position_w, building_type) == true)
 			{
