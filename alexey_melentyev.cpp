@@ -287,7 +287,8 @@ void DeleteInfoFromShots(int Array[shots_M][shots_N], int shot_number, int playe
 
 void MakeADamage(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][data_N], int Player_Shot[shots_M][shots_N], int number_of_shot, int player_number, int number_of_element_to_damage)
 {
-	int m, n; //coordinates
+	int m, n; //coordinates	
+	int m_centner_of_element, n_centner_of_element;
 	enum shot_direction { left = -1, right = 1 };
 	int shot_direction;
 	shot_direction = Player_Shot[1][number_of_shot];
@@ -299,7 +300,15 @@ void MakeADamage(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 		Player_2_Data[3][number_of_element_to_damage]--;
 		if (CheckElementDestroy(Player_2_Data, number_of_element_to_damage))
 		{
-			MainField[(Player_2_Data[4][number_of_element_to_damage])][(Player_2_Data[5][number_of_element_to_damage])] = ' ';
+			m_centner_of_element = (Player_2_Data[4][number_of_element_to_damage]);
+			n_centner_of_element = (Player_2_Data[5][number_of_element_to_damage]);
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					MainField[m_centner_of_element - 1 + i][n_centner_of_element - 1 + j] = ' ';
+				}
+			}
 			DeleteInfoFromData(Player_2_Data, number_of_element_to_damage);
 		}
 	}
@@ -308,7 +317,15 @@ void MakeADamage(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 		Player_1_Data[3][number_of_element_to_damage]--;
 		if (CheckElementDestroy(Player_1_Data, number_of_element_to_damage))
 		{
-			MainField[(Player_1_Data[4][number_of_element_to_damage])][(Player_1_Data[5][number_of_element_to_damage])] = ' ';
+			m_centner_of_element = (Player_1_Data[4][number_of_element_to_damage]);
+			n_centner_of_element = (Player_1_Data[5][number_of_element_to_damage]);
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					MainField[m_centner_of_element - 1 + i][n_centner_of_element - 1 + j] = ' ';
+				}
+			}
 			DeleteInfoFromData(Player_1_Data, number_of_element_to_damage);
 		}
 	}
