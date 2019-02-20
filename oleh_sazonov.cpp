@@ -186,7 +186,7 @@ void o_move_elements(char player, char building_type) //action_in
 
 
 	char movement_to = 'X';
-	while (movement_to != '9' || movement_to != '-')
+	while (movement_to != '9' || movement_to != '0')
 	{
 		/*
 		if (give_money() == true)
@@ -204,7 +204,6 @@ void o_move_elements(char player, char building_type) //action_in
 		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type); break;
 		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
-		case 'p': case 'P':  o_fill_shop(); o_display_shop(); o_get_shop_actions(); return; break;
 		case '9':
 			if (o_check_free_zone(current_position_h, current_position_w, building_type) == true)
 			{
@@ -223,7 +222,7 @@ void o_move_elements(char player, char building_type) //action_in
 
 			}
 			break;
-		case '0':		o_display_batle_field(panel_width, field_height, field_width); return; break;
+		case 'p': case 'P':		o_display_batle_field(panel_width, field_height, field_width); return; break;
 		case'n': case'N':
 			building_type++; building_type == '6' ? building_type = '1' : building_type;
 			current_position_h++;	o_move_up(player, building_type);
@@ -412,7 +411,7 @@ void o_get_field_copy()
 	for (int h = 0; h < field_height; h++)
 	{
 		for (int w = 0; w < field_width; w++)
-		{		
+		{
 			Batle_field[copy_f][h][w] = Batle_field[main_f][h][w];
 		}
 	}
@@ -570,11 +569,33 @@ int o_display_shop()
 	char item_4_price[] = "$100";
 	char item_5_price[] = "$950";
 
-	char str_Items[] = "Items: ";
-	char str_Price[] = "Price: ";
-	char str_Select[] = "Select:";
+	char item_1_health[] = " 10 ";
+	char item_2_health[] = "  5 ";
+	char item_3_health[] = " 20 ";
+	char item_4_health[] = " 10 ";
+	char item_5_health[] = "  5 ";
 
-	int h0 = 8, w0 = 30, w1 = w0;  //стартовые позиции для отрисовки обьектов в магазине
+	char item_1_shots[] = " 20 ";
+	char item_2_shots[] = " 10 ";
+	char item_3_shots[] = "  0 ";
+	char item_4_shots[] = "  0 ";
+	char item_5_shots[] = "  0 ";
+
+	char item_1_money[] = " +0 ";
+	char item_2_money[] = " +0 ";
+	char item_3_money[] = " +0 ";
+	char item_4_money[] = " +0 ";
+	char item_5_money[] = "+150 ";
+
+	char str_Items[] = "       ";
+	char str_Select[] = "       ";
+	char str_Price[] = "Price: ";
+	char str_Health[] = "Health: ";
+	char str_Shots[] = "Shots: ";
+	char str_Money[] = "Money+:";
+
+
+	int h0 = 7, w0 = 26, w1 = w0;  //стартовые позиции для отрисовки обьектов в магазине
 	Shop_field[h0 + 0][w0 + 0] = 178; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 178;
 
 	if (player == 'L')
@@ -611,24 +632,56 @@ int o_display_shop()
 	Shop_field[h0 + 2][w0 + 0] = 200; Shop_field[h0 + 2][w0 + 1] = 205; Shop_field[h0 + 2][w0 + 2] = 188;
 
 	Shop_field[h0 + 4][w1 + 1] = 49;  Shop_field[h0 + 4][w1 + 8] = 50; Shop_field[h0 + 4][w1 + 15] = 51; Shop_field[h0 + 4][w1 + 22] = 52; Shop_field[h0 + 4][w1 + 29] = 53;
+	int h_items = 1; int h_select = 4;
+	int h_price = 6; int h_health = 8; int h_shots = 9; int h_money = 10;
+	int w_item1 = 0; int w_item2 = 7; int w_item3 = 14; int w_item4 = 21; int w_item5 = 28;
+	for (int i = 0; i < 4; i++)
+	{
+		Shop_field[h0 + h_price][w1 + w_item1 + i] = item_1_price[i];
+		Shop_field[h0 + h_price][w1 + w_item2 + +i] = item_2_price[i];
+		Shop_field[h0 + h_price][w1 + w_item3 + i] = item_3_price[i];
+		Shop_field[h0 + h_price][w1 + w_item4 + i] = item_4_price[i];
+		Shop_field[h0 + h_price][w1 + w_item5 + i] = item_5_price[i];
+	}
 
 	for (int i = 0; i < 4; i++)
 	{
-		Shop_field[h0 + 6][w1 + i] = item_1_price[i];
-		Shop_field[h0 + 6][w1 + 7 + i] = item_2_price[i];
-		Shop_field[h0 + 6][w1 + 14 + i] = item_3_price[i];
-		Shop_field[h0 + 6][w1 + 21 + i] = item_4_price[i];
-		Shop_field[h0 + 6][w1 + 28 + i] = item_5_price[i];
-	}
+		Shop_field[h0 + h_health][w1 + w_item1 + i] = item_1_health[i];
+		Shop_field[h0 + h_health][w1 + w_item2 + i] = item_2_health[i];
+		Shop_field[h0 + h_health][w1 + w_item3 + i] = item_3_health[i];
+		Shop_field[h0 + h_health][w1 + w_item4 + i] = item_4_health[i];
+		Shop_field[h0 + h_health][w1 + w_item5 + i] = item_5_health[i];
 
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		Shop_field[h0 + h_shots][w1 + w_item1 + i] = item_1_shots[i];
+		Shop_field[h0 + h_shots][w1 + w_item2 + i] = item_2_shots[i];
+		Shop_field[h0 + h_shots][w1 + w_item3 + i] = item_3_shots[i];
+		Shop_field[h0 + h_shots][w1 + w_item4 + i] = item_4_shots[i];
+		Shop_field[h0 + h_shots][w1 + w_item5 + i] = item_5_shots[i];
+
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		Shop_field[h0 + h_money][w1 + w_item1 + i] = item_1_money[i];
+		Shop_field[h0 + h_money][w1 + w_item2 + i] = item_2_money[i];
+		Shop_field[h0 + h_money][w1 + w_item3 + i] = item_3_money[i];
+		Shop_field[h0 + h_money][w1 + w_item4 + i] = item_4_money[i];
+		Shop_field[h0 + h_money][w1 + w_item5 + i] = item_5_money[i];
+
+	}
 
 	int w0_inscr = 15;
 
 	for (int i = 0; i < 7; i++)
 	{
-		Shop_field[h0 + 1][w0_inscr + i] = str_Items[i];
-		Shop_field[h0 + 4][w0_inscr + i] = str_Select[i];
-		Shop_field[h0 + 6][w0_inscr + i] = str_Price[i];
+		Shop_field[h0 + h_items][w0_inscr + i] = str_Items[i];
+		Shop_field[h0 + h_select][w0_inscr + i] = str_Select[i];
+		Shop_field[h0 + h_price][w0_inscr + i] = str_Price[i];
+		Shop_field[h0 + h_health][w0_inscr + i] = str_Health[i];
+		Shop_field[h0 + h_shots][w0_inscr + i] = str_Shots[i];
+		Shop_field[h0 + h_money][w0_inscr + i] = str_Money[i];
 	}
 
 
@@ -647,47 +700,54 @@ int o_display_shop()
 
 void o_display_marker_in_store(char building_type)
 {
+	int h = 13; int w0 = 26;
+	int w11 = w0 + 0; int w12 = w0 + 2;
+	int w21 = w0 + 7; int w22 = w0 + 9;
+	int w31 = w0 + 14; int w32 = w0 + 16;
+	int w41 = w0 + 21; int w42 = w0 + 23;
+	int w51 = w0 + 28; int w52 = w0 + 30;
+
 	building_type == NULL ? building_type = '1' : building_type;
 
 	if (building_type == '1')
 	{
-		Shop_field[12][30] = '{'; Shop_field[12][32] = '}';
-		Shop_field[12][37] = ' '; Shop_field[12][39] = ' ';
-		Shop_field[12][44] = ' '; Shop_field[12][46] = ' ';
-		Shop_field[12][51] = ' '; Shop_field[12][53] = ' ';
-		Shop_field[12][58] = ' '; Shop_field[12][60] = ' ';
+		Shop_field[h][w11] = '{'; Shop_field[h][w12] = '}';
+		Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
+		Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
+		Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
+		Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
 	}
 	else if (building_type == '2')
 	{
-		Shop_field[12][30] = ' '; Shop_field[12][32] = ' ';
-		Shop_field[12][37] = '{'; Shop_field[12][39] = '}';
-		Shop_field[12][44] = ' '; Shop_field[12][46] = ' ';
-		Shop_field[12][51] = ' '; Shop_field[12][53] = ' ';
-		Shop_field[12][58] = ' '; Shop_field[12][60] = ' ';
+		Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
+		Shop_field[h][w21] = '{'; Shop_field[h][w22] = '}';
+		Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
+		Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
+		Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
 	}
 	else if (building_type == '3')
 	{
-		Shop_field[12][30] = ' '; Shop_field[12][32] = ' ';
-		Shop_field[12][37] = ' '; Shop_field[12][39] = ' ';
-		Shop_field[12][44] = '{'; Shop_field[12][46] = '}';
-		Shop_field[12][51] = ' '; Shop_field[12][53] = ' ';
-		Shop_field[12][58] = ' '; Shop_field[12][60] = ' ';
+		Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
+		Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
+		Shop_field[h][w31] = '{'; Shop_field[h][w32] = '}';
+		Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
+		Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
 	}
 	else if (building_type == '4')
 	{
-		Shop_field[12][30] = ' '; Shop_field[12][32] = ' ';
-		Shop_field[12][37] = ' '; Shop_field[12][39] = ' ';
-		Shop_field[12][44] = ' '; Shop_field[12][46] = ' ';
-		Shop_field[12][51] = '{'; Shop_field[12][53] = '}';
-		Shop_field[12][58] = ' '; Shop_field[12][60] = ' ';
+		Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
+		Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
+		Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
+		Shop_field[h][w41] = '{'; Shop_field[h][w42] = '}';
+		Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
 	}
 	else if (building_type == '5')
 	{
-		Shop_field[12][30] = ' '; Shop_field[12][32] = ' ';
-		Shop_field[12][37] = ' '; Shop_field[12][39] = ' ';
-		Shop_field[12][44] = ' '; Shop_field[12][46] = ' ';
-		Shop_field[12][51] = ' '; Shop_field[12][53] = ' ';
-		Shop_field[12][58] = '{'; Shop_field[12][60] = '}';
+		Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
+		Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
+		Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
+		Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
+		Shop_field[h][w51] = '{'; Shop_field[h][w52] = '}';
 	}
 	return;
 }
@@ -1166,30 +1226,6 @@ int o_item_price(char building_type)
 
 	return item_price;
 }
-
-/*bool  give_money()
-{
-	total_money_left += 100;
-	total_money_right += 100;
-	/*wint_t sec = time(NULL);
-	int period = 20;
-
-	if (sec%period != 0)
-	{
-		return false;
-	}
-	else if (sec%period == 0)
-	{
-		total_money_left += 5;
-		total_money_right += 5;
-		money_have();
-		return true;
-	}
-
-
-	return false;
-	return true;
-}*/
 
 void money_have()
 {
