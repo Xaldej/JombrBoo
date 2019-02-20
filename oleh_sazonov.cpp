@@ -1,7 +1,7 @@
-#pragma once
+п»ї#pragma once
 #include "head.h"
 
-//левая и правая панели;
+//Р»РµРІР°СЏ Рё РїСЂР°РІР°СЏ РїР°РЅРµР»Рё;
 char Left_panel[field_height][panel_width];
 char Right_panel[field_height][panel_width];
 
@@ -10,24 +10,24 @@ char Name_P2[name_lenght] = " Boo  ";
 int total_money_left = 1200;
 int total_money_right = 1200;
 
-int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
-int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
+int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - РѕСЃРЅРѕРІРЅРѕРµ РїРѕР»Рµ; [1][*][*] - РєРѕРїРёСЏ РїРѕР»СЏ РґР»СЏ РїСЂРѕСЂРёСЃРѕРІРєРё РїРѕР»СЏ РІРѕ РІСЂРµРјСЏ СѓСЃС‚Р°РЅРѕРІРєРё РѕР±СЊРµРєС‚РѕРІ
+int Shop_field[field_height][field_width + panel_width + panel_width]; // РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅ РјР°РіР°Р·РёРЅР°
 
-//согласовать вычитание номера обьекта при перемещении данных  ????????????????????????????????????????????????????????????????
-int element_number_l = -1; // -1 потому что сразу при входе в функцию делается ++ и для первого раза значение будет 0
+//СЃРѕРіР»Р°СЃРѕРІР°С‚СЊ РІС‹С‡РёС‚Р°РЅРёРµ РЅРѕРјРµСЂР° РѕР±СЊРµРєС‚Р° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё РґР°РЅРЅС‹С…  ????????????????????????????????????????????????????????????????
+int element_number_l = -1; // -1 РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЃСЂР°Р·Сѓ РїСЂРё РІС…РѕРґРµ РІ С„СѓРЅРєС†РёСЋ РґРµР»Р°РµС‚СЃСЏ ++ Рё РґР»СЏ РїРµСЂРІРѕРіРѕ СЂР°Р·Р° Р·РЅР°С‡РµРЅРёРµ Р±СѓРґРµС‚ 0
 int element_number_r = -1;
 
 
 int Elements_Info_Player_Left[info_h][info_w];
 int Elements_Info_Player_Right[info_h][info_w];
 
-//параметры обьектов
+//РїР°СЂР°РјРµС‚СЂС‹ РѕР±СЊРµРєС‚РѕРІ
 
 
 
-char building_type = '1';  // тип здания. инициализируется при выборе в магазине // передается в функцию прорисовки/перемещении обьекта
+char building_type = '1';  // С‚РёРї Р·РґР°РЅРёСЏ. РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚СЃСЏ РїСЂРё РІС‹Р±РѕСЂРµ РІ РјР°РіР°Р·РёРЅРµ // РїРµСЂРµРґР°РµС‚СЃСЏ РІ С„СѓРЅРєС†РёСЋ РїСЂРѕСЂРёСЃРѕРІРєРё/РїРµСЂРµРјРµС‰РµРЅРёРё РѕР±СЊРµРєС‚Р°
 
-char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
+char player; //('R' - РїСЂР°РІС‹Р№ РёРіСЂРѕРє player2; 'L' - Р»РµРІС‹Р№ РёРіСЂРѕРє player1)
 
 int *arr = new int[(Building_height*Building_width)];
 int Building[Building_height][Building_width];
@@ -116,7 +116,7 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 
 	return;
 }
-void o_get_main_screen_actions() // принимает клавиши действий на главном игровом поле
+void o_get_main_screen_actions() // РїСЂРёРЅРёРјР°РµС‚ РєР»Р°РІРёС€Рё РґРµР№СЃС‚РІРёР№ РЅР° РіР»Р°РІРЅРѕРј РёРіСЂРѕРІРѕРј РїРѕР»Рµ
 {
 	char button;
 	do
@@ -253,7 +253,7 @@ void o_move_up(char player, char building_type)
 			if (current_position_h > 0)
 			{
 				current_position_h--;
-				coordinate_h = current_position_h;  //принимаем координаты для записи положения обьектов в координатый массив
+				coordinate_h = current_position_h;  //РїСЂРёРЅРёРјР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ РґР»СЏ Р·Р°РїРёСЃРё РїРѕР»РѕР¶РµРЅРёСЏ РѕР±СЊРµРєС‚РѕРІ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹Р№ РјР°СЃСЃРёРІ
 				for (int shift = 0; shift < Building_height; shift++)
 				{
 					for (int row = 0; row < Building_height; )
@@ -273,7 +273,7 @@ void o_move_up(char player, char building_type)
 		}
 	}
 	system("cls");
-	o_print_copy_batle_field();  //вызываем прорисовку временной копии основоного поля
+	o_print_copy_batle_field();  //РІС‹Р·С‹РІР°РµРј РїСЂРѕСЂРёСЃРѕРІРєСѓ РІСЂРµРјРµРЅРЅРѕР№ РєРѕРїРёРё РѕСЃРЅРѕРІРѕРЅРѕРіРѕ РїРѕР»СЏ
 	return;
 }
 void o_move_down(char player, char building_type)
@@ -295,7 +295,7 @@ void o_move_down(char player, char building_type)
 			if (current_position_h < field_height - 3)
 			{
 				current_position_h++;
-				coordinate_h = current_position_h; //принимаем координаты для записи положения обьектов в координатый массив
+				coordinate_h = current_position_h; //РїСЂРёРЅРёРјР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ РґР»СЏ Р·Р°РїРёСЃРё РїРѕР»РѕР¶РµРЅРёСЏ РѕР±СЊРµРєС‚РѕРІ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹Р№ РјР°СЃСЃРёРІ
 				for (int shift = 0; shift < Building_height; shift++)
 				{
 					for (int row = 0; row < Building_height; )
@@ -340,7 +340,7 @@ void o_move_left(char player, char building_type)
 			if (current_position_w > current_pos_extr_w)
 			{
 				current_position_w--;
-				coordinate_w = current_position_w; //принимаем координаты для записи положения обьектов в координатый массив
+				coordinate_w = current_position_w; //РїСЂРёРЅРёРјР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ РґР»СЏ Р·Р°РїРёСЃРё РїРѕР»РѕР¶РµРЅРёСЏ РѕР±СЊРµРєС‚РѕРІ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹Р№ РјР°СЃСЃРёРІ
 				for (int shift = 0; shift < Building_width; shift++)
 				{
 					for (int coll = 0; coll < Building_width; )
@@ -381,7 +381,7 @@ void o_move_right(char player, char building_type)
 			if (current_position_w < current_pos_extr_w)
 			{
 				current_position_w++;
-				coordinate_w = current_position_w; //принимаем координаты для записи положения обьектов в координатый массив
+				coordinate_w = current_position_w; //РїСЂРёРЅРёРјР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ РґР»СЏ Р·Р°РїРёСЃРё РїРѕР»РѕР¶РµРЅРёСЏ РѕР±СЊРµРєС‚РѕРІ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹Р№ РјР°СЃСЃРёРІ
 				for (int shift = 0; shift < Building_width; shift++)
 				{
 					for (int coll = 0; coll < Building_width; )
@@ -431,7 +431,7 @@ void o_push_batle_field_from_copy()
 }
 
 
-int *o_building_select(char player, char building_type) //переключает здание в заисимости от юзера и типа выбранного здания
+int *o_building_select(char player, char building_type) //РїРµСЂРµРєР»СЋС‡Р°РµС‚ Р·РґР°РЅРёРµ РІ Р·Р°РёСЃРёРјРѕСЃС‚Рё РѕС‚ СЋР·РµСЂР° Рё С‚РёРїР° РІС‹Р±СЂР°РЅРЅРѕРіРѕ Р·РґР°РЅРёСЏ
 {
 	int *building = new int[(Building_height*Building_width)];
 
@@ -595,7 +595,7 @@ int o_display_shop()
 	char str_Money[] = "Money+:";
 
 
-	int h0 = 7, w0 = 26, w1 = w0;  //стартовые позиции для отрисовки обьектов в магазине
+	int h0 = 7, w0 = 26, w1 = w0;  //СЃС‚Р°СЂС‚РѕРІС‹Рµ РїРѕР·РёС†РёРё РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё РѕР±СЊРµРєС‚РѕРІ РІ РјР°РіР°Р·РёРЅРµ
 	Shop_field[h0 + 0][w0 + 0] = 178; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 178;
 
 	if (player == 'L')
@@ -874,7 +874,7 @@ void o_write_info_about_player_odject(char player, char building_type, int coord
 
 	if (player == 'L')
 	{
-		element_number_l++;                // если убит обьект минусовать нужно
+		element_number_l++;                // РµСЃР»Рё СѓР±РёС‚ РѕР±СЊРµРєС‚ РјРёРЅСѓСЃРѕРІР°С‚СЊ РЅСѓР¶РЅРѕ
 		Elements_Info_Player_Left[b_type][element_number_l] = building_type;
 
 		if (building_type == '1')
@@ -970,13 +970,13 @@ void o_write_info_about_player_odject(char player, char building_type, int coord
 
 void print_objects_info()
 {
-	/*    Cимволы в информационном поле обьектов для игрока
-		Слева :						  Справа:
-		  1	 - большая пушка за $600 -   1   (49)
-		  2  -  малая пушка за $400  -   2   (50)
-		  3  - большая стена за $200  -  3   (51)
-		  4  -  малая  стена за $100  -  4   (52)
-		  5  - золотая шахта - 5        (53)
+	/*    CРёРјРІРѕР»С‹ РІ РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅРѕРј РїРѕР»Рµ РѕР±СЊРµРєС‚РѕРІ РґР»СЏ РёРіСЂРѕРєР°
+		РЎР»РµРІР° :						  РЎРїСЂР°РІР°:
+		  1	 - Р±РѕР»СЊС€Р°СЏ РїСѓС€РєР° Р·Р° $600 -   1   (49)
+		  2  -  РјР°Р»Р°СЏ РїСѓС€РєР° Р·Р° $400  -   2   (50)
+		  3  - Р±РѕР»СЊС€Р°СЏ СЃС‚РµРЅР° Р·Р° $200  -  3   (51)
+		  4  -  РјР°Р»Р°СЏ  СЃС‚РµРЅР° Р·Р° $100  -  4   (52)
+		  5  - Р·РѕР»РѕС‚Р°СЏ С€Р°С…С‚Р° - 5        (53)
 */
 	system("cls");
 	printf("Player 1 left: \n");
@@ -1078,7 +1078,7 @@ void print_objects_info()
 	return;
 }
 
-void o_get_shop_actions() // принимает клавиши действий в магазине
+void o_get_shop_actions() // РїСЂРёРЅРёРјР°РµС‚ РєР»Р°РІРёС€Рё РґРµР№СЃС‚РІРёР№ РІ РјР°РіР°Р·РёРЅРµ
 {
 	char action_in_shop;
 	do
@@ -1086,8 +1086,8 @@ void o_get_shop_actions() // принимает клавиши действий в магазине
 		action_in_shop = _getwch();
 		switch (action_in_shop)
 		{
-		case '<': player = 'L';  o_display_shop(); break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
-		case '>': player = 'R';  o_display_shop(); break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
+		case '<': player = 'L';  o_display_shop(); break;  //РґР»СЏ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ РёРіСЂРѕРєР° РІ РјР°РіР°Р·РёРЅРµ  РёСЃРїРѕР»СЊР·СѓР№ (Shift + <) РјРµРЅСЏРµС‚ РЅР° Р»РµРІРѕРіРѕ   (С„РёС‡Р° РґР»СЏ С‚РµСЃС‚РѕРІ)
+		case '>': player = 'R';  o_display_shop(); break;  //РґР»СЏ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ РёРіСЂРѕРєР° РІ РјР°РіР°Р·РёРЅРµ  РёСЃРїРѕР»СЊР·СѓР№ (Shift + >) РјРµРЅСЏРµС‚ РЅР° РїСЂР°РІРѕРіРѕ  (С„РёС‡Р° РґР»СЏ С‚РµСЃС‚РѕРІ)
 		case '1': building_type = '1'; o_move_elements(player, building_type);  break;
 		case '2': building_type = '2'; o_move_elements(player, building_type);  break;
 		case '3': building_type = '3'; o_move_elements(player, building_type);  break;
@@ -1336,11 +1336,19 @@ void give_item_on_start(char player, char building_type, int centre_h, int centr
 void start_items_list()
 {
 	//give_item_on_start(char player, char building_type, int centre_h, int centre_w)
+	// РіСЂР°РЅРёС†С‹ РїРѕР»РµР№; 
+	// player 'L'     в†‘  1                     // player 'R'     в†‘  1         
+	//            1 <   > 27                   //           31 <   > 57
+	//                в†“  22                   //     		     в†“  22
 
-	give_item_on_start('R', '5', 6, 2);
-	give_item_on_start('L', '5', 6, 56);
-	give_item_on_start('R', '5', 18, 2);
-	give_item_on_start('L', '5', 18, 56);
+
+	give_item_on_start('L', '5', 4, 2);
+	give_item_on_start('L', '5', 18, 2);
+
+	give_item_on_start('R', '5', 4, 56);
+	give_item_on_start('R', '5', 18, 56);
+
+
 
 	return;
 }
