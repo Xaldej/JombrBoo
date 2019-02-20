@@ -52,6 +52,7 @@ const int gun_1_price = 600;
 const int gun_2_price = 400;
 const int wall_1_price = 200;
 const int wall_2_price = 100;
+const int goldmine_price = 950;
 
 extern int total_money_left;
 extern int total_money_right;
@@ -64,18 +65,19 @@ const int shots_1 = 20;
 const int shots_2 = 10;
 const int shots_3 = 0;
 const int shots_4 = 0;
+const int shots_5 = 0;
 //направление выстрела
 const int sh_route_l = 1;
 const int sh_route_r = -1;
 const int sh_route_3 = 0;
 const int sh_route_4 = 0;
-
+const int sh_route_5 = 0;
 //количество 
 const int HP_1 = 10;
 const int HP_2 = 5;
 const int HP_3 = 20;
 const int HP_4 = 10;
-
+const int HP_5 = 100;
 //строки для info
 const int b_type = 0;	// тип элемента
 const int shots = 1;	// количество выстрелов
