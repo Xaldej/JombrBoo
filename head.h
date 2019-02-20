@@ -77,7 +77,7 @@ const int HP_1 = 10;
 const int HP_2 = 5;
 const int HP_3 = 20;
 const int HP_4 = 10;
-const int HP_5 = 100;
+const int HP_5 = 5;
 //строки дл€ info
 const int b_type = 0;	// тип элемента
 const int shots = 1;	// количество выстрелов

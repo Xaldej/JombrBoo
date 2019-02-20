@@ -526,7 +526,7 @@ void give_money()
 		}
 
 	}
-	total_money_left += 200* amount_building_player_1;
-	total_money_right += 200* amount_building_player_2;
+	total_money_left += add_money_per_one_building * amount_building_player_1;
+	total_money_right += add_money_per_one_building * amount_building_player_2;
 	return;
 }
