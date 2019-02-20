@@ -140,8 +140,8 @@ void give_money();
 void money_have();
 void play();
 bool o_check_free_zone(int current_position_h, int current_position_w, char building_type); //провер€ет свободно ли поле дл€ установки обьекта;
-
-
+void give_item_on_start(char player, char building_type, int centre_h, int centre_w);
+void start_items_list();
 
 /***********alexey_melentyev****************/
 

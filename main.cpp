@@ -9,7 +9,7 @@ int main()
 
 	o_fill_batle_field_after_start();
 	o_fill_pannels();
-	
+	start_items_list();
 	play();
 
 	return 0;

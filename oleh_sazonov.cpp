@@ -1315,3 +1315,32 @@ bool o_check_free_zone(int current_position_h, int current_position_w, char buil
 	}
 	return true;
 }
+
+void give_item_on_start(char player, char building_type, int centre_h, int centre_w)
+{
+	int *item = o_building_select(player, building_type);
+
+	o_put_coordinates(player, building_type, centre_h - 1, centre_w - 1);
+	o_write_info_about_player_odject(player, building_type, centre_h - 1, centre_w - 1);
+	for (int h = 0, i = 0; h < Building_height; h++)
+	{
+		for (int w = 0; w < Building_width; w++, i++)
+		{
+			Batle_field[main_f][centre_h - 1 + h][centre_w - 1 + w] = *(item + i);
+		}
+	}
+
+	return;
+}
+
+void start_items_list()
+{
+	//give_item_on_start(char player, char building_type, int centre_h, int centre_w)
+
+	give_item_on_start('R', '5', 6, 2);
+	give_item_on_start('L', '5', 6, 56);
+	give_item_on_start('R', '5', 18, 2);
+	give_item_on_start('L', '5', 18, 56);
+
+	return;
+}
