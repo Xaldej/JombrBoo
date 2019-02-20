@@ -206,20 +206,23 @@ void o_move_elements(char player, char building_type) //action_in
 		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
 		case 'p': case 'P':  o_fill_shop(); o_display_shop(); return; break;
 		case '9':
-			temp_value = o_calculate_money(player, building_type);
-			if (temp_value == -1)
+			if (o_check_free_zone(current_position_h, current_position_w, building_type) == true)
 			{
-				o_get_field_copy();
-				o_print_copy_batle_field();
-				current_position_h++; o_move_up(player, building_type);
-			}
-			else if (temp_value == 0)
-			{
-				o_display_batle_field(panel_width, field_height, field_width);
-				return;
+				temp_value = o_calculate_money(player, building_type);
+				if (temp_value == -1)
+				{
+					o_get_field_copy();
+					o_print_copy_batle_field();
+					current_position_h++; o_move_up(player, building_type);
+				}
+				else if (temp_value == 0)
+				{
+					o_display_batle_field(panel_width, field_height, field_width);
+					return;
+				}
+
 			}
 			break;
-
 		case '0':		o_display_batle_field(panel_width, field_height, field_width); return; break;
 		case'n': case'N':
 			building_type++; building_type == '5' ? building_type = '1' : building_type;
@@ -1129,7 +1132,7 @@ int o_calculate_money(char player, char building_type)
 	{
 		if (total_money_left < o_item_price(building_type))
 		{
-			printf("\r                                Not enough money                            ");
+			printf("\r                                Not enough money                             ");
 			Sleep(1500);
 			return -1;
 		}
@@ -1147,7 +1150,7 @@ int o_calculate_money(char player, char building_type)
 	{
 		if (total_money_right < o_item_price(building_type))
 		{
-			printf("\r                                Not enough money                            ");
+			printf("\r                                Not enough money                             ");
 			Sleep(1500);
 			return -1;
 		}
@@ -1257,4 +1260,46 @@ void money_have()
 	Right_panel[6][7] = R1;		Right_panel[6][6] = R2; 	Right_panel[6][5] = R3; 	Right_panel[6][4] = R4;
 
 	return;
+}
+
+bool o_check_free_zone(int current_position_h, int current_position_w, char building_type)
+{
+
+	if (Batle_field[main_f][current_position_h + 0][current_position_w] != 32 || Batle_field[main_f][current_position_h + 0][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 0][current_position_w + 2] != 32
+		|| Batle_field[main_f][current_position_h + 1][current_position_w] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w + 2] != 32
+		|| Batle_field[main_f][current_position_h + 2][current_position_w] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w + 2] != 32)
+	{
+		printf("\a\r                           Zone is already taken                           ");
+		Sleep(1500);
+		return false;
+	}
+	else if(building_type =='1' || building_type == '2')
+	{
+		if (
+			Batle_field[main_f][current_position_h - 1][current_position_w] != 32 || Batle_field[main_f][current_position_h - 1][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h - 1][current_position_w + 2] != 32         //top
+			|| Batle_field[main_f][current_position_h + 3][current_position_w] != 32 || Batle_field[main_f][current_position_h + 3][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 3][current_position_w + 2] != 32    //bottom
+			|| Batle_field[main_f][current_position_h + 0][current_position_w - 1] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w - 1] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w - 1] != 32 //left
+			|| Batle_field[main_f][current_position_h + 0][current_position_w + 3] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w + 3] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w + 3] != 32 //right
+			)
+		{
+			printf("\a\r                      Too close. You can not build here                      ");
+			Sleep(1500);
+			return false;
+		}
+
+	}
+	else if (building_type == '3' || building_type == '4')
+	{
+		if (
+			Batle_field[main_f][current_position_h - 1][current_position_w + 1] != 32        //top
+			|| Batle_field[main_f][current_position_h + 3][current_position_w + 1] != 32    //bottom
+			)
+		{
+			printf("\a\r                      Too close. You can not build here                      ");
+			Sleep(1500);
+			return false;
+		}
+
+	}
+	return true;
 }

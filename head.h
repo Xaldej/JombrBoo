@@ -137,6 +137,9 @@ int o_item_price(char building_type);
 bool give_money();
 void money_have();
 void play();
+bool o_check_free_zone(int current_position_h, int current_position_w, char building_type); //провер€ет свободно ли поле дл€ установки обьекта;
+
+
 
 /***********alexey_melentyev****************/
 
