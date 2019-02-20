@@ -105,7 +105,7 @@ extern int coordinate_w;
 
 //функции
 void o_get_field_copy();						//отображает копию основного екрана в момент перемещения обьектов(пушек)
-void o_push_batle_field_from_copy();			// переносит содержание временного масива во время установки пушек в главное поле
+void o_buy_item(char player, char building_type);		// переносит содержание временного масива во время установки пушек в главное поле
 void o_display_batle_field(int panel_width, int field_height, int field_width); //отображает основной (главный) игровой екран
 int *o_building_select(char player, char building_type);			//используется указатель на масив символов в качестве возвращаемого значения для функции перемещения орудий
 void o_fill_batle_field_after_start();			//заполняет игровое поле после старта

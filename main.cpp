@@ -5,7 +5,7 @@
 //ok
 int main()
 {
-	system("mode CON: lines=25 cols=80"); //to make sure that console has right size
+	system("mode CON: lines=25 cols=79"); //to make sure that console has right size
 
 	o_fill_batle_field_after_start();
 	o_fill_pannels();
