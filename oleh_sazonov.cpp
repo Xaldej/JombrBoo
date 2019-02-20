@@ -413,7 +413,14 @@ void o_get_field_copy()
 	{
 		for (int w = 0; w < field_width; w++)
 		{
-			Batle_field[copy_f][h][w] = Batle_field[main_f][h][w];
+			if (Batle_field[main_f][h][w] != '-')
+			{
+				Batle_field[copy_f][h][w] = Batle_field[main_f][h][w];
+			}
+			else
+			{
+				Batle_field[copy_f][h][w] = ' ';
+			}
 		}
 	}
 	return;
