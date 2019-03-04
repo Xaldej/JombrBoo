@@ -64,7 +64,7 @@ void MovementMechanichs(int Player_1_Data[data_M][data_N], int Player_2_Data[dat
 		case big_wall:
 			break;
 		default:
-			printf("MovementMechanichs error 1");
+			/*printf("MovementMechanichs error 1")*/;
 			break;
 		}
 	}
@@ -105,7 +105,7 @@ void MovementMechanichs(int Player_1_Data[data_M][data_N], int Player_2_Data[dat
 		case big_wall:
 			break;
 		default:
-			printf("MovementMechanichs error 1");
+			/*printf("MovementMechanichs error 1")*/;
 			break;
 		}
 	}
@@ -139,10 +139,10 @@ void MakeAShot(int Player_Data[data_M][data_N], int Player_Shots[shots_M][shots_
 		}
 		else if ((MainField[m][n + 2] = 'x') || (MainField[m][n + 2] = 'H'))
 		{
-			printf("Temp MakeAShot error 1");
+			/*printf("Temp MakeAShot error 1")*/;
 			//MakeADamage(Player_Shots, number_of_shot, 1)
 		}
-		else printf("MakeAShot error 1");
+		else/* printf("MakeAShot error 1")*/;
 		break;
 	case left:
 		if (MainField[m][n - 2] = ' ' || MainField[m][n - 2] == '.')
@@ -162,13 +162,13 @@ void MakeAShot(int Player_Data[data_M][data_N], int Player_Shots[shots_M][shots_
 		}
 		else if ((MainField[m][n - 2] = 'x') || (MainField[m][n - 2] = 'H'))
 		{
-			printf("Temp MakeAShot error 2");
+			/*printf("Temp MakeAShot error 2");*/
 			//MakeADamage(Player_Shots, number_of_shot, 1)
 		}
-		else printf("MakeAShot error 2");
+		else /*printf("MakeAShot error 2")*/;
 		break;
 	default:
-		printf("MakeAShot error 3");
+		/*printf("MakeAShot error 3")*/;
 		break;
 	}
 	return;
@@ -220,7 +220,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			n_to_damage = Batle_field[3][m][n - 1];		
 			if (player_number == 1) number_of_element_to_damage = FindElementToDamage(Player_2_Data, m_to_damage, n_to_damage);
 			else if (player_number == 2) number_of_element_to_damage = FindElementToDamage(Player_1_Data, m_to_damage, n_to_damage);
-			else printf("ShotMovement error 4.1");
+			else /*printf("ShotMovement error 4.1")*/;
 			if (number_of_element_to_damage == -1)
 			{
 				//MainField[m][n - 1] = '-'; or we can change visualisation for cases when shots is under user's own element
@@ -237,9 +237,9 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 				MainField[m][n] = ' '; //need to check copy of MainField to know element to return
 				return 0; //if there was a damage Player_Shots array is moved to left for 1 position, because of this return 0
 			}
-			else printf("ShotMovement error 2.1");
+			else /*printf("ShotMovement error 2.1")*/;
 		}	
-		else printf("ShotMovement error 1");
+		else /*printf("ShotMovement error 1")*/;
 		break;
 	case right:
 		if (n == 58) //for cases when it is an edge of game zone
@@ -274,7 +274,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			n_to_damage = Batle_field[3][m][n + 1];
 			if (player_number == 1) number_of_element_to_damage = FindElementToDamage(Player_2_Data, m_to_damage, n_to_damage);
 			else if (player_number == 2) number_of_element_to_damage = FindElementToDamage(Player_1_Data, m_to_damage, n_to_damage);
-			else printf("ShotMovement error 4.1");
+			else /*printf("ShotMovement error 4.1")*/;
 			if (number_of_element_to_damage == -1)
 			{
 				//MainField[m][n + 1] = '-';
@@ -293,16 +293,16 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 				else MainField[m][n] = Batle_field[1][m][n];
 				return 0;
 			}
-			else printf("ShotMovement error 2.2");
+			else /*printf("ShotMovement error 2.2")*/;
 		}
 		
-		else printf("ShotMovement error 2");
+		else /*printf("ShotMovement error 2")*/;
 		break;
 	default:
-		printf("ShotMovement error 3");
+		/*printf("ShotMovement error 3")*/;
 		break;
 	}
-	printf("ShotMovement error 4");
+	/*printf("ShotMovement error 4")*/;
 	return 999;
 }
 
@@ -375,7 +375,7 @@ void MakeADamage(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			DeleteInfoFromData(Player_1_Data, number_of_element_to_damage, 1);			
 		}
 	}
-	else printf("MakeADamage error 1");
+	else /*printf("MakeADamage error 1")*/;
 	return;
 }
 
@@ -398,7 +398,8 @@ int CheckElementDestroy(int Player_Data[data_M][data_N], int number_of_element)
 {
 	if (Player_Data[3][number_of_element] > 0) return 0;
 	else if (Player_Data[3][number_of_element] == 0) return 1;
-	else printf("CheckElementDestroy error 1");
+	else /*printf("CheckElementDestroy error 1")*/;
+	return-1;
 }
 
 void DeleteInfoFromField(int Player_Data[data_M][data_N], int number_of_element)
@@ -450,7 +451,7 @@ void DeleteInfoFromData(int Player_Data[data_M][data_N], int number_of_element, 
 	}
 	else
 	{
-		printf("DeleteInfoFromData error 1\n");
+		//printf("DeleteInfoFromData error 1\n");
 	}
 
 	return;
@@ -482,7 +483,7 @@ bool check_win()
 		else if (amount_of_building_player_1 == amount_of_building_player_2)
 		{
 			system("cls");
-			printf("\n\No one win!\n\n");
+			printf("\n\nNo one win!\n\n");
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
@@ -490,7 +491,7 @@ bool check_win()
 		else if (amount_of_building_player_1 > amount_of_building_player_2)
 		{
 			system("cls");
-			printf("\n\Player 1 win!\n\n");
+			printf("\n\nPlayer 1 win!\n\n");
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
@@ -506,7 +507,8 @@ bool check_win()
 
 void give_money()
 {
-	int add_money_per_one_building = 150;
+	int add_money_per_one_building = 15
+;
 	//type=53
 	int amount_building_player_1 = 0;
 	int amount_building_player_2 = 0;	

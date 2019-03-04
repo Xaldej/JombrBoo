@@ -768,8 +768,8 @@ void o_display_h_coordinates_field()
 		input_but = _getwch();
 		switch (input_but)
 		{
-		case '0': o_display_batle_field(panel_width, field_height, field_width);  break;
-		case'x': case 'X':	o_display_w_coordinates_field(); break;
+		case 'p': case 'P': o_display_batle_field(panel_width, field_height, field_width); return; break;
+		case'x': case 'X':	o_display_w_coordinates_field(); return; break;
 		default: break;
 		}
 	}
@@ -814,8 +814,8 @@ void o_display_w_coordinates_field()
 		input_but = _getwch();
 		switch (input_but)
 		{
-		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); break;
-		case'y': case 'Y':	o_display_h_coordinates_field(); break;
+		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return; break;
+		case'y': case 'Y':	o_display_h_coordinates_field(); return;  break;
 		default: break;
 		}
 	} while (input_but != 'p' && input_but != 'P' && input_but != 'y' && input_but != 'Y');
@@ -1335,4 +1335,255 @@ void start_items_list()
 
 
 	return;
+}
+
+
+int start_screen()
+{
+	system("mode CON: lines=25 cols=79");
+	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+#define RESET SetConsoleTextAttribute(col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+#define STOP system("pause");
+#define NEXT_SLIDE  Sleep(300);system("cls");
+
+
+	BLUE
+
+		NEXT_SLIDE  cout << R"(
+
+
+
+
+                                  
+                                         _ 
+                                        | |
+                                        | |
+                                    _   | |
+                                   | |__| |
+                                    \____/ 
+                                                         
+
+
+    	)";
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+ 
+                        _ 
+                       | |  
+                       | |                                          ___  
+                   _   | |                                         / _ \ 
+                  | |__| |                                        | (_) |
+                   \____/                                          \___/
+)";
+	NEXT_SLIDE
+
+		cout << R"(
+
+
+
+
+ 
+       _  
+      | |
+      | |                                ___  
+  _   | |                               / _ \ 
+ | |__| |                              | (_) |
+  \____/                                \___/ 
+   )";
+
+	NEXT_SLIDE  cout << R"( 
+
+
+
+
+
+       _  
+      | | 
+      | |   ___                                            _ __ ___
+  _   | |  / _ \                                          | '_ ` _ \
+ | |__| | | (_) |                                         | | | | | |
+  \____/   \___/                                          |_| |_| |_|
+   )";
+
+	NEXT_SLIDE  cout << R"(
+
+
+   
+ 
+     
+       _                                         
+      | |                                        
+      | |   ___                        _ __ ___  
+  _   | |  / _ \                      | '_ ` _ \ 
+ | |__| | | (_) |                     | | | | | |
+  \____/   \___/                      |_| |_| |_|
+                                                 
+      )";
+
+	NEXT_SLIDE  cout << R"(   
+
+
+
+
+     
+       _                                                 _     
+      | |                                               | |    
+      | |   ___        _ __ ___                         | |__  
+  _   | |  / _ \      | '_ ` _ \                        | '_ \ 
+ | |__| | | (_) |     | | | | | |                       | |_) |
+  \____/   \___/      |_| |_| |_|                       |_.__/ 
+                                                              
+      )";
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+ 
+        
+       _                               _ 
+      | |                             | |
+      | |   ___      _ __ ___         | |__              _ __ 
+  _   | |  / _ \    | '_ ` _ \        | '_ \            | '__|
+ | |__| | | (_) |   | | | | | |       | |_) |           | |   
+  \____/   \___/    |_| |_| |_|       |_.__/            |_|                                                 
+      )";
+
+	NEXT_SLIDE
+		cout << R"( 
+
+
+
+
+
+       _                           _  
+      | |                         | |
+      | |   ___      _ __ ___     | |__        _ __ 
+  _   | |  / _ \    | '_ ` _ \    | '_ \      | '__|
+ | |__| | | (_) |   | | | | | |   | |_) |     | |   
+  \____/   \___/    |_| |_| |_|   |_.__/      |_|   
+      )";
+
+
+
+
+	NEXT_SLIDE
+		cout << R"(
+
+
+
+
+
+       _                         _                        ____ 
+      | |                       | |                      |  _ \ 
+      | |   ___    _ __ ___     | |__        _ __        | |_) |
+  _   | |  / _ \  | '_ ` _ \    | '_ \      | '__|       |  _ < 
+ | |__| | | (_) | | | | | | |   | |_) |     | |          | |_) |
+  \____/   \___/  |_| |_| |_|   |_.__/      |_|          |____/ 
+      )";
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+   
+       _                       _                ____           ____
+      | |                     | |              |  _ \         / __ \
+      | |   ___    _ __ ___   | |__    _ __    | |_) |       | |  | |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__|   |  _ <        | |  | |
+ | |__| | | (_) | | | | | | | | |_) | | |      | |_) |       | |__| |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|      |____/         \____/                                                           
+      )";
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____       ____        ____
+      | |                     | |            |  _ \     / __ \      / __ \ 
+      | |   ___    _ __ ___   | |__    _ __  | |_) |   | |  | |    | |  | |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <    | |  | |    | |  | |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) |   | |__| |    | |__| |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/     \____/      \____/ 
+      )";
+	NEXT_SLIDE  cout << R"( 
+
+
+
+
+
+       _                       _              ____     ____      ____     __  _
+      | |                     | |            |  _ \   / __ \    / __ \   |  \/ 
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | |  | |  | |  | \  /
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | |  | |  | |  | |\/|
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| |  | |__| |  | |  |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/    \____/   |_|  |_
+                                                                                 
+      )";
+
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____     ____     ____    __  __ 
+      | |                     | |            |  _ \   / __ \   / __ \  |  \/  |
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | | | |  | | | \  / |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | | | |  | | | |\/| |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| | | |__| | | |  | |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
+
+)";
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____     ____     ____    __  __ 
+      | |                     | |            |  _ \   / __ \   / __ \  |  \/  |
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | | | |  | | | \  / |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | | | |  | | | |\/| |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| | | |__| | | |  | |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
+
+)";
+
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____     ____     ____    __  __ 
+      | |                     | |            |  _ \   / __ \   / __ \  |  \/  |
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | | | |  | | | \  / |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | | | |  | | | |\/| |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| | | |__| | | |  | |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
+)";
+
+	RESET
+
+		printf("\n\n\n\n\n\n\t\t\t Press [any] key to continue.");
+
+	_getwch();
+
+	return 0;
 }
