@@ -7,6 +7,9 @@
 #include <ctime>
 using namespace std;
 
+
+
+
 //размеры полей
 const int field_height = 24;
 const int field_width = 59;
@@ -143,6 +146,9 @@ bool o_check_free_zone(int current_position_h, int current_position_w, char buil
 void give_item_on_start(char player, char building_type, int centre_h, int centre_w);
 void start_items_list();
 int start_screen();
+void Player1_WIN();
+void Player2_WIN();
+
 /***********alexey_melentyev****************/
 
 //some code was written separatly from Oleg's code. Because of this I used define Not to rename elements

@@ -475,7 +475,7 @@ bool check_win()
 		if (amount_of_building_player_1 < amount_of_building_player_2)
 		{
 			system("cls");
-			printf("\n\nPlayer 2 win!\n\n");
+			Player2_WIN();
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
@@ -491,7 +491,7 @@ bool check_win()
 		else if (amount_of_building_player_1 > amount_of_building_player_2)
 		{
 			system("cls");
-			printf("\n\nPlayer 1 win!\n\n");
+			Player1_WIN();  
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
