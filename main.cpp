@@ -6,7 +6,7 @@
 int main()
 {
 	system("mode CON: lines=25 cols=79"); //to make sure that console has right size
-	start_screen();
+
 	o_fill_batle_field_after_start();
 	o_fill_pannels();
 	start_items_list();
@@ -27,7 +27,6 @@ void play()
 		o_get_main_screen_actions();
 
 		//player 2 (R) turn
-
 
 		player = 'R';
 		o_display_batle_field(panel_width, field_height, field_width);
