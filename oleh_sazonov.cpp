@@ -28,6 +28,7 @@ int Elements_Info_Player_Right[info_h][info_w];
 
  // Type of object for initialization on first opening of shop
 //it uses in functions of movement and displaying 
+
 char building_type = '1';
 
 char player; //('R' - player2; 'L' - player1)
@@ -101,7 +102,7 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 
 	money_have();   //calculation amout of money every time when repaints main field 
 
-	player == 'L' ? turn = 1 : turn = 2;  //it switchs turns for displaying inscription of player move
+	player == 'L' ? turn = 1 : turn = 2;  //it for displaying inscription of player move
 
 	system("cls");
 
@@ -1039,20 +1040,34 @@ void print_objects_info()
 	 */  
 
 
-
 	system("cls");
-
 	printf("Player 1 left: \n");
-
 	for (int h = 0; h < info_h; h++)
 	{
-		(h == 0) ? printf(" Type:   ") : 1;
-		(h == 1) ? printf(" Shots:  ") : 1;
-		(h == 2) ? printf(" Route:  ") : 1;
-		(h == 3) ? printf(" Health: ") : 1;
-		(h == 4) ? printf(" Cors Y: ") : 1;
-		(h == 5) ? printf(" Cors X: ") : 1;
-
+		if (h == 0)
+		{
+			printf(" Type:   ");
+		}
+		else if (h == 1)
+		{
+			printf(" Shots:  ");
+		}
+		else if (h == 2)
+		{
+			printf(" Route:  ");
+		}
+		else if (h == 3)
+		{
+			printf(" Health: ");
+		}
+		else if (h == 4)
+		{
+			printf(" Cors Y: ");
+		}
+		else if (h == 5)
+		{
+			printf(" Cors X: ");
+		}
 		for (int w = 0; w < info_w; w++)
 		{
 			if (Elements_Info_Player_Left[b_type][w] == 0 && Elements_Info_Player_Left[h][w] == 0)
@@ -1070,18 +1085,34 @@ void print_objects_info()
 	printf("\n");
 
 	printf("Player 2 right: \n");
-
 	for (int h = 0; h < info_h; h++)
 	{
-		(h == 0) ? printf(" Type:   ") : 1;
-		(h == 1) ? printf(" Shots:  ") : 1;
-		(h == 2) ? printf(" Route:  ") : 1;
-		(h == 3) ? printf(" Health: ") : 1;
-		(h == 4) ? printf(" Cors Y: ") : 1;
-		(h == 5) ? printf(" Cors X: ") : 1;
-		 
-		for (int w = 0; w < info_w; w++)
+		if (h == 0)
 		{
+			printf(" Type:   ");
+		}
+		else if (h == 1)
+		{
+			printf(" Shots:  ");
+		}
+		else if (h == 2)
+		{
+			printf(" Route:  ");
+		}
+		else if (h == 3)
+		{
+			printf(" Health: ");
+		}
+		else if (h == 4)
+		{
+			printf(" Cors Y: ");
+		}
+		else if (h == 5)
+		{
+			printf(" Cors X: ");
+		}
+		for (int w = 0; w < info_w; w++)
+
 			if (Elements_Info_Player_Right[b_type][w] == 0 && Elements_Info_Player_Right[h][w] == 0)
 			{
 				printf("%3c", '_');
@@ -1090,11 +1121,8 @@ void print_objects_info()
 			{
 				printf("%3d", Elements_Info_Player_Right[h][w]);
 			}
-
-			printf("\n");
-		}
+		printf("\n");
 	}
-
 	printf("\n\n\n\n\n\n Press [i] to return");
 
 	char movement_to;
@@ -1107,10 +1135,10 @@ void print_objects_info()
 
 		default: break;
 		}
-
 	} while (movement_to != 'i' && movement_to != 'I');
 
 	return;
+	
 }
 
 void o_get_shop_actions() // this func to take user input(actions) in shop
