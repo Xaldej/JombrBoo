@@ -1,37 +1,41 @@
 ﻿#pragma once
 #include "head.h"
 
-//левая и правая панели;
+// Left & Right info panels which not comtained in main field 
 char Left_panel[field_height][panel_width];
 char Right_panel[field_height][panel_width];
 
 char Name_P1[name_lenght] = " Jombr";
-char Name_P2[name_lenght] = " Boo  ";
-int total_money_left = 950;
-int total_money_right = 950;
+char Name_P2[name_lenght] = " BooM ";
+int total_money_left = 1200;
+int total_money_right = 1200;
 
-int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
-int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
+//[0][*][*] - main field;
+//[1][*][*] -copy of field for displaying objects on installation of object 
 
-//согласовать вычитание номера обьекта при перемещении данных  ????????????????????????????????????????????????????????????????
-int element_number_l = -1; // -1 потому что сразу при входе в функцию делается ++ и для первого раза значение будет 0
+int Batle_field[n_fields][field_height][field_width];   
+int Shop_field[field_height][field_width + panel_width + panel_width]; // main shop screen
+
+//it defines index of cell for loging info about installed objects
+// -1 because will be use ++ on activation of function. Then first value will bee equall 0
+int element_number_l = -1; 
 int element_number_r = -1;
 
 
 int Elements_Info_Player_Left[info_h][info_w];
 int Elements_Info_Player_Right[info_h][info_w];
 
-//параметры обьектов
 
+ // Type of object for initialization on first opening of shop
+//it uses in functions of movement and displaying 
+char building_type = '1';
 
-
-char building_type = '1';  // тип здания. инициализируется при выборе в магазине // передается в функцию прорисовки/перемещении обьекта
-
-char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
+char player; //('R' - player2; 'L' - player1)
 
 int *arr = new int[(Building_height*Building_width)];
 int Building[Building_height][Building_width];
 
+//this variables contained position of objects on time of movement objects in shopping time 
 int current_position_h;
 int current_position_w;
 int current_pos_extr_w;
@@ -41,6 +45,9 @@ int coordinate_w;
 
 void o_fill_batle_field_after_start()
 {
+	//this function fills main field and pannels after start 
+	//here you can set any characters to fiil main field
+	//h - height  w - width
 	for (int h = 0; h < panel_height; h++)
 	{
 		for (int w = 0; w < panel_width; w++)
@@ -90,11 +97,16 @@ void o_fill_batle_field_after_start()
 }
 void o_display_batle_field(int panel_width, int field_height, int field_width)
 {
-	money_have();
 	int turn;
-	player == 'L' ? turn = 1 : turn = 2;
+
+	money_have();   //calculation amout of money every time when repaints main field 
+
+	player == 'L' ? turn = 1 : turn = 2;  //it switchs turns for displaying inscription of player move
+
 	system("cls");
-	for (int h = 0; h < field_height; h++) {
+
+	for (int h = 0; h < field_height; h++)
+	{
 		for (int lp = 0; lp < panel_width; lp++)
 		{
 			printf("%c", Left_panel[h][lp]);
@@ -116,23 +128,20 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 
 	return;
 }
-void o_get_main_screen_actions() // принимает клавиши действий на главном игровом поле
+
+void o_get_main_screen_actions() // this funktion gets controll buttons of users action on main field
 {
-	char button;
+	char button;   
 	do
 	{
-		/*if (give_money() == true)
-		{
-			o_display_batle_field(panel_width, field_height, field_width);
-		}*/
 		button = _getwch();
 		switch (button)
 		{
 		case 'P': case 'p':  o_fill_shop(); o_display_shop(); o_get_shop_actions(); return; break;
-		case '-': return;
-		case 'Y': case 'y':  o_display_h_coordinates_field();	break;
-		case 'X': case 'x':  o_display_w_coordinates_field();	break;
-		case 'I': case 'i':  print_objects_info();				break;
+		case '-': return;												//skip turn
+		case 'Y': case 'y':  o_display_h_coordinates_field();	break;  //for dev
+		case 'X': case 'x':  o_display_w_coordinates_field();	break;  //for dev
+		case 'I': case 'i':  print_objects_info();				break;  //for dev
 		default: break;
 		}
 	} while (button != 'p' || button != 'P' || button != 'x' || button != 'X' || button != 'Y' || button != 'y' || button != 'i' || button != 'I');
@@ -167,11 +176,11 @@ void o_print_copy_batle_field()   //action_in
 void o_move_elements(char player, char building_type) //action_in
 {
 
-	int temp_value;
+	int temp_value;   //variable to get returned value of function o_calculate_money();
 
 	if (player == 'L')
 	{
-		current_position_h = 9;
+		current_position_h = 9;    // 0 , 9, 9, 56 current positions of respawn objects point on main field after getting object in the shop
 		current_position_w = 0;
 	}
 	else if (player == 'R')
@@ -185,25 +194,20 @@ void o_move_elements(char player, char building_type) //action_in
 	o_print_copy_batle_field();
 
 
-	char movement_to = 'X';
+	char movement_to = 'X';  // 'X' used to display object on main field after select in shop
+
 	while (movement_to != '9' || movement_to != '0')
 	{
-		/*
-		if (give_money() == true)
-		{
-			money_have();
-			current_position_h++;	o_move_up(player, building_type);
-		}*/
-
+		
 		switch (movement_to)
 		{
 		case '>': o_move_elements('R', building_type);  break;
 		case '<': o_move_elements('L', building_type);  break;
-		case 'X': o_get_field_copy(); current_position_h++;	o_move_up(player, building_type); break;
-		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);		break;
-		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type); break;
-		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);		break;
-		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);	break;
+		case 'X': o_get_field_copy(); current_position_h++;	o_move_up(player, building_type); break; //movement of object to start point(it used to displaying object)
+		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);			  break;
+		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type);			  break;
+		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);			  break;
+		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);		  break;
 		case '9':
 			if (o_check_free_zone(current_position_h, current_position_w, building_type) == true)
 			{
@@ -237,7 +241,7 @@ void o_move_elements(char player, char building_type) //action_in
 
 void o_move_up(char player, char building_type)
 {
-	arr = o_building_select(player, building_type);
+	arr = o_building_select(player, building_type);  //arr - array which used like buffer to containing objects symbols after selecting in shop or movement
 
 	for (int h = 0, i = 0; h < Building_height; h++)
 	{
@@ -253,10 +257,10 @@ void o_move_up(char player, char building_type)
 			if (current_position_h > 0)
 			{
 				current_position_h--;
-				coordinate_h = current_position_h;  //принимаем координаты для записи положения обьектов в координатый массив
+				coordinate_h = current_position_h;  //getting of object  corrs after instalation to write position of obj-s in array of coors 
 				for (int shift = 0; shift < Building_height; shift++)
 				{
-					for (int row = 0; row < Building_height; )
+					for (int row = 0; row < Building_height; ) 
 					{
 						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Building[h + row][w + shift];
 						row++;
@@ -273,12 +277,12 @@ void o_move_up(char player, char building_type)
 		}
 	}
 	system("cls");
-	o_print_copy_batle_field();  //вызываем прорисовку временной копии основоного поля
+	o_print_copy_batle_field();  //activating of displaying copy of main field
 	return;
 }
 void o_move_down(char player, char building_type)
 {
-	arr = o_building_select(player, building_type);
+	arr = o_building_select(player, building_type); //arr - array which used like buffer to containing objects symbols after selecting in shop or movement
 
 	for (int h = 0, i = 0; h < Building_height; h++)
 	{
@@ -292,10 +296,12 @@ void o_move_down(char player, char building_type)
 	{
 		for (int w = 0; w > -1; w--)
 		{
-			if (current_position_h < field_height - 3)
+			if (current_position_h < field_height - Building_height) //- Building_height because we can't move obj out of field zone
 			{
 				current_position_h++;
-				coordinate_h = current_position_h; //принимаем координаты для записи положения обьектов в координатый массив
+
+				coordinate_h = current_position_h; //getting of object  corrs after instalation to write position of obj-s in array of coors 
+
 				for (int shift = 0; shift < Building_height; shift++)
 				{
 					for (int row = 0; row < Building_height; )
@@ -315,14 +321,15 @@ void o_move_down(char player, char building_type)
 		}
 	}
 	system("cls");
-	o_print_copy_batle_field();
+	o_print_copy_batle_field(); //activating of displaying copy of main field
 
 	return;
 }
 
 void o_move_left(char player, char building_type)
 {
-	player == 'L' ? current_pos_extr_w = 1 : current_pos_extr_w = 30;
+	player == 'L' ? current_pos_extr_w = 1 : current_pos_extr_w = 31;  // 1 | 31 - left border vallues of players field zone
+
 	arr = o_building_select(player, building_type);
 
 	for (int h = 0, i = 0; h < Building_height; h++)
@@ -333,14 +340,16 @@ void o_move_left(char player, char building_type)
 		}
 	}
 
-	for (int h = 0; h > -1; h--)
+	for (int h = 0; h > -1; h--)  // h-- because movement to begin of field (to the side of zero coors)
 	{
 		for (int w = 0; w > -1; w--)
 		{
 			if (current_position_w > current_pos_extr_w)
 			{
 				current_position_w--;
-				coordinate_w = current_position_w; //принимаем координаты для записи положения обьектов в координатый массив
+
+				coordinate_w = current_position_w; //getting of object  corrs after instalation to write position of obj-s in array of coors 
+
 				for (int shift = 0; shift < Building_width; shift++)
 				{
 					for (int coll = 0; coll < Building_width; )
@@ -365,6 +374,7 @@ void o_move_left(char player, char building_type)
 void o_move_right(char player, char building_type)
 {
 	arr = o_building_select(player, building_type);
+
 	player == 'L' ? current_pos_extr_w = 26 : current_pos_extr_w = field_width - Building_width - 1;
 
 	for (int h = 0, i = 0; h < Building_height; h++)
@@ -381,10 +391,12 @@ void o_move_right(char player, char building_type)
 			if (current_position_w < current_pos_extr_w)
 			{
 				current_position_w++;
+
 				coordinate_w = current_position_w; //принимаем координаты для записи положения обьектов в координатый массив
-				for (int shift = 0; shift < Building_width; shift++)
+
+				for (int shift = 0; shift < Building_width; shift++)  //shift - shifting by height ( y corrs)
 				{
-					for (int coll = 0; coll < Building_width; )
+					for (int coll = 0; coll < Building_width; )       //shift - shifting by width ( y corrs)
 					{
 						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Building[h + shift][w + coll];
 						coll++;
@@ -395,7 +407,9 @@ void o_move_right(char player, char building_type)
 			else
 			{
 				printf("\a");
+
 				current_position_w--;
+
 				o_move_right(player, building_type);
 			}
 		}
@@ -420,6 +434,7 @@ void o_get_field_copy()
 
 void o_buy_item(char player, char building_type)
 {
+	//this function write data about obj type, position  and characteristic to the info arrays
 	int *item = o_building_select(player, building_type);
 
 	for (int h = 0, i = 0; h < Building_height; h++)
@@ -429,57 +444,59 @@ void o_buy_item(char player, char building_type)
 			Batle_field[main_f][current_position_h+h][current_position_w+w] = *(item + i);
 		}
 	}
+
 	o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
 	o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
+
 	return;
 }
 
-int *o_building_select(char player, char building_type) //переключает здание в заисимости от юзера и типа выбранного здания
+int *o_building_select(char player, char building_type) //switchs build according to user select (returns pointer to array of building symbols in int type)
 {
-	int *building = new int[(Building_height*Building_width)];
+	int *building = new int[(Building_height*Building_width)];  //pointer to array of characters vallues acordig to user select
 
 	switch (player)
 	{
 	case 'L':
-		if (building_type == '1')
+		if (building_type == '1') //big gun
 		{
-			int Gun1[(Building_height*Building_width)] = { 178,178,178,178,204,205,178,178,178 };
+			int Gun1[(Building_height*Building_width)] = { 178,178,178,178,204,205,178,178,178 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Gun1[i];
 			}
 			return building;
 		}
-		else if (building_type == '2')
+		else if (building_type == '2') //small gun
 		{
-			int Gun_cheap1[(Building_height*Building_width)] = { 176,176,176,176,199,196,176,176,176 };
+			int Gun_cheap1[(Building_height*Building_width)] = { 176,176,176,176,199,196,176,176,176 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Gun_cheap1[i];
 			}
 			return building;
 		}
-		else if (building_type == '3')
+		else if (building_type == '3') //bigg wall
 		{
-			int Wall1[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 };
+			int Wall1[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Wall1[i];
 			}
 			return building;
 		}
-		else if (building_type == '4')
+		else if (building_type == '4') //small wall
 		{
-			int Wall_cheap1[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 };
+			int Wall_cheap1[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Wall_cheap1[i];
 			}
 			return building;
 		}
-		else if (building_type == '5')
+		else if (building_type == '5')  //goldmine building
 		{
-			int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 };
+			int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Goldmine[i];
@@ -488,45 +505,45 @@ int *o_building_select(char player, char building_type) //переключает
 		}
 
 	case 'R':
-		if (building_type == '1')
+		if (building_type == '1')  //big gun
 		{
-			int Gun2[Building_height*Building_width] = { 178,178,178,205,185,178,178,178,178 };
+			int Gun2[Building_height*Building_width] = { 178,178,178,205,185,178,178,178,178 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Gun2[i];
 			}
 			return building;
 		}
-		else if (building_type == '2')
+		else if (building_type == '2') //small gun
 		{
-			int Gun_cheap2[Building_height*Building_width] = { 176,176,176,196,182,176,176,176,176 };
+			int Gun_cheap2[Building_height*Building_width] = { 176,176,176,196,182,176,176,176,176 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Gun_cheap2[i];
 			}
 			return building;
-		}
-		else if (building_type == '3')
+		} 
+		else if (building_type == '3') //big wall
 		{
-			int Wall2[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 };
+			int Wall2[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Wall2[i];
 			}
 			return building;
 		}
-		else if (building_type == '4')
+		else if (building_type == '4') //small wall
 		{
-			int Wall_cheap2[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 };
+			int Wall_cheap2[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Wall_cheap2[i];
 			}
 			return building;
 		}
-		else if (building_type == '5')
+		else if (building_type == '5') //goldmine
 		{
-			int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 };
+			int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 }; //here contains integer vallues of character on ASCII table
 			for (int i = 0; i < (Building_height*Building_width); i++)
 			{
 				building[i] = Goldmine[i];
@@ -535,7 +552,7 @@ int *o_building_select(char player, char building_type) //переключает
 		}
 		break;
 
-	default:
+	default:  
 		break;
 	}
 	return 0;
@@ -543,6 +560,7 @@ int *o_building_select(char player, char building_type) //переключает
 
 void o_fill_shop()
 {
+	//this function used for beginning filling of shop field 
 	for (int h = 0; h < field_height; h++)
 	{
 		for (int lp = 0, w = 0; lp < panel_width; lp++, w++)
@@ -564,8 +582,9 @@ void o_fill_shop()
 
 int o_display_shop()
 {
-	o_display_marker_in_store(building_type);
+	o_display_marker_in_store(building_type);  //every time when shop was opened this function move marker to point according to last object selection
 	system("cls");
+
 	char item_1_price[] = "$600";
 	char item_2_price[] = "$400";
 	char item_3_price[] = "$200";
@@ -588,17 +607,22 @@ int o_display_shop()
 	char item_2_money[] = " +0 ";
 	char item_3_money[] = " +0 ";
 	char item_4_money[] = " +0 ";
-	char item_5_money[] = "+150 ";
+	char item_5_money[] = "+15 ";
 
-	char str_Items[] = "       ";
-	char str_Select[] = "       ";
-	char str_Price[] = "Price: ";
-	char str_Health[] = "Health: ";
-	char str_Shots[] = "Shots: ";
-	char str_Money[] = "Money+:";
+	char str_Items[]	=	"       ";  
+	char str_Select[]	=	"       ";
+	char str_Price[]	=	"Price: ";
+	char str_Health[]	=	"Health: ";
+	char str_Shots[]	=	"Shots: ";
+	char str_Money[]    =	"Money+:";
 
+	//anchor start points for displaying objects in shop 
+	int h0 = 7;
+	int w0 = 26;
+	int w1 = w0;  
+	int next_point = 7;
+	//
 
-	int h0 = 7, w0 = 26, w1 = w0;  //стартовые позиции для отрисовки обьектов в магазине
 	Shop_field[h0 + 0][w0 + 0] = 178; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 178;
 
 	if (player == 'L')
@@ -610,8 +634,11 @@ int o_display_shop()
 		Shop_field[h0 + 1][w0 + 0] = 205; Shop_field[h0 + 1][w0 + 1] = 185; Shop_field[h0 + 1][w0 + 2] = 178;
 	}
 	Shop_field[h0 + 2][w0 + 0] = 178; Shop_field[h0 + 2][w0 + 1] = 178; Shop_field[h0 + 2][w0 + 2] = 178;
-	w0 = w0 + 7;
+
+	w0 = w0 + next_point;
+
 	Shop_field[h0 + 0][w0 + 0] = 176; Shop_field[h0 + 0][w0 + 1] = 176; Shop_field[h0 + 0][w0 + 2] = 176;
+
 	if (player == 'L')
 	{
 		Shop_field[h0 + 1][w0 + 0] = 176; Shop_field[h0 + 1][w0 + 1] = 199; Shop_field[h0 + 1][w0 + 2] = 196;
@@ -620,25 +647,49 @@ int o_display_shop()
 	{
 		Shop_field[h0 + 1][w0 + 0] = 196; Shop_field[h0 + 1][w0 + 1] = 182; Shop_field[h0 + 1][w0 + 2] = 176;
 	}
+
 	Shop_field[h0 + 2][w0 + 0] = 176; Shop_field[h0 + 2][w0 + 1] = 176; Shop_field[h0 + 2][w0 + 2] = 176;
-	w0 = w0 + 7;
+
+	w0 = w0 + next_point;
+
 	Shop_field[h0 + 0][w0 + 0] = 32; Shop_field[h0 + 0][w0 + 1] = 178; Shop_field[h0 + 0][w0 + 2] = 32;
 	Shop_field[h0 + 1][w0 + 0] = 32; Shop_field[h0 + 1][w0 + 1] = 178; Shop_field[h0 + 1][w0 + 2] = 32;
 	Shop_field[h0 + 2][w0 + 0] = 32; Shop_field[h0 + 2][w0 + 1] = 178; Shop_field[h0 + 2][w0 + 2] = 32;
-	w0 = w0 + 7;
+
+	w0 = w0 + next_point;
+
 	Shop_field[h0 + 0][w0 + 0] = 32; Shop_field[h0 + 0][w0 + 1] = 177; Shop_field[h0 + 0][w0 + 2] = 32;
 	Shop_field[h0 + 1][w0 + 0] = 32; Shop_field[h0 + 1][w0 + 1] = 177; Shop_field[h0 + 1][w0 + 2] = 32;
 	Shop_field[h0 + 2][w0 + 0] = 32; Shop_field[h0 + 2][w0 + 1] = 177; Shop_field[h0 + 2][w0 + 2] = 32;
-	w0 = w0 + 7;
+
+	w0 = w0 + next_point;
+
 	Shop_field[h0 + 0][w0 + 0] = 201; Shop_field[h0 + 0][w0 + 1] = 205; Shop_field[h0 + 0][w0 + 2] = 187;
-	Shop_field[h0 + 1][w0 + 0] = 186; Shop_field[h0 + 1][w0 + 1] = 36; Shop_field[h0 + 1][w0 + 2] = 186;
+	Shop_field[h0 + 1][w0 + 0] = 186; Shop_field[h0 + 1][w0 + 1] = 36;  Shop_field[h0 + 1][w0 + 2] = 186;
 	Shop_field[h0 + 2][w0 + 0] = 200; Shop_field[h0 + 2][w0 + 1] = 205; Shop_field[h0 + 2][w0 + 2] = 188;
 
-	Shop_field[h0 + 4][w1 + 1] = 49;  Shop_field[h0 + 4][w1 + 8] = 50; Shop_field[h0 + 4][w1 + 15] = 51; Shop_field[h0 + 4][w1 + 22] = 52; Shop_field[h0 + 4][w1 + 29] = 53;
-	int h_items = 1; int h_select = 4;
-	int h_price = 6; int h_health = 8; int h_shots = 9; int h_money = 10;
-	int w_item1 = 0; int w_item2 = 7; int w_item3 = 14; int w_item4 = 21; int w_item5 = 28;
-	for (int i = 0; i < 4; i++)
+	Shop_field[h0 + 4][w1 + 1] = 49;
+	Shop_field[h0 + 4][w1 + 8] = 50;
+	Shop_field[h0 + 4][w1 + 15] = 51;
+	Shop_field[h0 + 4][w1 + 22] = 52;
+	Shop_field[h0 + 4][w1 + 29] = 53;
+
+	//this var-s used for stationing of obj-s in shop field
+	int h_items  = 1; 
+	int h_select = 4;
+	int h_price  = 6;
+	int h_health = 8;
+	int h_shots =  9;
+	int h_money = 10;
+
+	int w_item1 = 0;
+	int w_item2 = 7; 
+	int w_item3 = 14; 
+	int w_item4 = 21;
+	int w_item5 = 28;
+
+	//start displaying of objects parameters in shop info
+	for (int i = 0; i < 4; i++)  //4 - length of inscription
 	{
 		Shop_field[h0 + h_price][w1 + w_item1 + i] = item_1_price[i];
 		Shop_field[h0 + h_price][w1 + w_item2 + +i] = item_2_price[i];
@@ -647,7 +698,7 @@ int o_display_shop()
 		Shop_field[h0 + h_price][w1 + w_item5 + i] = item_5_price[i];
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)  //4 - length of inscription
 	{
 		Shop_field[h0 + h_health][w1 + w_item1 + i] = item_1_health[i];
 		Shop_field[h0 + h_health][w1 + w_item2 + i] = item_2_health[i];
@@ -656,7 +707,7 @@ int o_display_shop()
 		Shop_field[h0 + h_health][w1 + w_item5 + i] = item_5_health[i];
 
 	}
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)  //4 - length of inscription
 	{
 		Shop_field[h0 + h_shots][w1 + w_item1 + i] = item_1_shots[i];
 		Shop_field[h0 + h_shots][w1 + w_item2 + i] = item_2_shots[i];
@@ -665,7 +716,7 @@ int o_display_shop()
 		Shop_field[h0 + h_shots][w1 + w_item5 + i] = item_5_shots[i];
 
 	}
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)  //4 - length of inscription
 	{
 		Shop_field[h0 + h_money][w1 + w_item1 + i] = item_1_money[i];
 		Shop_field[h0 + h_money][w1 + w_item2 + i] = item_2_money[i];
@@ -674,10 +725,12 @@ int o_display_shop()
 		Shop_field[h0 + h_money][w1 + w_item5 + i] = item_5_money[i];
 
 	}
+	//end of  displaying of objects parameters in shop info
 
-	int w0_inscr = 15;
 
-	for (int i = 0; i < 7; i++)
+	int w0_inscr = 15; //init start position of obj parameters titles
+
+	for (int i = 0; i < 7; i++)  // 7 - lenght of inscription
 	{
 		Shop_field[h0 + h_items][w0_inscr + i] = str_Items[i];
 		Shop_field[h0 + h_select][w0_inscr + i] = str_Select[i];
@@ -690,7 +743,7 @@ int o_display_shop()
 
 	for (int h = 0; h < field_height; h++)
 	{
-		for (int w = 0; w < (field_width + (panel_width * 2)); w++)
+		for (int w = 0; w < (field_width + (panel_width * 2)); w++) // (field_width + (panel_width * 2)) because used all lenght of screen which include lenght of panels and field lenght
 		{
 			printf("%c", (char)Shop_field[h][w]);
 		}
@@ -703,20 +756,29 @@ int o_display_shop()
 
 void o_display_marker_in_store(char building_type)
 {
-	int h = 11; int w0 = 26;
-	int w11 = w0 + 0; int w12 = w0 + 2;
-	int w21 = w0 + 7; int w22 = w0 + 9;
-	int w31 = w0 + 14; int w32 = w0 + 16;
-	int w41 = w0 + 21; int w42 = w0 + 23;
-	int w51 = w0 + 28; int w52 = w0 + 30;
+	//list of allowed marker positions
+	int h = 11; 
+	int w0 = 26;
 
-	building_type == NULL ? building_type = '1' : building_type;
+	int w11 = w0 + 0; 
+	int w12 = w0 + 2;
+	int w21 = w0 + 7; 
+	int w22 = w0 + 9;
+	int w31 = w0 + 14; 
+	int w32 = w0 + 16;
+	int w41 = w0 + 21; 
+	int w42 = w0 + 23;
+	int w51 = w0 + 28;
+	int w52 = w0 + 30;
+
+	building_type == NULL ? building_type = '1' : building_type;  //if bulding type not initialized '1' will be use by default 
 
 	Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
 	Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
 	Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
 	Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
 	Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
+
 	if (building_type == '1')
 	{
 		Shop_field[h][w11] = '{'; Shop_field[h][w12] = '}';
@@ -742,6 +804,7 @@ void o_display_marker_in_store(char building_type)
 
 void o_display_h_coordinates_field()
 {
+	//this func used by devs. to make sure of correct instalation of objects to selected position on main field  //ALEXEY uses  that positions 
 	system("cls");
 	for (int h = 0; h < field_height; h++)
 	{
@@ -768,8 +831,8 @@ void o_display_h_coordinates_field()
 		input_but = _getwch();
 		switch (input_but)
 		{
-		case '0': o_display_batle_field(panel_width, field_height, field_width);  break;
-		case'x': case 'X':	o_display_w_coordinates_field(); break;
+		case 'p': case 'P': o_display_batle_field(panel_width, field_height, field_width); return; break;
+		case'x': case 'X':	o_display_w_coordinates_field(); return; break;
 		default: break;
 		}
 	}
@@ -778,6 +841,8 @@ void o_display_h_coordinates_field()
 
 void o_display_w_coordinates_field()
 {
+	//this func used by devs. to make sure of correct instalation of objects to selected position on main field  //ALEXEY uses  that positions 
+	
 	system("cls");
 
 	for (int h = 0; h < field_height; h++)
@@ -814,8 +879,8 @@ void o_display_w_coordinates_field()
 		input_but = _getwch();
 		switch (input_but)
 		{
-		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); break;
-		case'y': case 'Y':	o_display_h_coordinates_field(); break;
+		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return; break;
+		case'y': case 'Y':	o_display_h_coordinates_field(); return;  break;
 		default: break;
 		}
 	} while (input_but != 'p' && input_but != 'P' && input_but != 'y' && input_but != 'Y');
@@ -825,6 +890,7 @@ void o_display_w_coordinates_field()
 
 void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w)
 {
+	//this function push info to coordinate fields X  & Y . Only centrall coors of object need to write
 
 	if (building_type == '1' || building_type == '2' || building_type == '5')
 	{
@@ -843,7 +909,7 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 		{
 			for (int w = 0; w < Building_width; w++)
 			{
-				if (w == 1)
+				if (w == 1)  //becase walls has visible size 1x3 we are write only central line (on movement functions walls has size 3x3)
 				{
 					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
 					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
@@ -857,53 +923,55 @@ void o_put_coordinates(char player, char building_type, int coordinate_h, int co
 
 void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w)
 {
-	coordinate_h = coordinate_h + 1;
+	coordinate_h = coordinate_h + 1;  // +1 because bellow we need to know central position of obj
 	coordinate_w = coordinate_w + 1;
 
 	if (player == 'L')
 	{
-		element_number_l++;                // если убит обьект минусовать нужно
-		Elements_Info_Player_Left[b_type][element_number_l] = building_type;
+		element_number_l++;              // if the object is deleted, element_number_l need to reduce
 
+		Elements_Info_Player_Left[b_type][element_number_l] = building_type; 
+
+		//start writing datas about obj-s parametrs to players info field acording user select after shopping
 		if (building_type == '1')
-		{
-			Elements_Info_Player_Left[shots][element_number_l] = shots_1;
-			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_l;
-			Elements_Info_Player_Left[HP][element_number_l] = HP_1;
-			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
-			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+		{  //dest                   //n_field  //cell_index
+			Elements_Info_Player_Left [shots] [element_number_l]    = shots_1;
+			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_l;
+			Elements_Info_Player_Left [HP] [element_number_l]		= HP_1;
+			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
+			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
 		}
 		else if (building_type == '2')
 		{
-			Elements_Info_Player_Left[shots][element_number_l] = shots_2;
-			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_l;
-			Elements_Info_Player_Left[HP][element_number_l] = HP_2;
-			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
-			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+			Elements_Info_Player_Left [shots] [element_number_l]    = shots_2;
+			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_l;
+			Elements_Info_Player_Left [HP] [element_number_l]       = HP_2;
+			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
+			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
 		}
 		else if (building_type == '3')
 		{
-			Elements_Info_Player_Left[shots][element_number_l] = shots_3;
-			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_3;
-			Elements_Info_Player_Left[HP][element_number_l] = HP_3;
-			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
-			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+			Elements_Info_Player_Left [shots] [element_number_l]    = shots_3;
+			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_3;
+			Elements_Info_Player_Left [HP] [element_number_l]       = HP_3;
+			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
+			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
 		}
 		else if (building_type == '4')
 		{
-			Elements_Info_Player_Left[shots][element_number_l] = shots_4;
-			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_4;
-			Elements_Info_Player_Left[HP][element_number_l] = HP_4;
-			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
-			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+			Elements_Info_Player_Left [shots] [element_number_l]    = shots_4;
+			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_4;
+			Elements_Info_Player_Left [HP] [element_number_l]       = HP_4;
+			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
+			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
 		}
 		else if (building_type == '5')
 		{
-			Elements_Info_Player_Left[shots][element_number_l] = shots_5;
-			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_5;
-			Elements_Info_Player_Left[HP][element_number_l] = HP_5;
-			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
-			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+			Elements_Info_Player_Left [shots] [element_number_l]    = shots_5;
+			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_5;
+			Elements_Info_Player_Left [HP] [element_number_l]       = HP_5;
+			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
+			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
 		}
 	}
 	else if (player == 'R')
@@ -913,87 +981,78 @@ void o_write_info_about_player_odject(char player, char building_type, int coord
 
 		if (building_type == '1')
 		{
-			Elements_Info_Player_Right[shots][element_number_r] = shots_1;
-			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_r;
-			Elements_Info_Player_Right[HP][element_number_r] = HP_1;
-			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
-			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+			Elements_Info_Player_Right [shots] [element_number_r]    = shots_1;
+			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_r;
+			Elements_Info_Player_Right [HP] [element_number_r]       = HP_1;
+			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
+			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
 		}
 		else if (building_type == '2')
 		{
-			Elements_Info_Player_Right[shots][element_number_r] = shots_2;
-			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_r;
-			Elements_Info_Player_Right[HP][element_number_r] = HP_2;
-			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
-			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+			Elements_Info_Player_Right [shots] [element_number_r]    = shots_2;
+			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_r;
+			Elements_Info_Player_Right [HP] [element_number_r]       = HP_2;
+			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
+			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
 		}
 		else if (building_type == '3')
 		{
-			Elements_Info_Player_Right[shots][element_number_r] = shots_3;
-			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_3;
-			Elements_Info_Player_Right[HP][element_number_r] = HP_3;
-			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
-			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+			Elements_Info_Player_Right [shots] [element_number_r]    = shots_3;
+			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_3;
+			Elements_Info_Player_Right [HP] [element_number_r]       = HP_3;
+			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
+			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
 		}
 		else if (building_type == '4')
 		{
-			Elements_Info_Player_Right[shots][element_number_r] = shots_4;
-			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_4;
-			Elements_Info_Player_Right[HP][element_number_r] = HP_4;
-			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
-			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+			Elements_Info_Player_Right [shots] [element_number_r]    = shots_4;
+			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_4;
+			Elements_Info_Player_Right [HP] [element_number_r]       = HP_4;
+			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
+			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
 		}
 		else if (building_type == '5')
 		{
-			Elements_Info_Player_Right[shots][element_number_r] = shots_5;
-			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_5;
-			Elements_Info_Player_Right[HP][element_number_r] = HP_5;
-			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
-			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+			Elements_Info_Player_Right [shots] [element_number_r]    = shots_5;
+			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_5;
+			Elements_Info_Player_Right [HP] [element_number_r]       = HP_5;
+			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
+			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
 		}
 	}
-
+	//end of writing datas about obj-s parametrs to players info field acording user select after shopping
 	return;
 }
 
 void print_objects_info()
-{
-	/*    Cимволы в информационном поле обьектов для игрока
-		Слева :						  Справа:
-		  1	 - большая пушка за $600 -   1   (49)
-		  2  -  малая пушка за $400  -   2   (50)
-		  3  - большая стена за $200  -  3   (51)
-		  4  -  малая  стена за $100  -  4   (52)
-		  5  - золотая шахта - 5        (53)
-*/
+{  
+	//it used for devs to monitoring of changes in datas of installed/removed objects
+
+	/*    SYMBOLS in players info fields to distinguish objects
+		left :			       cost   right:     char value
+		  1	 -  Big gun        $600  -  1		   (49)
+		  2  -  Small gun      $400  -  2		   (50)
+		  3  -	big wall       $200  -  3		   (51)
+		  4  -  small wall     $100  -  4		   (52)
+		  5  -  gold mine -    $950  -  5		   (53)
+		type                           type
+	 */  
+
+
+
 	system("cls");
+
 	printf("Player 1 left: \n");
+
 	for (int h = 0; h < info_h; h++)
 	{
-		if (h == 0)
-		{
-			printf(" Type:   ");
-		}
-		else if (h == 1)
-		{
-			printf(" Shots:  ");
-		}
-		else if (h == 2)
-		{
-			printf(" Route:  ");
-		}
-		else if (h == 3)
-		{
-			printf(" Health: ");
-		}
-		else if (h == 4)
-		{
-			printf(" Cors Y: ");
-		}
-		else if (h == 5)
-		{
-			printf(" Cors X: ");
-		}
+		(h == 0) ? printf(" Type:   ") : 1;
+		(h == 1) ? printf(" Shots:  ") : 1;
+		(h == 2) ? printf(" Route:  ") : 1;
+		(h == 3) ? printf(" Health: ") : 1;
+		(h == 4) ? printf(" Cors Y: ") : 1;
+		(h == 5) ? printf(" Cors X: ") : 1;
+
 		for (int w = 0; w < info_w; w++)
 		{
 			if (Elements_Info_Player_Left[b_type][w] == 0 && Elements_Info_Player_Left[h][w] == 0)
@@ -1011,34 +1070,18 @@ void print_objects_info()
 	printf("\n");
 
 	printf("Player 2 right: \n");
+
 	for (int h = 0; h < info_h; h++)
 	{
-		if (h == 0)
-		{
-			printf(" Type:   ");
-		}
-		else if (h == 1)
-		{
-			printf(" Shots:  ");
-		}
-		else if (h == 2)
-		{
-			printf(" Route:  ");
-		}
-		else if (h == 3)
-		{
-			printf(" Health: ");
-		}
-		else if (h == 4)
-		{
-			printf(" Cors Y: ");
-		}
-		else if (h == 5)
-		{
-			printf(" Cors X: ");
-		}
+		(h == 0) ? printf(" Type:   ") : 1;
+		(h == 1) ? printf(" Shots:  ") : 1;
+		(h == 2) ? printf(" Route:  ") : 1;
+		(h == 3) ? printf(" Health: ") : 1;
+		(h == 4) ? printf(" Cors Y: ") : 1;
+		(h == 5) ? printf(" Cors X: ") : 1;
+		 
 		for (int w = 0; w < info_w; w++)
-
+		{
 			if (Elements_Info_Player_Right[b_type][w] == 0 && Elements_Info_Player_Right[h][w] == 0)
 			{
 				printf("%3c", '_');
@@ -1047,8 +1090,11 @@ void print_objects_info()
 			{
 				printf("%3d", Elements_Info_Player_Right[h][w]);
 			}
-		printf("\n");
+
+			printf("\n");
+		}
 	}
+
 	printf("\n\n\n\n\n\n Press [i] to return");
 
 	char movement_to;
@@ -1061,12 +1107,13 @@ void print_objects_info()
 
 		default: break;
 		}
+
 	} while (movement_to != 'i' && movement_to != 'I');
 
 	return;
 }
 
-void o_get_shop_actions() // принимает клавиши действий в магазине
+void o_get_shop_actions() // this func to take user input(actions) in shop
 {
 	char action_in_shop;
 	do
@@ -1074,26 +1121,29 @@ void o_get_shop_actions() // принимает клавиши действий 
 		action_in_shop = _getwch();
 		switch (action_in_shop)
 		{
-		case '<': player = 'L';  o_display_shop(); break;  //для переключения игрока в магазине  используй (Shift + <) меняет на левого   (фича для тестов)
-		case '>': player = 'R';  o_display_shop(); break;  //для переключения игрока в магазине  используй (Shift + >) меняет на правого  (фича для тестов)
-		case '1': building_type = '1'; o_move_elements(player, building_type);  break;
-		case '2': building_type = '2'; o_move_elements(player, building_type);  break;
-		case '3': building_type = '3'; o_move_elements(player, building_type);  break;
-		case '4': building_type = '4'; o_move_elements(player, building_type);  break;
-		case '5': building_type = '5'; o_move_elements(player, building_type);  break;
-		case 'N': case'n':  building_type++; building_type == '6' ? building_type = '1' : building_type; o_display_shop();   break;
-		case '9':
-			if (building_type == NULL)
-			{
-				break;
-			}
-			else
-			{
-				o_move_elements(player, building_type); break;
-			}
-		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return;	 break;
 
-		default: break;
+			case '<': player = 'L';  o_display_shop(); break;  // to switch players in the store, use (Shift + <) changes to the left (test feature)
+			case '>': player = 'R';  o_display_shop(); break;  // to switch players in the store, use (Shift + >) changes to the right (test feature)
+
+			case '1': building_type = '1'; o_move_elements(player, building_type);  break;
+			case '2': building_type = '2'; o_move_elements(player, building_type);  break;
+			case '3': building_type = '3'; o_move_elements(player, building_type);  break;
+			case '4': building_type = '4'; o_move_elements(player, building_type);  break;
+			case '5': building_type = '5'; o_move_elements(player, building_type);  break;
+
+			case 'N': case'n':  building_type++; building_type == '6' ? building_type = '1' : building_type; o_display_shop();   break; //switch to next item
+			case '9':
+				if (building_type == NULL)
+				{
+					break;
+				}
+				else
+				{
+					o_move_elements(player, building_type); break;
+				}
+			case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return;	 break;
+
+			default: break;
 		}
 	} while (action_in_shop != '9' && action_in_shop != 'p' && action_in_shop != '4' && action_in_shop != '5' && action_in_shop != 'P' && action_in_shop != '1' && action_in_shop != '2' && action_in_shop != '3');
 
@@ -1102,9 +1152,12 @@ void o_get_shop_actions() // принимает клавиши действий 
 
 void o_fill_pannels()
 {
+	const int money_lenght = 7;
 	const int name_size = 8;
+
 	char Player_1_name[name_size] = "Player1";
 	char Player_2_name[name_size] = "Player2";
+	char coins[money_lenght]	  = "Money:";
 
 	for (int w = 0; w < name_size; w++)
 	{
@@ -1117,31 +1170,33 @@ void o_fill_pannels()
 		Right_panel[2][w + 3] = Name_P2[w];
 	}
 
-
 	for (int w = 0; w < panel_width - 1; w++)
 	{
-		Left_panel[3][w] = '-';
-		Right_panel[3][w + 1] = '-';
-		Left_panel[8][w] = '-';
-		Right_panel[8][w + 1] = '-';
-		Left_panel[23][w] = 196;
+		//this characters to make appereance(construction) of pannels
+		Left_panel[3][w]       = '-';
+		Right_panel[3][w + 1]  = '-';
+		Left_panel[8][w]       = '-';
+		Right_panel[8][w + 1]  = '-';
+		Left_panel[23][w]      = 196;
 		Right_panel[23][w + 1] = 196;
-
 	}
+
+	//corners on pannels
 	Left_panel[23][9] = 217;
 	Right_panel[23][0] = 192;
 
 	Left_panel[6][2] = '$';
 	Right_panel[6][3] = '$';
 
-	const int money_lenght = 7;
-	char coins[money_lenght] = "Money:";
+
 	for (int w = 0; w < money_lenght; w++)
 	{
 		Left_panel[5][w + 1] = coins[w];
 		Right_panel[5][w + 2] = coins[w];
 	}
+
 	money_have();
+
 	return;
 }
 
@@ -1185,28 +1240,14 @@ int o_calculate_money(char player, char building_type)
 
 int o_item_price(char building_type)
 {
+	// This function is used to determine the price of the purchase building.
 	int item_price;
 
-	if (building_type == '1')
-	{
-		item_price = gun_1_price;
-	}
-	else if (building_type == '2')
-	{
-		item_price = gun_2_price;
-	}
-	else if (building_type == '3')
-	{
-		item_price = wall_1_price;
-	}
-	else if (building_type == '4')
-	{
-		item_price = wall_2_price;
-	}
-	else if (building_type == '5')
-	{
-		item_price = goldmine_price;
-	}
+	(building_type == '1') ? item_price = gun_1_price  : 1;
+	(building_type == '2') ? item_price = gun_2_price  : 1;
+	(building_type == '3') ? item_price = wall_1_price : 1;
+	(building_type == '4') ? item_price = wall_2_price : 1;
+	(building_type == '5') ? item_price = goldmine_price : 1;
 
 	return item_price;
 }
@@ -1215,17 +1256,24 @@ void money_have()
 {
 	char L1; char L2; char L3; char L4;
 	char R1; char R2; char R3; char R4;
+
 	int n1 = 0; int n2 = 0; int n3 = 0; int n4 = 0;
 	int r1 = 0; int r2 = 0; int r3 = 0; int r4 = 0;
 
-	if (total_money_left < 9999)
+	//for player1
+	if (total_money_left < 9999)  //9999 because selected leng = 4 symbols
 	{
 		n1 = (total_money_left / 1000);
 		n2 = (total_money_left - n1 * 1000) / 100;
 		n3 = (total_money_left - n1 * 1000 - n2 * 100) / 10;
 		n4 = (total_money_left - n1 * 1000 - n2 * 100 - n3 * 10);
-		Left_panel[6][7] = ' ';
-		L1 = 48 + n4;	 L2 = 48 + n3;	L3 = 48 + n2;	L4 = 48 + n1;
+		
+		L1 = 48 + n4;
+		L2 = 48 + n3;
+		L3 = 48 + n2;
+		L4 = 48 + n1;
+
+		Left_panel[6][7] = ' ';  //position of last  char of $ summ    +1
 	}
 	else
 	{
@@ -1233,14 +1281,20 @@ void money_have()
 		Left_panel[6][7] = '+';
 	}
 
+	//for player2
 	if (total_money_right < 9999)
 	{
 		r1 = (total_money_right / 1000);
 		r2 = (total_money_right - r1 * 1000) / 100;
 		r3 = (total_money_right - r1 * 1000 - r2 * 100) / 10;
 		r4 = (total_money_right - r1 * 1000 - r2 * 100 - r3 * 10);
-		Right_panel[6][8] = ' ';
-		R1 = 48 + r4; 	 R2 = 48 + r3;  R3 = 48 + r2; 	R4 = 48 + r1;
+
+		Right_panel[6][8] = ' '; //position of last  char of $ summ    +1
+
+		R1 = 48 + r4;
+		R2 = 48 + r3;
+		R3 = 48 + r2; 
+		R4 = 48 + r1;
 
 	}
 	else
@@ -1248,9 +1302,6 @@ void money_have()
 		Right_panel[6][8] = '+';
 		R1 = '9'; R2 = '9'; R3 = '9'; R4 = '9';
 	}
-
-
-
 
 	Left_panel[6][6] = L1;		Left_panel[6][5] = L2;	 	Left_panel[6][4] = L3;		Left_panel[6][3] = L4;
 	Right_panel[6][7] = R1;		Right_panel[6][6] = R2; 	Right_panel[6][5] = R3; 	Right_panel[6][4] = R4;
@@ -1260,10 +1311,18 @@ void money_have()
 
 bool o_check_free_zone(int current_position_h, int current_position_w, char building_type)
 {
+  #define BTL_F_M  Batle_field[main_f]
+  #define CUR_POS_h current_position_h
+  #define CUR_POS_w current_position_w
 
-	if (Batle_field[main_f][current_position_h + 0][current_position_w] != 32 || Batle_field[main_f][current_position_h + 0][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 0][current_position_w + 2] != 32
-		|| Batle_field[main_f][current_position_h + 1][current_position_w] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w + 2] != 32
-		|| Batle_field[main_f][current_position_h + 2][current_position_w] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w + 2] != 32)
+	//This function cheks opportunity to install objects by current coordinates
+	// Start point of calculation is central coors of item
+
+	//checking of empty zone by current oblect coors for any object
+	if (   BTL_F_M [CUR_POS_h + 0][CUR_POS_w] != 32 || BTL_F_M [CUR_POS_h + 0][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 0][CUR_POS_w + 2] != 32
+		|| BTL_F_M [CUR_POS_h + 1][CUR_POS_w] != 32 || BTL_F_M [CUR_POS_h + 1][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 2] != 32
+		|| BTL_F_M [CUR_POS_h + 2][CUR_POS_w] != 32 || BTL_F_M [CUR_POS_h + 2][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 2] != 32  
+	   )
 	{
 		printf("\a\r                           Zone is already taken                           ");
 		Sleep(1500);
@@ -1271,11 +1330,12 @@ bool o_check_free_zone(int current_position_h, int current_position_w, char buil
 	}
 	else if (building_type == '1' || building_type == '2' || building_type == '5')
 	{
+		//checking neighbor cells around obj 
 		if (
-			Batle_field[main_f][current_position_h - 1][current_position_w] != 32 || Batle_field[main_f][current_position_h - 1][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h - 1][current_position_w + 2] != 32         //top
-			|| Batle_field[main_f][current_position_h + 3][current_position_w] != 32 || Batle_field[main_f][current_position_h + 3][current_position_w + 1] != 32 || Batle_field[main_f][current_position_h + 3][current_position_w + 2] != 32    //bottom
-			|| Batle_field[main_f][current_position_h + 0][current_position_w - 1] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w - 1] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w - 1] != 32 //left
-			|| Batle_field[main_f][current_position_h + 0][current_position_w + 3] != 32 || Batle_field[main_f][current_position_h + 1][current_position_w + 3] != 32 || Batle_field[main_f][current_position_h + 2][current_position_w + 3] != 32 //right
+			   BTL_F_M [CUR_POS_h - 1][CUR_POS_w    ] != 32 || BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 2] != 32       //top
+			|| BTL_F_M [CUR_POS_h + 3][CUR_POS_w    ] != 32 || BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 2] != 32		//bottom
+			|| BTL_F_M [CUR_POS_h + 0][CUR_POS_w - 1] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w - 1] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w - 1] != 32       //left
+			|| BTL_F_M [CUR_POS_h + 0][CUR_POS_w + 3] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 3] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 3] != 32	   //right
 			)
 		{
 			printf("\a\r                      Too close. You can not build here                      ");
@@ -1285,10 +1345,12 @@ bool o_check_free_zone(int current_position_h, int current_position_w, char buil
 
 	}
 	else if (building_type == '3' || building_type == '4')
-	{
-		if (
-			Batle_field[main_f][current_position_h - 1][current_position_w + 1] != 32        //top
-			|| Batle_field[main_f][current_position_h + 3][current_position_w + 1] != 32    //bottom
+	{    
+		//checking neighbor cells around obj  (only top and bottom because left and right chars of walls  it is char'32' which used like empty)
+
+		if ( 
+			   BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 1] != 32         //top
+			|| BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 1] != 32        //bottom
 			)
 		{
 			printf("\a\r                      Too close. You can not build here                      ");
@@ -1302,10 +1364,12 @@ bool o_check_free_zone(int current_position_h, int current_position_w, char buil
 
 void give_item_on_start(char player, char building_type, int centre_h, int centre_w)
 {
+	//write info about player obj whihc gives on start
 	int *item = o_building_select(player, building_type);
 
 	o_put_coordinates(player, building_type, centre_h - 1, centre_w - 1);
 	o_write_info_about_player_odject(player, building_type, centre_h - 1, centre_w - 1);
+
 	for (int h = 0, i = 0; h < Building_height; h++)
 	{
 		for (int w = 0; w < Building_width; w++, i++)
@@ -1319,11 +1383,12 @@ void give_item_on_start(char player, char building_type, int centre_h, int centr
 
 void start_items_list()
 {
-	//give_item_on_start(char player, char building_type, int centre_h, int centre_w)
-	// границы полей; 
+	//heare you can give_item_on_start for player (don't mix up zones and players)
+
+	// borders of players zones; 
 	// player 'L'     ↑  1                     // player 'R'     ↑  1         
 	//            1 <   > 27                   //           31 <   > 57
-	//                ↓  22                   //     		     ↓  22
+	//                ↓  22                    //    		     ↓  22
 
 
 	give_item_on_start('L', '5', 4, 2);
@@ -1336,3 +1401,395 @@ void start_items_list()
 
 	return;
 }
+
+//animation of start and victory screans
+int start_screen()
+{
+	system("mode CON: lines=25 cols=79");
+	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+#define RESET SetConsoleTextAttribute(col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+#define STOP system("pause");
+#define NEXT_SLIDE  Sleep(300);system("cls");
+
+
+	BLUE
+
+		NEXT_SLIDE  cout << R"(
+
+
+
+
+                                  
+                                         _ 
+                                        | |
+                                        | |
+                                    _   | |
+                                   | |__| |
+                                    \____/ 
+    	)";
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+ 
+                        _ 
+                       | |  
+                       | |                                          ___  
+                   _   | |                                         / _ \ 
+                  | |__| |                                        | (_) |
+                   \____/                                          \___/
+)";
+	NEXT_SLIDE
+
+		cout << R"(
+
+
+
+
+ 
+       _  
+      | |
+      | |                                ___  
+  _   | |                               / _ \ 
+ | |__| |                              | (_) |
+  \____/                                \___/ 
+   )";
+
+	NEXT_SLIDE  cout << R"( 
+
+
+
+
+
+       _  
+      | | 
+      | |   ___                                            _ __ ___
+  _   | |  / _ \                                          | '_ ` _ \
+ | |__| | | (_) |                                         | | | | | |
+  \____/   \___/                                          |_| |_| |_|
+   )";
+
+	NEXT_SLIDE  cout << R"(
+
+
+   
+ 
+     
+       _                                         
+      | |                                        
+      | |   ___                        _ __ ___  
+  _   | |  / _ \                      | '_ ` _ \ 
+ | |__| | | (_) |                     | | | | | |
+  \____/   \___/                      |_| |_| |_|                                         
+      )";
+
+	NEXT_SLIDE  cout << R"(   
+
+
+
+
+     
+       _                                                 _     
+      | |                                               | |    
+      | |   ___        _ __ ___                         | |__  
+  _   | |  / _ \      | '_ ` _ \                        | '_ \ 
+ | |__| | | (_) |     | | | | | |                       | |_) |
+  \____/   \___/      |_| |_| |_|                       |_.__/                                                          
+      )";
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+ 
+        
+       _                               _ 
+      | |                             | |
+      | |   ___      _ __ ___         | |__              _ __ 
+  _   | |  / _ \    | '_ ` _ \        | '_ \            | '__|
+ | |__| | | (_) |   | | | | | |       | |_) |           | |   
+  \____/   \___/    |_| |_| |_|       |_.__/            |_|                                                 
+ )";
+
+	NEXT_SLIDE
+		cout << R"( 
+
+
+
+
+
+       _                           _  
+      | |                         | |
+      | |   ___      _ __ ___     | |__        _ __ 
+  _   | |  / _ \    | '_ ` _ \    | '_ \      | '__|
+ | |__| | | (_) |   | | | | | |   | |_) |     | |   
+  \____/   \___/    |_| |_| |_|   |_.__/      |_|   
+ )";
+
+
+
+
+	NEXT_SLIDE
+		cout << R"(
+
+
+
+
+
+       _                         _                        ____ 
+      | |                       | |                      |  _ \ 
+      | |   ___    _ __ ___     | |__        _ __        | |_) |
+  _   | |  / _ \  | '_ ` _ \    | '_ \      | '__|       |  _ < 
+ | |__| | | (_) | | | | | | |   | |_) |     | |          | |_) |
+  \____/   \___/  |_| |_| |_|   |_.__/      |_|          |____/ 
+ )";
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+   
+       _                       _                ____           ____
+      | |                     | |              |  _ \         / __ \
+      | |   ___    _ __ ___   | |__    _ __    | |_) |       | |  | |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__|   |  _ <        | |  | |
+ | |__| | | (_) | | | | | | | | |_) | | |      | |_) |       | |__| |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|      |____/         \____/                                                           
+ )";
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____       ____        ____
+      | |                     | |            |  _ \     / __ \      / __ \ 
+      | |   ___    _ __ ___   | |__    _ __  | |_) |   | |  | |    | |  | |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <    | |  | |    | |  | |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) |   | |__| |    | |__| |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/     \____/      \____/ 
+ )";
+	NEXT_SLIDE  cout << R"( 
+
+
+
+
+
+       _                       _              ____     ____      ____     __  _
+      | |                     | |            |  _ \   / __ \    / __ \   |  \/ 
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | |  | |  | |  | \  /
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | |  | |  | |  | |\/|
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| |  | |__| |  | |  |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/    \____/   |_|  |_                                                                           
+ )";
+
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____     ____     ____    __  __ 
+      | |                     | |            |  _ \   / __ \   / __ \  |  \/  |
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | | | |  | | | \  / |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | | | |  | | | |\/| |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| | | |__| | | |  | |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
+)";
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____     ____     ____    __  __ 
+      | |                     | |            |  _ \   / __ \   / __ \  |  \/  |
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | | | |  | | | \  / |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | | | |  | | | |\/| |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| | | |__| | | |  | |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
+)";
+
+
+
+	NEXT_SLIDE  cout << R"(
+
+
+
+
+
+       _                       _              ____     ____     ____    __  __ 
+      | |                     | |            |  _ \   / __ \   / __ \  |  \/  |
+      | |   ___    _ __ ___   | |__    _ __  | |_) | | |  | | | |  | | | \  / |
+  _   | |  / _ \  | '_ ` _ \  | '_ \  | '__| |  _ <  | |  | | | |  | | | |\/| |
+ | |__| | | (_) | | | | | | | | |_) | | |    | |_) | | |__| | | |__| | | |  | |
+  \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
+)";
+
+	RESET
+
+
+		printf("\n\n\n\n\n\n\t\t\t Press [any] key to continue.");
+
+	_getwch();
+
+	return 0;
+}
+
+void Player1_WIN()
+{
+	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+#define RESET SetConsoleTextAttribute  (col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+#define GREEN SetConsoleTextAttribute  (col, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+#define NEXT_SLIDE  Sleep(300);system("cls");
+	
+	BLUE
+	
+	
+	for (int i = 0; i < 6; i++)
+	{
+		NEXT_SLIDE
+			cout << R"(
+   _______   __         ______   __      __  ________  _______           __ 
+  /       \ /  |       /      \ /  \    /  |/        |/       \        _/  | 
+  |||||||  ||| |      /||||||  |||  \  /||/ ||||||||/ |||||||  |      / || |
+  || |__|| ||| |      || |__|| | ||  \/||/  || |__    || |__|| |      |||| |
+  ||    ||/ || |      ||    || |  ||  ||/   ||    |   ||    ||<         || |
+  |||||||/  || |      |||||||| |   ||||/    |||||/    |||||||  |        || |
+  || |      || |_____ || |  || |    || |    || |_____ || |  || |       _|| |_ 
+  || |      ||       ||| |  || |    || |    ||       ||| |  || |      / ||   |
+  ||/       ||||||||/ ||/   ||/     ||/     ||||||||/ ||/   ||/       ||||||/
+)";
+		NEXT_SLIDE
+
+			cout << R"(
+   _______   __         ______   __      __  ________  _______           __   
+  /       \ /  |       /      \ /  \    /  |/        |/       \        _/  |
+  |||||||  ||| |      /||||||  |||  \  /||/ ||||||||/ |||||||  |      / || |
+  || |__|| ||| |      || |__|| | ||  \/||/  || |__    || |__|| |      |||| |
+  ||    ||/ || |      ||    || |  ||  ||/   ||    |   ||    ||<         || |
+  |||||||/  || |      |||||||| |   ||||/    |||||/    |||||||  |        || |
+  || |      || |_____ || |  || |    || |    || |_____ || |  || |       _|| |_
+  || |      ||       ||| |  || |    || |    ||       ||| |  || |      / ||   |
+  ||/       ||||||||/ ||/   ||/     ||/     ||||||||/ ||/   ||/       ||||||/
+                                                                
+                                                            
+                                                           
+                 __       __        ______        __    __ 
+                /  |  _  /  |      /      |      /  \  /  |
+                || | / \ || |      ||||||/       ||  \ || |
+                || |/|  \|| |        || |        |||  \|| |
+                || /|||  || |        || |        ||||  || |
+                || ||/|| || |        || |        || || || |
+                ||||/  |||| |       _|| |_       || ||||| |
+                |||/    ||| |      / ||   |      || | ||| |
+                ||/      ||/       ||||||/       ||/   ||/  )";
+
+	}
+	_getwch();
+	RESET
+		return;
+}
+
+void Player2_WIN()
+{
+	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+
+#define RESET SetConsoleTextAttribute  (col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+#define GREEN SetConsoleTextAttribute  (col, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+#define NEXT_SLIDE  Sleep(300);system("cls");
+
+	BLUE
+	
+
+	for (int i = 0; i < 6; i++)
+	{
+
+		NEXT_SLIDE
+			cout << R"(
+ _______   __         ______  __      __  ________  _______          ______  
+|       \ |  \       /      \|  \    /  \|        \|       \        /      \ 
+| |||||||\| ||      |  ||||||\\||\  /  ||| ||||||||| |||||||\      |  ||||||\
+| ||__/ ||| ||      | ||__| || \||\/  || | ||__    | ||__| ||       \||__| ||
+| ||    ||| ||      | ||    ||  \||  ||  | ||  \   | ||    ||       /      ||
+| ||||||| | ||      | ||||||||   \||||   | |||||   | |||||||\      |  |||||| 
+| ||      | ||_____ | ||  | ||   | ||    | ||_____ | ||  | ||      | ||_____ 
+| ||      | ||     \| ||  | ||   | ||    | ||     \| ||  | ||      | ||     \
+ \||       \|||||||| \||   \||    \||     \|||||||| \||   \||       \||||||||
+)";
+
+
+		NEXT_SLIDE
+
+			cout << R"(
+ _______   __         ______  __      __  ________  _______          ______  
+|       \ |  \       /      \|  \    /  \|        \|       \        /      \ 
+| |||||||\| ||      |  ||||||\\||\  /  ||| ||||||||| |||||||\      |  ||||||\
+| ||__/ ||| ||      | ||__| || \||\/  || | ||__    | ||__| ||       \||__| ||
+| ||    ||| ||      | ||    ||  \||  ||  | ||  \   | ||    ||       /      ||
+| ||||||| | ||      | ||||||||   \||||   | |||||   | |||||||\      |  |||||| 
+| ||      | ||_____ | ||  | ||   | ||    | ||_____ | ||  | ||      | ||_____ 
+| ||      | ||     \| ||  | ||   | ||    | ||     \| ||  | ||      | ||     \
+ \||       \|||||||| \||   \||    \||     \|||||||| \||   \||       \||||||||
+                                                          
+                                        
+                             
+               __       __        ______        __    __                       
+              |  \  _  |  \      |      \      |  \  |  \                      
+              | || / \ | ||       \||||||      | ||\ | ||                      
+              | ||/  |\| ||        | ||        | |||\| ||                      
+              | ||  |||\ ||        | ||        | ||||\ ||                      
+              | || ||\||\||        | ||        | ||\|| ||                      
+              | ||||  \||||       _| ||_       | || \||||                      
+              | |||    \|||      |   || \      | ||  \|||                      
+               \||      \||       \||||||       \||   \||
+)";
+	}
+	RESET
+		_getwch();
+	return;
+}
+
+void TIE()
+{
+	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	for (short i = 0; i < 6; i++)
+	{
+		if (i % 2 == 0)
+			BLUE
+		else
+			GREEN
+
+			NEXT_SLIDE
+
+			cout << R"(
+
+	 .----------------.    .----------------.    .----------------. 
+	| .--------------. |  | .--------------. |  | .--------------. |
+	| |  _________   | |  | |     _____    | |  | |  _________   | |
+	| | |  _   _  |  | |  | |    |_   _|   | |  | | |_   ___  |  | |
+	| | |_/ | | \_|  | |  | |      | |     | |  | |   | |_  \_|  | |
+	| |     | |      | |  | |      | |     | |  | |   |  _|  _   | |
+	| |    _| |_     | |  | |     _| |_    | |  | |  _| |___/ |  | |
+	| |   |_____|    | |  | |    |_____|   | |  | | |_________|  | |
+	| |              | |  | |              | |  | |              | |
+	| '--------------' |  | '--------------' |  | '--------------' |
+	 '----------------'    '----------------'    '----------------' 
+       	)";
+	}
+	RESET
+}
+//end animation of start and victory screans
