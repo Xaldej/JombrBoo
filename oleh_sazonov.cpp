@@ -7,8 +7,8 @@ char Right_panel[field_height][panel_width];
 
 char Name_P1[name_lenght] = " Jombr";
 char Name_P2[name_lenght] = " BooM ";
-int total_money_left = 950;
-int total_money_right = 9500;
+int total_money_left = 1200;
+int total_money_right = 1200;
 
 //[0][*][*] - main field;
 //[1][*][*] -copy of field for displaying objects on installation of object 
