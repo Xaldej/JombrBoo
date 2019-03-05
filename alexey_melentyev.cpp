@@ -200,6 +200,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			Player_Shots[3][number_of_shot]--;
 			//if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
 		}
@@ -209,6 +210,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			Player_Shots[3][number_of_shot]--;
 			//if (MainField[m][n] == '-') MainField[m][n] = ' ';			
 			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
 		}
@@ -227,6 +229,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 				Player_Shots[3][number_of_shot]--;
 				//if (MainField[m][n] == '-') MainField[m][n] = ' '; 
 				if (MainField[m][n] == '=') MainField[m][n] = '-';
+				else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 				else MainField[m][n] = Batle_field[1][m][n];
 				return 1;
 			}
@@ -254,6 +257,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			Player_Shots[3][number_of_shot]++;
 			//if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
 		}		
@@ -263,6 +267,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			Player_Shots[3][number_of_shot]++;
 			//if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
 		}
@@ -281,6 +286,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 				Player_Shots[3][number_of_shot]++;
 				//if (MainField[m][n] == '-') MainField[m][n] = ' '; 
 				if (MainField[m][n] == '=') MainField[m][n] = '-';
+				else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 				else MainField[m][n] = Batle_field[1][m][n];
 				return 1;
 			}
@@ -289,7 +295,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 				MakeADamage(Player_1_Data, Player_2_Data, Player_Shots, number_of_shot, player_number, number_of_element_to_damage);
 				DeleteInfoFromShots(Player_Shots, number_of_shot, player_number);
 				//if (MainField[m][n] == '-') MainField[m][n] = ' '; 
-				if (MainField[m][n] == '=') MainField[m][n] = '-';	
+				if (MainField[m][n] == '=') MainField[m][n] = '-';
+				else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 				else MainField[m][n] = Batle_field[1][m][n];
 				return 0;
 			}
