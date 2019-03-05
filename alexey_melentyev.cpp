@@ -506,7 +506,7 @@ bool check_win()
 
 void give_money()
 {
-	int add_money_per_one_building = 150;
+	int add_money_per_one_building = 50;
 	//type=53
 	int amount_building_player_1 = 0;
 	int amount_building_player_2 = 0;	

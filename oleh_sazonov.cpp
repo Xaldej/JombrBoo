@@ -7,8 +7,8 @@ char Right_panel[field_height][panel_width];
 
 char Name_P1[name_lenght] = " Jombr";
 char Name_P2[name_lenght] = " Boo  ";
-int total_money_left = 1200;
-int total_money_right = 1200;
+int total_money_left = 700;
+int total_money_right = 700;
 
 int Batle_field[n_fields][field_height][field_width];  //[0][*][*] - основное поле; [1][*][*] - копия поля для прорисовки поля во время установки обьектов
 int Shop_field[field_height][field_width + panel_width + panel_width]; // главный экран магазина
@@ -186,7 +186,7 @@ void o_move_elements(char player, char building_type) //action_in
 
 
 	char movement_to = 'X';
-	while (movement_to != '9' || movement_to != '0')
+	while (movement_to != '9' || movement_to != '-')
 	{
 		/*
 		if (give_money() == true)
