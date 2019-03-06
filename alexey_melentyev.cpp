@@ -423,9 +423,9 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 		else if (MainField[m][n - 1] == ' ' || MainField[m][n - 1] == '.')
 		{
 			MainField[m][n - 1] = '-';
-			Player_Shots[3][number_of_shot]--;
-			//if (MainField[m][n] == '-') MainField[m][n] = ' ';
-			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			Player_Shots[3][number_of_shot]--;			
+			if (n==30) MainField[m][n] = '.';
+			else if (MainField[m][n] == '=') MainField[m][n] = '-';
 			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
@@ -434,8 +434,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 		{
 			MainField[m][n - 1] = '=';
 			Player_Shots[3][number_of_shot]--;
-			//if (MainField[m][n] == '-') MainField[m][n] = ' ';			
-			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			if (n == 30) MainField[m][n] = '.';
+			else if (MainField[m][n] == '=') MainField[m][n] = '-';
 			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
@@ -453,8 +453,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			{
 				//MainField[m][n - 1] = '-'; or we can change visualisation for cases when shots is under user's own element
 				Player_Shots[3][number_of_shot]--;
-				//if (MainField[m][n] == '-') MainField[m][n] = ' '; 
-				if (MainField[m][n] == '=') MainField[m][n] = '-';
+				if (n == 30) MainField[m][n] = '.';
+				else if (MainField[m][n] == '=') MainField[m][n] = '-';
 				else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 				else MainField[m][n] = Batle_field[1][m][n];
 				return 1;
@@ -481,8 +481,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 		{
 			MainField[m][n + 1] = '-';
 			Player_Shots[3][number_of_shot]++;
-			//if (MainField[m][n] == '-') MainField[m][n] = ' ';
-			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			if (n == 30) MainField[m][n] = '.';
+			else if (MainField[m][n] == '=') MainField[m][n] = '-';
 			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
@@ -491,8 +491,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 		{
 			MainField[m][n + 1] = '=';
 			Player_Shots[3][number_of_shot]++;
-			//if (MainField[m][n] == '-') MainField[m][n] = ' ';
-			if (MainField[m][n] == '=') MainField[m][n] = '-';
+			if (n == 30) MainField[m][n] = '.';
+			else if (MainField[m][n] == '=') MainField[m][n] = '-';
 			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
@@ -510,8 +510,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			{
 				//MainField[m][n + 1] = '-';
 				Player_Shots[3][number_of_shot]++;
-				//if (MainField[m][n] == '-') MainField[m][n] = ' '; 
-				if (MainField[m][n] == '=') MainField[m][n] = '-';
+				if (n == 30) MainField[m][n] = '.';
+				else if (MainField[m][n] == '=') MainField[m][n] = '-';
 				else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 				else MainField[m][n] = Batle_field[1][m][n];
 				return 1;
