@@ -8,7 +8,11 @@
 using namespace std;
 
 
+
+
 //размеры полей
+enum object_types { BIG_GUN = 49, SMALL_GUN = 50, BIG_WALL = 51, SMALL_WALL = 52, GOLDMINE = 53 };
+
 const int field_height = 24;
 const int field_width = 59;
 const int panel_width = 10;
@@ -22,7 +26,6 @@ const int main_f = 0;
 const int copy_f = 1;
 const int h_cors_f = 2;
 const int w_cors_f = 3;
-
 
 //левая и правая панели;
 extern char Left_panel[field_height][panel_width];
@@ -47,49 +50,24 @@ const int info_w = 20;
 extern int Elements_Info_Player_Left[info_h][info_w];
 extern int Elements_Info_Player_Right[info_h][info_w];
 
-//параметры обьектов
+
 
 //финансы_start
-const int gun_1_price = 600;
-const int gun_2_price = 400;
-const int wall_1_price = 200;
-const int wall_2_price = 100;
-const int goldmine_price = 950;
+enum cost_of_buildings { gun_1_price = 600, gun_2_price = 400, wall_1_price = 200, wall_2_price = 100, goldmine_price = 950 };
 
 extern int total_money_left;
 extern int total_money_right;
 
-
 //end_финансы
 
-//выстрелы
-const int shots_1 = 20;
-const int shots_2 = 10;
-const int shots_3 = 0;
-const int shots_4 = 0;
-const int shots_5 = 0;
+//параметры обьектов
+enum shots_building_have { shots_1 = 20, shots_2 = 10, shots_3 = 0, shots_4 = 0, shots_5 = 0 };
 
-//направление выстрела
-const int sh_route_l = 1;
-const int sh_route_r = -1;
-const int sh_route_3 = 0;
-const int sh_route_4 = 0;
-const int sh_route_5 = 0;
+enum shots_route_of_buildings { sh_route_l = 1, sh_route_r = -1, sh_route_3 = 0, sh_route_4 = 0, sh_route_5 = 0 };
 
-//количество 
-const int HP_1 = 10;
-const int HP_2 = 5;
-const int HP_3 = 20;
-const int HP_4 = 10;
-const int HP_5 = 5;
+enum health_point_of_building { HP_1 = 10, HP_2 = 5, HP_3 = 20, HP_4 = 10, HP_5 = 5 };
 
-//строки для info
-const int b_type = 0;	// тип элемента
-const int shots = 1;	// количество выстрелов
-const int sh_route = 2; // направление выстрела
-const int HP = 3;		// количество жизней
-const int h_cor = 4;    // h координата центра обекта (высота  || Y)
-const int w_cor = 5;     // w координата центра обекта (ширина || X)
+enum  info_field_indexes { b_type = 0, shots = 1, sh_route = 2, HP = 3, h_cor = 4, w_cor = 5 };
 
 //размеры зданий
 const int Building_width = 3;
@@ -99,6 +77,7 @@ extern char building_type;  // тип здания. инициализируется при выборе в магазин
 extern char player; //('R' - правый игрок player2; 'L' - левый игрок player1)
 
 extern int *arr;
+
 extern int Building[Building_height][Building_width];
 
 extern int current_position_h;
@@ -109,19 +88,30 @@ extern int coordinate_h;
 extern int coordinate_w;
 
 //функции
-void o_get_field_copy();															//отображает копию основного екрана в момент перемещения обьектов(пушек)
+															//отображает копию основного екрана в момент перемещения обьектов(пушек)
 void o_buy_item(char player, char building_type);									// переносит содержание временного масива во время установки пушек в главное поле
-void o_display_batle_field(int panel_width, int field_height, int field_width);		//отображает основной (главный) игровой екран
 int *o_building_select(char player, char building_type);							//используется указатель на масив символов в качестве возвращаемого значения для функции перемещения орудий
-void o_fill_batle_field_after_start();												//заполняет игровое поле после старта
 
-void o_print_copy_batle_field();													//отображает на екране копию основного поля 
-void o_fill_shop();																	//заполняет поле магазина 
+bool o_check_free_zone(int current_position_h, int current_position_w, char building_type); //проверяет свободно ли поле для установки обьекта;
+int o_calculate_money(char player, char building_type);
+
+void o_display_batle_field(int panel_width, int field_height, int field_width);		//отображает основной (главный) игровой екран
+void o_display_copy_batle_field();													//отображает на екране копию основного поля 
 void o_display_marker_in_store(char building_type);									// отображает индикатор(скобки) во время выбора пушек в магазине
 int	o_display_shop();																// отображает екран магазина
 
+void o_fill_shop();																	//заполняет поле магазина 
+void o_fill_batle_field_after_start();												//заполняет игровое поле после старта
+void o_fill_pannels();
+
+void o_get_field_copy();
 void o_get_shop_actions();															// принимает ввод в магазине
 void o_get_main_screen_actions();													//принимает ввод на главном екране
+
+void give_item_on_start(char player, char building_type, int centre_h, int centre_w);
+void give_money();
+
+int o_item_price(char building_type);
 
 // функции перемещения и установки обьектов
 void o_move_elements(char player, char building_type);
@@ -129,27 +119,27 @@ void o_move_up(char player, char building_type);			// перемещает обьект вверх
 void o_move_down(char player, char building_type);			// перемещает обьект вниз
 void o_move_left(char player, char building_type);			// перемещает обьект влево
 void o_move_right(char player, char building_type);			// перемещает обьект вправо
+void money_have();
+
 void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w); // создает обьект указанными символами в масиве координат;
 
+void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w);  // записывает данные об обьектах игрока
+
+void play();
+
+void start_items_list();
+
+void Start_Screen_Animation();
+void Player1_WIN_Animation();
+void Player2_WIN_Animation();
+void TIE_Animation();
+
+//for_dev_and_debug
 void o_display_h_coordinates_field();			//отображает координатное поле со значениями по высоте (у координаты)
 void o_display_w_coordinates_field();			//отображает координатное поле со значениями по ширине (x координаты)
-
-void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w);  // записывает данные об обьектах игрока
 void print_objects_info();
+//end_for_dev_and_debug
 
-void o_fill_pannels();
-
-int o_calculate_money(char player, char building_type);
-int o_item_price(char building_type);
-void give_money();
-void money_have();
-void play();
-bool o_check_free_zone(int current_position_h, int current_position_w, char building_type); //проверяет свободно ли поле для установки обьекта;
-void give_item_on_start(char player, char building_type, int centre_h, int centre_w);
-void start_items_list();
-int start_screen();
-void Player1_WIN();
-void Player2_WIN();
 
 /***********alexey_melentyev****************/
 
@@ -159,7 +149,6 @@ void Player2_WIN();
 #define data_M info_h
 #define data_N info_w
 #define MainField Batle_field[0]
-
 
 const int shots_M = 4, shots_N = 500;
 extern int Player_1_Shots[shots_M][shots_N]; // {0} to make it empty

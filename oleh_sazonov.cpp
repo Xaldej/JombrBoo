@@ -1,5 +1,11 @@
 ﻿#pragma once
 #include "head.h"
+HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+#define colorRESET SetConsoleTextAttribute  (col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#define colorBLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+#define colorGREEN SetConsoleTextAttribute  (col, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+#define NEXT_SLIDE  Sleep(300);system("cls");
+
 
 // Left & Right info panels which not comtained in main field 
 char Left_panel[field_height][panel_width];
@@ -13,23 +19,21 @@ int total_money_right = 1200;
 //[0][*][*] - main field;
 //[1][*][*] -copy of field for displaying objects on installation of object 
 
-int Batle_field[n_fields][field_height][field_width];   
+int Batle_field[n_fields][field_height][field_width];
 int Shop_field[field_height][field_width + panel_width + panel_width]; // main shop screen
 
 //it defines index of cell for loging info about installed objects
 // -1 because will be use ++ on activation of function. Then first value will bee equall 0
-int element_number_l = -1; 
+int element_number_l = -1;
 int element_number_r = -1;
-
 
 int Elements_Info_Player_Left[info_h][info_w];
 int Elements_Info_Player_Right[info_h][info_w];
 
-
- // Type of object for initialization on first opening of shop
+// Type of object for initialization on first opening of shop
 //it uses in functions of movement and displaying 
 
-char building_type = '1';
+char building_type = BIG_GUN;
 
 char player; //('R' - player2; 'L' - player1)
 
@@ -44,58 +48,206 @@ int current_pos_extr_w;
 int coordinate_h;
 int coordinate_w;
 
-void o_fill_batle_field_after_start()
+
+void o_buy_item(char player, char building_type)
 {
-	//this function fills main field and pannels after start 
-	//here you can set any characters to fiil main field
-	//h - height  w - width
-	for (int h = 0; h < panel_height; h++)
+	//this function write data about obj type, position  and characteristic to the info arrays
+	int *item = o_building_select(player, building_type);
+
+	for (int h = 0, i = 0; h < Building_height; h++)
 	{
-		for (int w = 0; w < panel_width; w++)
+		for (int w = 0; w < Building_width; w++, i++)
 		{
-			if (w == panel_width - 1)
-			{
-				Left_panel[h][w] = '|';
-			}
-			else
-			{
-				Left_panel[h][w] = ' ';
-			}
+			Batle_field[main_f][current_position_h + h][current_position_w + w] = *(item + i);
 		}
 	}
 
-	for (int h = 0; h < field_height; h++)
-	{
-		for (int w = 0; w < field_width; w++)
-		{
-			if (w == (field_width / 2) + 1)
-			{
-				Batle_field[main_f][h][w] = '.';
-				Batle_field[copy_f][h][w] = '.';
-			}
-			else
-			{
-				Batle_field[main_f][h][w] = ' ';
-			}
-		}
-	}
+	o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
+	o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
 
-	for (int h = 0; h < panel_height; h++) {
-		for (int w = 0; w < panel_width; w++)
-		{
-			if (w == 0)
-			{
-				Right_panel[h][w] = '|';
-			}
-			else
-			{
-				Right_panel[h][w] = ' ';
-			}
-		}
-
-	}
 	return;
 }
+
+int *o_building_select(char player, char building_type) //switchs build according to user select (returns pointer to array of building symbols in int type)
+{
+	int *building = new int[(Building_height*Building_width)];  //pointer to array of characters vallues acordig to user select
+
+
+	//here contains integer vallues of character on ASCII table for buildings visualisation
+	int Wall1[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 };
+	int Wall_cheap1[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 };
+	int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 };
+
+	int Gun1[(Building_height*Building_width)] = { 178,178,178,178,204,205,178,178,178 };
+	int Gun2[Building_height*Building_width] = { 178,178,178,205,185,178,178,178,178 };
+
+	int Gun_cheap1[(Building_height*Building_width)] = { 176,176,176,176,199,196,176,176,176 };
+	int Gun_cheap2[Building_height*Building_width] = { 176,176,176,196,182,176,176,176,176 };
+
+	if (building_type == BIG_WALL) //bigg wall
+	{
+
+		for (int i = 0; i < (Building_height*Building_width); i++)
+		{
+			building[i] = Wall1[i];
+		}
+		return building;
+	}
+	else if (building_type == SMALL_WALL) //small wall
+	{
+		for (int i = 0; i < (Building_height*Building_width); i++)
+		{
+			building[i] = Wall_cheap1[i];
+		}
+		return building;
+	}
+	else if (building_type == GOLDMINE)  //goldmine building
+	{
+		for (int i = 0; i < (Building_height*Building_width); i++)
+		{
+			building[i] = Goldmine[i];
+		}
+		return building;
+	}
+
+	switch (player)
+	{
+	case 'L':
+		if (building_type == BIG_GUN) //big gun
+		{
+			for (int i = 0; i < (Building_height*Building_width); i++)
+			{
+				building[i] = Gun1[i];
+			}
+			return building;
+		}
+		else if (building_type == SMALL_GUN) //small gun
+		{
+			for (int i = 0; i < (Building_height*Building_width); i++)
+			{
+				building[i] = Gun_cheap1[i];
+			}
+			return building;
+		}
+
+
+	case 'R':
+		if (building_type == BIG_GUN)  //big gun
+		{
+			for (int i = 0; i < (Building_height*Building_width); i++)
+			{
+				building[i] = Gun2[i];
+			}
+			return building;
+		}
+		else if (building_type == SMALL_GUN) //small gun
+		{
+			for (int i = 0; i < (Building_height*Building_width); i++)
+			{
+				building[i] = Gun_cheap2[i];
+			}
+			return building;
+		}
+		break;
+
+	default:
+		break;
+	}
+	return 0;
+}
+
+bool o_check_free_zone(int current_position_h, int current_position_w, char building_type)
+{
+#define BTL_F_M  Batle_field[main_f]
+#define CUR_POS_h current_position_h
+#define CUR_POS_w current_position_w
+
+	//This function cheks opportunity to install objects by current coordinates
+	// Start point of calculation is central coors of item
+
+	//checking of empty zone by current oblect coors for any object
+	if (BTL_F_M[CUR_POS_h + 0][CUR_POS_w] != 32 || BTL_F_M[CUR_POS_h + 0][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 0][CUR_POS_w + 2] != 32
+		|| BTL_F_M[CUR_POS_h + 1][CUR_POS_w] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 2] != 32
+		|| BTL_F_M[CUR_POS_h + 2][CUR_POS_w] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 2] != 32
+		)
+	{
+		printf("\a\r                           Zone is already taken                           ");
+		Sleep(1500);
+		return false;
+	}
+	else if (building_type == BIG_GUN || building_type == SMALL_GUN || building_type == GOLDMINE)
+	{
+		//checking neighbor cells around obj 
+		if (
+			BTL_F_M[CUR_POS_h - 1][CUR_POS_w] != 32 || BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 2] != 32       //top
+			|| BTL_F_M[CUR_POS_h + 3][CUR_POS_w] != 32 || BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 2] != 32		//bottom
+			|| BTL_F_M[CUR_POS_h + 0][CUR_POS_w - 1] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w - 1] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w - 1] != 32       //left
+			|| BTL_F_M[CUR_POS_h + 0][CUR_POS_w + 3] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 3] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 3] != 32	   //right
+			)
+		{
+			printf("\a\r                      Too close. You can not build here                      ");
+			Sleep(1500);
+			return false;
+		}
+
+	}
+	else if (building_type == BIG_WALL || building_type == SMALL_WALL)
+	{
+		//checking neighbor cells around obj  (only top and bottom because left and right chars of walls  it is char'32' which used like empty)
+
+		if (
+			BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 1] != 32         //top
+			|| BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 1] != 32        //bottom
+			)
+		{
+			printf("\a\r                      Too close. You can not build here                      ");
+			Sleep(1500);
+			return false;
+		}
+
+	}
+	return true;
+}
+
+int o_calculate_money(char player, char building_type)
+{
+
+	if (player == 'L')
+	{
+		if (total_money_left < o_item_price(building_type))
+		{
+			printf("\r                                Not enough money                             ");
+			Sleep(1500);
+			return -1;
+		}
+		else
+		{
+			total_money_left = total_money_left - o_item_price(building_type);
+			o_buy_item(player, building_type);
+			return 0;
+
+		}
+	}
+	else if (player == 'R')
+	{
+		if (total_money_right < o_item_price(building_type))
+		{
+			printf("\r                                Not enough money                             ");
+			Sleep(1500);
+			return -1;
+		}
+		else
+		{
+			total_money_right = total_money_right - o_item_price(building_type);
+			o_buy_item(player, building_type);
+			return 0;
+
+		}
+	}
+	return 0;
+}
+
+
 void o_display_batle_field(int panel_width, int field_height, int field_width)
 {
 	int turn;
@@ -129,27 +281,7 @@ void o_display_batle_field(int panel_width, int field_height, int field_width)
 
 	return;
 }
-
-void o_get_main_screen_actions() // this funktion gets controll buttons of users action on main field
-{
-	char button;   
-	do
-	{
-		button = _getwch();
-		switch (button)
-		{
-		case 'P': case 'p':  o_fill_shop(); o_display_shop(); o_get_shop_actions(); return; break;
-		case '-': return;												//skip turn
-		case 'Y': case 'y':  o_display_h_coordinates_field();	break;  //for dev
-		case 'X': case 'x':  o_display_w_coordinates_field();	break;  //for dev
-		case 'I': case 'i':  print_objects_info();				break;  //for dev
-		default: break;
-		}
-	} while (button != 'p' || button != 'P' || button != 'x' || button != 'X' || button != 'Y' || button != 'y' || button != 'i' || button != 'I');
-
-	return;
-}
-void o_print_copy_batle_field()   //action_in
+void o_display_copy_batle_field()   //action_in
 {
 	system("cls");
 	for (int h = 0; h < field_height; h++) {
@@ -174,413 +306,53 @@ void o_print_copy_batle_field()   //action_in
 	return;
 }
 
-void o_move_elements(char player, char building_type) //action_in
+void o_display_marker_in_store(char building_type)
 {
+	//list of allowed marker positions
+	int h = 11;
+	int w0 = 26;
 
-	int temp_value;   //variable to get returned value of function o_calculate_money();
+	int w11 = w0 + 0;
+	int w12 = w0 + 2;
+	int w21 = w0 + 7;
+	int w22 = w0 + 9;
+	int w31 = w0 + 14;
+	int w32 = w0 + 16;
+	int w41 = w0 + 21;
+	int w42 = w0 + 23;
+	int w51 = w0 + 28;
+	int w52 = w0 + 30;
 
-	if (player == 'L')
+	building_type == NULL ? building_type = BIG_GUN : building_type;  //if bulding type not initialized BIG_GUN will be use by default 
+
+	Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
+	Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
+	Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
+	Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
+	Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
+
+	if (building_type == BIG_GUN)
 	{
-		current_position_h = 9;    // 0 , 9, 9, 56 current positions of respawn objects point on main field after getting object in the shop
-		current_position_w = 0;
+		Shop_field[h][w11] = '{'; Shop_field[h][w12] = '}';
 	}
-	else if (player == 'R')
+	else if (building_type == SMALL_GUN)
 	{
-		current_position_h = 9;
-		current_position_w = 56;
+		Shop_field[h][w21] = '{'; Shop_field[h][w22] = '}';
 	}
-
-	system("cls");
-
-	o_print_copy_batle_field();
-
-
-	char movement_to = 'X';  // 'X' used to display object on main field after select in shop
-
-	while (movement_to != '9' || movement_to != '0')
+	else if (building_type == BIG_WALL)
 	{
-		
-		switch (movement_to)
-		{
-		case '>': o_move_elements('R', building_type);  break;
-		case '<': o_move_elements('L', building_type);  break;
-		case 'X': o_get_field_copy(); current_position_h++;	o_move_up(player, building_type); break; //movement of object to start point(it used to displaying object)
-		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);			  break;
-		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type);			  break;
-		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);			  break;
-		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);		  break;
-		case '9':
-			if (o_check_free_zone(current_position_h, current_position_w, building_type) == true)
-			{
-				temp_value = o_calculate_money(player, building_type);
-				if (temp_value == -1)
-				{
-					o_get_field_copy();
-					o_print_copy_batle_field();
-					current_position_h++; o_move_up(player, building_type);
-				}
-				else if (temp_value == 0)
-				{
-					o_display_batle_field(panel_width, field_height, field_width);
-					return;
-				}
-
-			}
-			break;
-		case 'p': case 'P':		o_display_batle_field(panel_width, field_height, field_width); return; break;
-		case'n': case'N':
-			building_type++; building_type == '6' ? building_type = '1' : building_type;
-			current_position_h++;	o_move_up(player, building_type);
-			break;
-
-		default: break;
-		}
-		movement_to = _getwch();
+		Shop_field[h][w31] = '{'; Shop_field[h][w32] = '}';
+	}
+	else if (building_type == SMALL_WALL)
+	{
+		Shop_field[h][w41] = '{'; Shop_field[h][w42] = '}';
+	}
+	else if (building_type == GOLDMINE)
+	{
+		Shop_field[h][w51] = '{'; Shop_field[h][w52] = '}';
 	}
 	return;
 }
-
-void o_move_up(char player, char building_type)
-{
-	arr = o_building_select(player, building_type);  //arr - array which used like buffer to containing objects symbols after selecting in shop or movement
-
-	for (int h = 0, i = 0; h < Building_height; h++)
-	{
-		for (int w = 0; w < Building_width; w++, i++)
-		{
-			Building[h][w] = arr[i];
-		}
-	}
-	for (int h = 0; h > -1; h--)
-	{
-		for (int w = 0; w > -1; w--)
-		{
-			if (current_position_h > 0)
-			{
-				current_position_h--;
-				coordinate_h = current_position_h;  //getting of object  corrs after instalation to write position of obj-s in array of coors 
-				for (int shift = 0; shift < Building_height; shift++)
-				{
-					for (int row = 0; row < Building_height; ) 
-					{
-						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Building[h + row][w + shift];
-						row++;
-						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Batle_field[main_f][current_position_h + row][current_position_w + shift];
-					}
-				}
-			}
-			else
-			{
-				printf("\a");
-				current_position_h++;
-				o_move_up(player, building_type);
-			}
-		}
-	}
-	system("cls");
-	o_print_copy_batle_field();  //activating of displaying copy of main field
-	return;
-}
-void o_move_down(char player, char building_type)
-{
-	arr = o_building_select(player, building_type); //arr - array which used like buffer to containing objects symbols after selecting in shop or movement
-
-	for (int h = 0, i = 0; h < Building_height; h++)
-	{
-		for (int w = 0; w < Building_width; w++, i++)
-		{
-			Building[h][w] = arr[i];
-		}
-	}
-
-	for (int h = 0; h > -1; h--)
-	{
-		for (int w = 0; w > -1; w--)
-		{
-			if (current_position_h < field_height - Building_height) //- Building_height because we can't move obj out of field zone
-			{
-				current_position_h++;
-
-				coordinate_h = current_position_h; //getting of object  corrs after instalation to write position of obj-s in array of coors 
-
-				for (int shift = 0; shift < Building_height; shift++)
-				{
-					for (int row = 0; row < Building_height; )
-					{
-						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Building[h + row][w + shift];
-						row++;
-						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Batle_field[main_f][current_position_h + row][current_position_w + shift];
-					}
-				}
-			}
-			else
-			{
-				printf("\a");
-				current_position_h--;
-				o_move_down(player, building_type);
-			}
-		}
-	}
-	system("cls");
-	o_print_copy_batle_field(); //activating of displaying copy of main field
-
-	return;
-}
-
-void o_move_left(char player, char building_type)
-{
-	player == 'L' ? current_pos_extr_w = 1 : current_pos_extr_w = 31;  // 1 | 31 - left border vallues of players field zone
-
-	arr = o_building_select(player, building_type);
-
-	for (int h = 0, i = 0; h < Building_height; h++)
-	{
-		for (int w = 0; w < Building_width; w++, i++)
-		{
-			Building[h][w] = arr[i];
-		}
-	}
-
-	for (int h = 0; h > -1; h--)  // h-- because movement to begin of field (to the side of zero coors)
-	{
-		for (int w = 0; w > -1; w--)
-		{
-			if (current_position_w > current_pos_extr_w)
-			{
-				current_position_w--;
-
-				coordinate_w = current_position_w; //getting of object  corrs after instalation to write position of obj-s in array of coors 
-
-				for (int shift = 0; shift < Building_width; shift++)
-				{
-					for (int coll = 0; coll < Building_width; )
-					{
-						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Building[h + shift][w + coll];
-						coll++;
-						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Batle_field[main_f][current_position_h + shift][current_position_w + coll];
-					}
-				}
-			}
-			else
-			{
-				printf("\a");
-				current_position_w++;
-				o_move_left(player, building_type);
-			}
-		}
-	}
-	system("cls");
-	o_print_copy_batle_field();
-}
-void o_move_right(char player, char building_type)
-{
-	arr = o_building_select(player, building_type);
-
-	player == 'L' ? current_pos_extr_w = 26 : current_pos_extr_w = field_width - Building_width - 1;
-
-	for (int h = 0, i = 0; h < Building_height; h++)
-	{
-		for (int w = 0; w < Building_width; w++, i++)
-		{
-			Building[h][w] = arr[i];
-		}
-	}
-	for (int h = 0; h > -1; h--)
-	{
-		for (int w = 0; w > -1; w--)
-		{
-			if (current_position_w < current_pos_extr_w)
-			{
-				current_position_w++;
-
-				coordinate_w = current_position_w; //принимаем координаты для записи положения обьектов в координатый массив
-
-				for (int shift = 0; shift < Building_width; shift++)  //shift - shifting by height ( y corrs)
-				{
-					for (int coll = 0; coll < Building_width; )       //shift - shifting by width ( y corrs)
-					{
-						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Building[h + shift][w + coll];
-						coll++;
-						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Batle_field[main_f][current_position_h + shift][current_position_w + coll];
-					}
-				}
-			}
-			else
-			{
-				printf("\a");
-
-				current_position_w--;
-
-				o_move_right(player, building_type);
-			}
-		}
-	}
-	system("cls");
-	o_print_copy_batle_field();
-
-	return;
-}
-
-void o_get_field_copy()
-{
-	for (int h = 0; h < field_height; h++)
-	{
-		for (int w = 0; w < field_width; w++)
-		{
-			Batle_field[copy_f][h][w] = Batle_field[main_f][h][w];
-		}
-	}
-	return;
-}
-
-void o_buy_item(char player, char building_type)
-{
-	//this function write data about obj type, position  and characteristic to the info arrays
-	int *item = o_building_select(player, building_type);
-
-	for (int h = 0, i = 0; h < Building_height; h++)
-	{
-		for (int w = 0; w < Building_width; w++, i++)
-		{
-			Batle_field[main_f][current_position_h+h][current_position_w+w] = *(item + i);
-		}
-	}
-
-	o_put_coordinates(player, building_type, coordinate_h, coordinate_w);
-	o_write_info_about_player_odject(player, building_type, coordinate_h, coordinate_w);
-
-	return;
-}
-
-int *o_building_select(char player, char building_type) //switchs build according to user select (returns pointer to array of building symbols in int type)
-{
-	int *building = new int[(Building_height*Building_width)];  //pointer to array of characters vallues acordig to user select
-
-	switch (player)
-	{
-	case 'L':
-		if (building_type == '1') //big gun
-		{
-			int Gun1[(Building_height*Building_width)] = { 178,178,178,178,204,205,178,178,178 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Gun1[i];
-			}
-			return building;
-		}
-		else if (building_type == '2') //small gun
-		{
-			int Gun_cheap1[(Building_height*Building_width)] = { 176,176,176,176,199,196,176,176,176 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Gun_cheap1[i];
-			}
-			return building;
-		}
-		else if (building_type == '3') //bigg wall
-		{
-			int Wall1[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Wall1[i];
-			}
-			return building;
-		}
-		else if (building_type == '4') //small wall
-		{
-			int Wall_cheap1[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Wall_cheap1[i];
-			}
-			return building;
-		}
-		else if (building_type == '5')  //goldmine building
-		{
-			int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Goldmine[i];
-			}
-			return building;
-		}
-
-	case 'R':
-		if (building_type == '1')  //big gun
-		{
-			int Gun2[Building_height*Building_width] = { 178,178,178,205,185,178,178,178,178 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Gun2[i];
-			}
-			return building;
-		}
-		else if (building_type == '2') //small gun
-		{
-			int Gun_cheap2[Building_height*Building_width] = { 176,176,176,196,182,176,176,176,176 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Gun_cheap2[i];
-			}
-			return building;
-		} 
-		else if (building_type == '3') //big wall
-		{
-			int Wall2[Building_height*Building_width] = { 32,178,32,32,178,32,32,178,32 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Wall2[i];
-			}
-			return building;
-		}
-		else if (building_type == '4') //small wall
-		{
-			int Wall_cheap2[Building_height*Building_width] = { 32,177,32,32,177,32,32,177,32 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Wall_cheap2[i];
-			}
-			return building;
-		}
-		else if (building_type == '5') //goldmine
-		{
-			int Goldmine[Building_height*Building_width] = { 201, 205, 187, 186, 36, 186, 200, 205, 188 }; //here contains integer vallues of character on ASCII table
-			for (int i = 0; i < (Building_height*Building_width); i++)
-			{
-				building[i] = Goldmine[i];
-			}
-			return building;
-		}
-		break;
-
-	default:  
-		break;
-	}
-	return 0;
-}
-
-void o_fill_shop()
-{
-	//this function used for beginning filling of shop field 
-	for (int h = 0; h < field_height; h++)
-	{
-		for (int lp = 0, w = 0; lp < panel_width; lp++, w++)
-		{
-			Shop_field[h][w] = (int)Left_panel[h][lp];
-		}
-
-		for (int w = panel_width; w < field_width + panel_width; w++)
-		{
-			Shop_field[h][w] = (int)' ';
-		}
-		for (int rp = 0, w = field_width + panel_width; rp < panel_width; rp++, w++)
-		{
-			Shop_field[h][w] = (int)Right_panel[h][rp];
-		}
-	}
-	return;
-}
-
 int o_display_shop()
 {
 	o_display_marker_in_store(building_type);  //every time when shop was opened this function move marker to point according to last object selection
@@ -610,17 +382,17 @@ int o_display_shop()
 	char item_4_money[] = " +0 ";
 	char item_5_money[] = "+15 ";
 
-	char str_Items[]	=	"       ";  
-	char str_Select[]	=	"       ";
-	char str_Price[]	=	"Price: ";
-	char str_Health[]	=	"Health: ";
-	char str_Shots[]	=	"Shots: ";
-	char str_Money[]    =	"Money+:";
+	char str_Items[] = "       ";
+	char str_Select[] = "       ";
+	char str_Price[] = "Price: ";
+	char str_Health[] = "Health: ";
+	char str_Shots[] = "Shots: ";
+	char str_Money[] = "Money+:";
 
 	//anchor start points for displaying objects in shop 
 	int h0 = 7;
 	int w0 = 26;
-	int w1 = w0;  
+	int w1 = w0;
 	int next_point = 7;
 	//
 
@@ -634,6 +406,7 @@ int o_display_shop()
 	{
 		Shop_field[h0 + 1][w0 + 0] = 205; Shop_field[h0 + 1][w0 + 1] = 185; Shop_field[h0 + 1][w0 + 2] = 178;
 	}
+
 	Shop_field[h0 + 2][w0 + 0] = 178; Shop_field[h0 + 2][w0 + 1] = 178; Shop_field[h0 + 2][w0 + 2] = 178;
 
 	w0 = w0 + next_point;
@@ -676,16 +449,16 @@ int o_display_shop()
 	Shop_field[h0 + 4][w1 + 29] = 53;
 
 	//this var-s used for stationing of obj-s in shop field
-	int h_items  = 1; 
+	int h_items = 1;
 	int h_select = 4;
-	int h_price  = 6;
+	int h_price = 6;
 	int h_health = 8;
-	int h_shots =  9;
+	int h_shots = 9;
 	int h_money = 10;
 
 	int w_item1 = 0;
-	int w_item2 = 7; 
-	int w_item3 = 14; 
+	int w_item2 = 7;
+	int w_item3 = 14;
 	int w_item4 = 21;
 	int w_item5 = 28;
 
@@ -755,429 +528,58 @@ int o_display_shop()
 	return 0;
 }
 
-void o_display_marker_in_store(char building_type)
+void o_fill_batle_field_after_start()
 {
-	//list of allowed marker positions
-	int h = 11; 
-	int w0 = 26;
-
-	int w11 = w0 + 0; 
-	int w12 = w0 + 2;
-	int w21 = w0 + 7; 
-	int w22 = w0 + 9;
-	int w31 = w0 + 14; 
-	int w32 = w0 + 16;
-	int w41 = w0 + 21; 
-	int w42 = w0 + 23;
-	int w51 = w0 + 28;
-	int w52 = w0 + 30;
-
-	building_type == NULL ? building_type = '1' : building_type;  //if bulding type not initialized '1' will be use by default 
-
-	Shop_field[h][w11] = ' '; Shop_field[h][w12] = ' ';
-	Shop_field[h][w21] = ' '; Shop_field[h][w22] = ' ';
-	Shop_field[h][w31] = ' '; Shop_field[h][w32] = ' ';
-	Shop_field[h][w41] = ' '; Shop_field[h][w42] = ' ';
-	Shop_field[h][w51] = ' '; Shop_field[h][w52] = ' ';
-
-	if (building_type == '1')
+	//this function fills main field and pannels after start 
+	//here you can set any characters to fiil main field
+	//h - height  w - width
+	for (int h = 0; h < panel_height; h++)
 	{
-		Shop_field[h][w11] = '{'; Shop_field[h][w12] = '}';
-	}
-	else if (building_type == '2')
-	{
-		Shop_field[h][w21] = '{'; Shop_field[h][w22] = '}';
-	}
-	else if (building_type == '3')
-	{
-		Shop_field[h][w31] = '{'; Shop_field[h][w32] = '}';
-	}
-	else if (building_type == '4')
-	{
-		Shop_field[h][w41] = '{'; Shop_field[h][w42] = '}';
-	}
-	else if (building_type == '5')
-	{
-		Shop_field[h][w51] = '{'; Shop_field[h][w52] = '}';
-	}
-	return;
-}
-
-void o_display_h_coordinates_field()
-{
-	//this func used by devs. to make sure of correct instalation of objects to selected position on main field  //ALEXEY uses  that positions 
-	system("cls");
-	for (int h = 0; h < field_height; h++)
-	{
-		printf("         |");
-		for (int w = 0; w < field_width; w++)
+		for (int w = 0; w < panel_width; w++)
 		{
-			if (Batle_field[h_cors_f][h][w] == 0)
+			if (w == panel_width - 1)
 			{
-				printf("%c", (char)32);
+				Left_panel[h][w] = '|';
 			}
 			else
 			{
-				printf("%c", '+');
+				Left_panel[h][w] = ' ';
 			}
 		}
-		printf("|         ");
-		printf("\n");
 	}
-	//123456789.123456789.123456789.123456789|123456789.123456789.123456789.123456789.
-	printf("                     Back - [P]    X_cors - [X]   ");
-	char input_but;
-	while (true)
-	{
-		input_but = _getwch();
-		switch (input_but)
-		{
-		case 'p': case 'P': o_display_batle_field(panel_width, field_height, field_width); return; break;
-		case'x': case 'X':	o_display_w_coordinates_field(); return; break;
-		default: break;
-		}
-	}
-	return;
-}
-
-void o_display_w_coordinates_field()
-{
-	//this func used by devs. to make sure of correct instalation of objects to selected position on main field  //ALEXEY uses  that positions 
-	
-	system("cls");
 
 	for (int h = 0; h < field_height; h++)
 	{
-		printf("%3d", h);
-		printf("      |");
 		for (int w = 0; w < field_width; w++)
 		{
-			if (Batle_field[w_cors_f][h][w] == 0)
+			if (w == (field_width / 2) + 1)
 			{
-				printf("%c", (char)32);
-			}
-			else if (h == 23)
-			{
-				printf("%d", w % 10);
+				Batle_field[main_f][h][w] = '.';
+				Batle_field[copy_f][h][w] = '.';
 			}
 			else
 			{
-				printf("%c", '+');
-			}
-
-		}
-		printf("|         ");
-		printf("\n");
-	}
-
-	//123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-	printf("                     Back - [P]    Y_cors - [Y]   ");
-
-
-	char input_but;
-	do
-	{
-		input_but = _getwch();
-		switch (input_but)
-		{
-		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return; break;
-		case'y': case 'Y':	o_display_h_coordinates_field(); return;  break;
-		default: break;
-		}
-	} while (input_but != 'p' && input_but != 'P' && input_but != 'y' && input_but != 'Y');
-
-	return;
-}
-
-void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w)
-{
-	//this function push info to coordinate fields X  & Y . Only centrall coors of object need to write
-
-	if (building_type == '1' || building_type == '2' || building_type == '5')
-	{
-		for (int h = 0; h < Building_height; h++)
-		{
-			for (int w = 0; w < Building_width; w++)
-			{
-				Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-				Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
-			}
-		}
-	}
-	else if (building_type == '3' || building_type == '4')
-	{
-		for (int h = 0; h < Building_height; h++)
-		{
-			for (int w = 0; w < Building_width; w++)
-			{
-				if (w == 1)  //becase walls has visible size 1x3 we are write only central line (on movement functions walls has size 3x3)
-				{
-					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
-					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
-				}
+				Batle_field[main_f][h][w] = ' ';
 			}
 		}
 	}
 
-	return;
-}
-
-void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w)
-{
-	coordinate_h = coordinate_h + 1;  // +1 because bellow we need to know central position of obj
-	coordinate_w = coordinate_w + 1;
-
-	if (player == 'L')
-	{
-		element_number_l++;              // if the object is deleted, element_number_l need to reduce
-
-		Elements_Info_Player_Left[b_type][element_number_l] = building_type; 
-
-		//start writing datas about obj-s parametrs to players info field acording user select after shopping
-		if (building_type == '1')
-		{  //dest                   //n_field  //cell_index
-			Elements_Info_Player_Left [shots] [element_number_l]    = shots_1;
-			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_l;
-			Elements_Info_Player_Left [HP] [element_number_l]		= HP_1;
-			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
-			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
-		}
-		else if (building_type == '2')
+	for (int h = 0; h < panel_height; h++) {
+		for (int w = 0; w < panel_width; w++)
 		{
-			Elements_Info_Player_Left [shots] [element_number_l]    = shots_2;
-			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_l;
-			Elements_Info_Player_Left [HP] [element_number_l]       = HP_2;
-			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
-			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
-		}
-		else if (building_type == '3')
-		{
-			Elements_Info_Player_Left [shots] [element_number_l]    = shots_3;
-			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_3;
-			Elements_Info_Player_Left [HP] [element_number_l]       = HP_3;
-			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
-			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
-		}
-		else if (building_type == '4')
-		{
-			Elements_Info_Player_Left [shots] [element_number_l]    = shots_4;
-			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_4;
-			Elements_Info_Player_Left [HP] [element_number_l]       = HP_4;
-			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
-			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
-		}
-		else if (building_type == '5')
-		{
-			Elements_Info_Player_Left [shots] [element_number_l]    = shots_5;
-			Elements_Info_Player_Left [sh_route] [element_number_l] = sh_route_5;
-			Elements_Info_Player_Left [HP] [element_number_l]       = HP_5;
-			Elements_Info_Player_Left [h_cor] [element_number_l]    = coordinate_h;
-			Elements_Info_Player_Left [w_cor] [element_number_l]    = coordinate_w;
-		}
-	}
-	else if (player == 'R')
-	{
-		element_number_r++;
-		Elements_Info_Player_Right[b_type][element_number_r] = building_type;
-
-		if (building_type == '1')
-		{
-			Elements_Info_Player_Right [shots] [element_number_r]    = shots_1;
-			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_r;
-			Elements_Info_Player_Right [HP] [element_number_r]       = HP_1;
-			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
-			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
-		}
-		else if (building_type == '2')
-		{
-			Elements_Info_Player_Right [shots] [element_number_r]    = shots_2;
-			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_r;
-			Elements_Info_Player_Right [HP] [element_number_r]       = HP_2;
-			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
-			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
-		}
-		else if (building_type == '3')
-		{
-			Elements_Info_Player_Right [shots] [element_number_r]    = shots_3;
-			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_3;
-			Elements_Info_Player_Right [HP] [element_number_r]       = HP_3;
-			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
-			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
-		}
-		else if (building_type == '4')
-		{
-			Elements_Info_Player_Right [shots] [element_number_r]    = shots_4;
-			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_4;
-			Elements_Info_Player_Right [HP] [element_number_r]       = HP_4;
-			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
-			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
-		}
-		else if (building_type == '5')
-		{
-			Elements_Info_Player_Right [shots] [element_number_r]    = shots_5;
-			Elements_Info_Player_Right [sh_route] [element_number_r] = sh_route_5;
-			Elements_Info_Player_Right [HP] [element_number_r]       = HP_5;
-			Elements_Info_Player_Right [h_cor] [element_number_r]    = coordinate_h;
-			Elements_Info_Player_Right [w_cor] [element_number_r]    = coordinate_w;
-		}
-	}
-	//end of writing datas about obj-s parametrs to players info field acording user select after shopping
-	return;
-}
-
-void print_objects_info()
-{  
-	//it used for devs to monitoring of changes in datas of installed/removed objects
-
-	/*    SYMBOLS in players info fields to distinguish objects
-		left :			       cost   right:     char value
-		  1	 -  Big gun        $600  -  1		   (49)
-		  2  -  Small gun      $400  -  2		   (50)
-		  3  -	big wall       $200  -  3		   (51)
-		  4  -  small wall     $100  -  4		   (52)
-		  5  -  gold mine -    $950  -  5		   (53)
-		type                           type
-	 */  
-
-
-	system("cls");
-	printf("Player 1 left: \n");
-	for (int h = 0; h < info_h; h++)
-	{
-		if (h == 0)
-		{
-			printf(" Type:   ");
-		}
-		else if (h == 1)
-		{
-			printf(" Shots:  ");
-		}
-		else if (h == 2)
-		{
-			printf(" Route:  ");
-		}
-		else if (h == 3)
-		{
-			printf(" Health: ");
-		}
-		else if (h == 4)
-		{
-			printf(" Cors Y: ");
-		}
-		else if (h == 5)
-		{
-			printf(" Cors X: ");
-		}
-		for (int w = 0; w < info_w; w++)
-		{
-			if (Elements_Info_Player_Left[b_type][w] == 0 && Elements_Info_Player_Left[h][w] == 0)
+			if (w == 0)
 			{
-				printf("%3c", '_');
+				Right_panel[h][w] = '|';
 			}
 			else
 			{
-				printf("%3d", Elements_Info_Player_Left[h][w]);
+				Right_panel[h][w] = ' ';
 			}
 		}
-		printf("\n");
+
 	}
-
-	printf("\n");
-
-	printf("Player 2 right: \n");
-	for (int h = 0; h < info_h; h++)
-	{
-		if (h == 0)
-		{
-			printf(" Type:   ");
-		}
-		else if (h == 1)
-		{
-			printf(" Shots:  ");
-		}
-		else if (h == 2)
-		{
-			printf(" Route:  ");
-		}
-		else if (h == 3)
-		{
-			printf(" Health: ");
-		}
-		else if (h == 4)
-		{
-			printf(" Cors Y: ");
-		}
-		else if (h == 5)
-		{
-			printf(" Cors X: ");
-		}
-		for (int w = 0; w < info_w; w++)
-
-			if (Elements_Info_Player_Right[b_type][w] == 0 && Elements_Info_Player_Right[h][w] == 0)
-			{
-				printf("%3c", '_');
-			}
-			else
-			{
-				printf("%3d", Elements_Info_Player_Right[h][w]);
-			}
-		printf("\n");
-	}
-	printf("\n\n\n\n\n\n Press [i] to return");
-
-	char movement_to;
-	do
-	{
-		movement_to = _getwch();
-		switch (movement_to)
-		{
-		case 'I':case'i': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); break;
-
-		default: break;
-		}
-	} while (movement_to != 'i' && movement_to != 'I');
-
-	return;
-	
-}
-
-void o_get_shop_actions() // this func to take user input(actions) in shop
-{
-	char action_in_shop;
-	do
-	{
-		action_in_shop = _getwch();
-		switch (action_in_shop)
-		{
-
-			case '<': player = 'L';  o_display_shop(); break;  // to switch players in the store, use (Shift + <) changes to the left (test feature)
-			case '>': player = 'R';  o_display_shop(); break;  // to switch players in the store, use (Shift + >) changes to the right (test feature)
-
-			case '1': building_type = '1'; o_move_elements(player, building_type);  break;
-			case '2': building_type = '2'; o_move_elements(player, building_type);  break;
-			case '3': building_type = '3'; o_move_elements(player, building_type);  break;
-			case '4': building_type = '4'; o_move_elements(player, building_type);  break;
-			case '5': building_type = '5'; o_move_elements(player, building_type);  break;
-
-			case 'N': case'n':  building_type++; building_type == '6' ? building_type = '1' : building_type; o_display_shop();   break; //switch to next item
-			case '9':
-				if (building_type == NULL)
-				{
-					break;
-				}
-				else
-				{
-					o_move_elements(player, building_type); break;
-				}
-			case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return;	 break;
-
-			default: break;
-		}
-	} while (action_in_shop != '9' && action_in_shop != 'p' && action_in_shop != '4' && action_in_shop != '5' && action_in_shop != 'P' && action_in_shop != '1' && action_in_shop != '2' && action_in_shop != '3');
-
 	return;
 }
-
 void o_fill_pannels()
 {
 	const int money_lenght = 7;
@@ -1185,7 +587,7 @@ void o_fill_pannels()
 
 	char Player_1_name[name_size] = "Player1";
 	char Player_2_name[name_size] = "Player2";
-	char coins[money_lenght]	  = "Money:";
+	char coins[money_lenght] = "Money:";
 
 	for (int w = 0; w < name_size; w++)
 	{
@@ -1201,11 +603,11 @@ void o_fill_pannels()
 	for (int w = 0; w < panel_width - 1; w++)
 	{
 		//this characters to make appereance(construction) of pannels
-		Left_panel[3][w]       = '-';
-		Right_panel[3][w + 1]  = '-';
-		Left_panel[8][w]       = '-';
-		Right_panel[8][w + 1]  = '-';
-		Left_panel[23][w]      = 196;
+		Left_panel[3][w] = '-';
+		Right_panel[3][w + 1] = '-';
+		Left_panel[8][w] = '-';
+		Right_panel[8][w + 1] = '-';
+		Left_panel[23][w] = 196;
 		Right_panel[23][w + 1] = 196;
 	}
 
@@ -1227,58 +629,375 @@ void o_fill_pannels()
 
 	return;
 }
-
-int o_calculate_money(char player, char building_type)
+void o_fill_shop()
 {
-
-	if (player == 'L')
+	//this function used for beginning filling of shop field 
+	for (int h = 0; h < field_height; h++)
 	{
-		if (total_money_left < o_item_price(building_type))
+		for (int lp = 0, w = 0; lp < panel_width; lp++, w++)
 		{
-			printf("\r                                Not enough money                             ");
-			Sleep(1500);
-			return -1;
+			Shop_field[h][w] = (int)Left_panel[h][lp];
 		}
-		else
-		{
-			total_money_left = total_money_left - o_item_price(building_type);
-			o_buy_item(player, building_type);
-			return 0;
 
+		for (int w = panel_width; w < field_width + panel_width; w++)
+		{
+			Shop_field[h][w] = (int)' ';
+		}
+		for (int rp = 0, w = field_width + panel_width; rp < panel_width; rp++, w++)
+		{
+			Shop_field[h][w] = (int)Right_panel[h][rp];
 		}
 	}
-	else if (player == 'R')
-	{
-		if (total_money_right < o_item_price(building_type))
-		{
-			printf("\r                                Not enough money                             ");
-			Sleep(1500);
-			return -1;
-		}
-		else
-		{
-			total_money_right = total_money_right - o_item_price(building_type);
-			o_buy_item(player, building_type);
-			return 0;
-
-		}
-	}
-	return 0;
+	return;
 }
+
 
 int o_item_price(char building_type)
 {
 	// This function is used to determine the price of the purchase building.
 	int item_price;
 
-	(building_type == '1') ? item_price = gun_1_price  : 1;
-	(building_type == '2') ? item_price = gun_2_price  : 1;
-	(building_type == '3') ? item_price = wall_1_price : 1;
-	(building_type == '4') ? item_price = wall_2_price : 1;
-	(building_type == '5') ? item_price = goldmine_price : 1;
+	(building_type == BIG_GUN) ? item_price = gun_1_price : 1;
+	(building_type == SMALL_GUN) ? item_price = gun_2_price : 1;
+	(building_type == BIG_WALL) ? item_price = wall_1_price : 1;
+	(building_type == SMALL_WALL) ? item_price = wall_2_price : 1;
+	(building_type == GOLDMINE) ? item_price = goldmine_price : 1;
 
 	return item_price;
 }
+
+void o_get_field_copy()
+{
+	for (int h = 0; h < field_height; h++)
+	{
+		for (int w = 0; w < field_width; w++)
+		{
+			Batle_field[copy_f][h][w] = Batle_field[main_f][h][w];
+		}
+	}
+	return;
+}
+void o_get_shop_actions() // this func to take user input(actions) in shop
+{
+	char action_in_shop;
+	do
+	{
+		action_in_shop = _getwch();
+		switch (action_in_shop)
+		{
+
+		case '<': player = 'L';  o_display_shop(); break;  // to switch players in the store, use (Shift + <) changes to the left (test feature)
+		case '>': player = 'R';  o_display_shop(); break;  // to switch players in the store, use (Shift + >) changes to the right (test feature)
+
+		case BIG_GUN: building_type = BIG_GUN; o_move_elements(player, building_type);  break;
+		case SMALL_GUN: building_type = SMALL_GUN; o_move_elements(player, building_type);  break;
+		case BIG_WALL: building_type = BIG_WALL; o_move_elements(player, building_type);  break;
+		case SMALL_WALL: building_type = SMALL_WALL; o_move_elements(player, building_type);  break;
+		case GOLDMINE: building_type = GOLDMINE; o_move_elements(player, building_type);  break;
+
+		case 'N': case'n':  building_type++; building_type == GOLDMINE + 1 ? building_type = BIG_GUN : building_type; o_display_shop();   break; //switch to next item
+		case '9':
+			if (building_type == NULL)
+			{
+				break;
+			}
+			else
+			{
+				o_move_elements(player, building_type); break;
+			}
+		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return;	 break;
+
+		default: break;
+		}
+	} while (action_in_shop != '9' && action_in_shop != 'p' && action_in_shop != SMALL_WALL && action_in_shop != GOLDMINE && action_in_shop != 'P' && action_in_shop != BIG_GUN && action_in_shop != SMALL_GUN && action_in_shop != BIG_WALL);
+
+	return;
+}
+void o_get_main_screen_actions() // this funktion gets controll buttons of users action on main field
+{
+	char button;
+	do
+	{
+		button = _getwch();
+		switch (button)
+		{
+		case 'P': case 'p':  o_fill_shop(); o_display_shop(); o_get_shop_actions(); return; break;
+		case '-': return;												//skip turn
+		case 'Y': case 'y':  o_display_h_coordinates_field();	break;  //for dev
+		case 'X': case 'x':  o_display_w_coordinates_field();	break;  //for dev
+		case 'I': case 'i':  print_objects_info();				break;  //for dev
+		default: break;
+		}
+	} while (button != 'p' || button != 'P' || button != 'x' || button != 'X' || button != 'Y' || button != 'y' || button != 'i' || button != 'I');
+
+	return;
+}
+
+void give_item_on_start(char player, char building_type, int centre_h, int centre_w)
+{
+	//write info about player obj whihc gives on start
+	int *item = o_building_select(player, building_type);
+
+	o_put_coordinates(player, building_type, centre_h - 1, centre_w - 1);
+	o_write_info_about_player_odject(player, building_type, centre_h - 1, centre_w - 1);
+
+	for (int h = 0, i = 0; h < Building_height; h++)
+	{
+		for (int w = 0; w < Building_width; w++, i++)
+		{
+			Batle_field[main_f][centre_h - 1 + h][centre_w - 1 + w] = *(item + i);
+		}
+	}
+
+	return;
+}
+
+//start_movement functions*******************************//
+void o_move_elements(char player, char building_type) //action_in
+{
+
+	int temp_value;   //variable to get returned value of function o_calculate_money();
+	char movement_to = 'X';  // 'X' used to display object on main field after select in shop
+
+	if (player == 'L')
+	{
+		current_position_h = 9;    // 0 , 9, 9, 56 current positions of respawn objects point on main field after getting object in the shop
+		current_position_w = 0;
+	}
+	else if (player == 'R')
+	{
+		current_position_h = 9;
+		current_position_w = 56;
+	}
+
+	system("cls");
+
+	o_display_copy_batle_field();
+
+	while (movement_to != '9' || movement_to != '0')
+	{
+
+		switch (movement_to)
+		{
+		case '>': o_move_elements('R', building_type);  break;
+		case '<': o_move_elements('L', building_type);  break;
+		case 'X': o_get_field_copy(); current_position_h++;	o_move_up(player, building_type); break; //movement of object to start point(it used to displaying object)
+		case 'w': case 'W': o_get_field_copy(); o_move_up(player, building_type);			  break;
+		case 's': case 'S': o_get_field_copy(); o_move_down(player, building_type);			  break;
+		case 'a': case 'A': o_get_field_copy(); o_move_left(player, building_type);			  break;
+		case 'd': case 'D': o_get_field_copy(); o_move_right(player, building_type);		  break;
+		case '9':
+			if (o_check_free_zone(current_position_h, current_position_w, building_type) == true)
+			{
+				temp_value = o_calculate_money(player, building_type);
+				if (temp_value == -1)
+				{
+					o_get_field_copy();
+					o_display_copy_batle_field();
+					current_position_h++; o_move_up(player, building_type);
+				}
+				else if (temp_value == 0)
+				{
+					o_display_batle_field(panel_width, field_height, field_width);
+					return;
+				}
+
+			}
+			break;
+		case 'p': case 'P':		o_display_batle_field(panel_width, field_height, field_width); return; break;
+		case'n': case'N':
+			building_type++; building_type == '6' ? building_type = BIG_GUN : building_type;
+			current_position_h++;	o_move_up(player, building_type);
+			break;
+
+		default: break;
+		}
+		movement_to = _getwch();
+	}
+	return;
+}
+void o_move_up(char player, char building_type)
+{
+	arr = o_building_select(player, building_type);  //arr - array which used like buffer to containing objects symbols after selecting in shop or movement
+
+	for (int h = 0, i = 0; h < Building_height; h++)
+	{
+		for (int w = 0; w < Building_width; w++, i++)
+		{
+			Building[h][w] = arr[i];
+		}
+	}
+
+	for (int h = 0; h > -1; h--)
+	{
+		for (int w = 0; w > -1; w--)
+		{
+			if (current_position_h > 0)
+			{
+				current_position_h--;
+				coordinate_h = current_position_h;  //getting of object  corrs after instalation to write position of obj-s in array of coors 
+				for (int shift = 0; shift < Building_height; shift++)
+				{
+					for (int row = 0; row < Building_height; )
+					{
+						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Building[h + row][w + shift];
+						row++;
+						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Batle_field[main_f][current_position_h + row][current_position_w + shift];
+					}
+				}
+			}
+			else
+			{
+				printf("\a");
+				current_position_h++;
+				o_move_up(player, building_type);
+			}
+		}
+	}
+	system("cls");
+	o_display_copy_batle_field();  //activating of displaying copy of main field
+	return;
+}
+void o_move_down(char player, char building_type)
+{
+	arr = o_building_select(player, building_type); //arr - array which used like buffer to containing objects symbols after selecting in shop or movement
+
+	for (int h = 0, i = 0; h < Building_height; h++)
+	{
+		for (int w = 0; w < Building_width; w++, i++)
+		{
+			Building[h][w] = arr[i];
+		}
+	}
+
+	for (int h = 0; h > -1; h--)
+	{
+		for (int w = 0; w > -1; w--)
+		{
+			if (current_position_h < field_height - Building_height) //- Building_height because we can't move obj out of field zone
+			{
+				current_position_h++;
+
+				coordinate_h = current_position_h; //getting of object  corrs after instalation to write position of obj-s in array of coors 
+
+				for (int shift = 0; shift < Building_height; shift++)
+				{
+					for (int row = 0; row < Building_height; )
+					{
+						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Building[h + row][w + shift];
+						row++;
+						Batle_field[copy_f][current_position_h + row][current_position_w + shift] = Batle_field[main_f][current_position_h + row][current_position_w + shift];
+					}
+				}
+			}
+			else
+			{
+				printf("\a");
+				current_position_h--;
+				o_move_down(player, building_type);
+			}
+		}
+	}
+	system("cls");
+	o_display_copy_batle_field(); //activating of displaying copy of main field
+
+	return;
+}
+void o_move_left(char player, char building_type)
+{
+	player == 'L' ? current_pos_extr_w = 1 : current_pos_extr_w = 31;  // 1 | 31 - left border vallues of players field zone
+
+	arr = o_building_select(player, building_type);
+
+	for (int h = 0, i = 0; h < Building_height; h++)
+	{
+		for (int w = 0; w < Building_width; w++, i++)
+		{
+			Building[h][w] = arr[i];
+		}
+	}
+
+	for (int h = 0; h > -1; h--)  // h-- because movement to begin of field (to the side of zero coors)
+	{
+		for (int w = 0; w > -1; w--)
+		{
+			if (current_position_w > current_pos_extr_w)
+			{
+				current_position_w--;
+
+				coordinate_w = current_position_w; //getting of object  corrs after instalation to write position of obj-s in array of coors 
+
+				for (int shift = 0; shift < Building_width; shift++)
+				{
+					for (int coll = 0; coll < Building_width; )
+					{
+						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Building[h + shift][w + coll];
+						coll++;
+						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Batle_field[main_f][current_position_h + shift][current_position_w + coll];
+					}
+				}
+			}
+			else
+			{
+				printf("\a");
+				current_position_w++;
+				o_move_left(player, building_type);
+			}
+		}
+	}
+	system("cls");
+	o_display_copy_batle_field();
+}
+void o_move_right(char player, char building_type)
+{
+	arr = o_building_select(player, building_type);
+
+	player == 'L' ? current_pos_extr_w = 26 : current_pos_extr_w = field_width - Building_width - 1;
+
+	for (int h = 0, i = 0; h < Building_height; h++)
+	{
+		for (int w = 0; w < Building_width; w++, i++)
+		{
+			Building[h][w] = arr[i];
+		}
+	}
+	for (int h = 0; h > -1; h--)
+	{
+		for (int w = 0; w > -1; w--)
+		{
+			if (current_position_w < current_pos_extr_w)
+			{
+				current_position_w++;
+
+				coordinate_w = current_position_w; //принимаем координаты для записи положения обьектов в координатый массив
+
+				for (int shift = 0; shift < Building_width; shift++)  //shift - shifting by height ( y corrs)
+				{
+					for (int coll = 0; coll < Building_width; )       //shift - shifting by width ( y corrs)
+					{
+						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Building[h + shift][w + coll];
+						coll++;
+						Batle_field[copy_f][current_position_h + shift][current_position_w + coll] = Batle_field[main_f][current_position_h + shift][current_position_w + coll];
+					}
+				}
+			}
+			else
+			{
+				printf("\a");
+
+				current_position_w--;
+
+				o_move_right(player, building_type);
+			}
+		}
+	}
+	system("cls");
+	o_display_copy_batle_field();
+
+	return;
+}
+/*end_movement_funktions*****************/
+
 
 void money_have()
 {
@@ -1295,7 +1014,7 @@ void money_have()
 		n2 = (total_money_left - n1 * 1000) / 100;
 		n3 = (total_money_left - n1 * 1000 - n2 * 100) / 10;
 		n4 = (total_money_left - n1 * 1000 - n2 * 100 - n3 * 10);
-		
+
 		L1 = 48 + n4;
 		L2 = 48 + n3;
 		L3 = 48 + n2;
@@ -1321,7 +1040,7 @@ void money_have()
 
 		R1 = 48 + r4;
 		R2 = 48 + r3;
-		R3 = 48 + r2; 
+		R3 = 48 + r2;
 		R4 = 48 + r1;
 
 	}
@@ -1337,72 +1056,33 @@ void money_have()
 	return;
 }
 
-bool o_check_free_zone(int current_position_h, int current_position_w, char building_type)
+void o_put_coordinates(char player, char building_type, int coordinate_h, int coordinate_w)
 {
-  #define BTL_F_M  Batle_field[main_f]
-  #define CUR_POS_h current_position_h
-  #define CUR_POS_w current_position_w
+	//this function push info to coordinate fields X  & Y . Only centrall coors of object need to write
 
-	//This function cheks opportunity to install objects by current coordinates
-	// Start point of calculation is central coors of item
-
-	//checking of empty zone by current oblect coors for any object
-	if (   BTL_F_M [CUR_POS_h + 0][CUR_POS_w] != 32 || BTL_F_M [CUR_POS_h + 0][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 0][CUR_POS_w + 2] != 32
-		|| BTL_F_M [CUR_POS_h + 1][CUR_POS_w] != 32 || BTL_F_M [CUR_POS_h + 1][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 2] != 32
-		|| BTL_F_M [CUR_POS_h + 2][CUR_POS_w] != 32 || BTL_F_M [CUR_POS_h + 2][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 2] != 32  
-	   )
+	if (building_type == BIG_GUN || building_type == SMALL_GUN || building_type == GOLDMINE)
 	{
-		printf("\a\r                           Zone is already taken                           ");
-		Sleep(1500);
-		return false;
-	}
-	else if (building_type == '1' || building_type == '2' || building_type == '5')
-	{
-		//checking neighbor cells around obj 
-		if (
-			   BTL_F_M [CUR_POS_h - 1][CUR_POS_w    ] != 32 || BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 2] != 32       //top
-			|| BTL_F_M [CUR_POS_h + 3][CUR_POS_w    ] != 32 || BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 1] != 32 || BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 2] != 32		//bottom
-			|| BTL_F_M [CUR_POS_h + 0][CUR_POS_w - 1] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w - 1] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w - 1] != 32       //left
-			|| BTL_F_M [CUR_POS_h + 0][CUR_POS_w + 3] != 32 || BTL_F_M[CUR_POS_h + 1][CUR_POS_w + 3] != 32 || BTL_F_M[CUR_POS_h + 2][CUR_POS_w + 3] != 32	   //right
-			)
+		for (int h = 0; h < Building_height; h++)
 		{
-			printf("\a\r                      Too close. You can not build here                      ");
-			Sleep(1500);
-			return false;
+			for (int w = 0; w < Building_width; w++)
+			{
+				Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
+				Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+			}
 		}
-
 	}
-	else if (building_type == '3' || building_type == '4')
-	{    
-		//checking neighbor cells around obj  (only top and bottom because left and right chars of walls  it is char'32' which used like empty)
-
-		if ( 
-			   BTL_F_M[CUR_POS_h - 1][CUR_POS_w + 1] != 32         //top
-			|| BTL_F_M[CUR_POS_h + 3][CUR_POS_w + 1] != 32        //bottom
-			)
-		{
-			printf("\a\r                      Too close. You can not build here                      ");
-			Sleep(1500);
-			return false;
-		}
-
-	}
-	return true;
-}
-
-void give_item_on_start(char player, char building_type, int centre_h, int centre_w)
-{
-	//write info about player obj whihc gives on start
-	int *item = o_building_select(player, building_type);
-
-	o_put_coordinates(player, building_type, centre_h - 1, centre_w - 1);
-	o_write_info_about_player_odject(player, building_type, centre_h - 1, centre_w - 1);
-
-	for (int h = 0, i = 0; h < Building_height; h++)
+	else if (building_type == BIG_WALL || building_type == SMALL_WALL)
 	{
-		for (int w = 0; w < Building_width; w++, i++)
+		for (int h = 0; h < Building_height; h++)
 		{
-			Batle_field[main_f][centre_h - 1 + h][centre_w - 1 + w] = *(item + i);
+			for (int w = 0; w < Building_width; w++)
+			{
+				if (w == 1)  //becase walls has visible size 1x3 we are write only central line (on movement functions walls has size 3x3)
+				{
+					Batle_field[h_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_h + 1;
+					Batle_field[w_cors_f][coordinate_h + h][coordinate_w + w] = coordinate_w + 1;
+				}
+			}
 		}
 	}
 
@@ -1419,30 +1099,126 @@ void start_items_list()
 	//                ↓  22                    //    		     ↓  22
 
 
-	give_item_on_start('L', '5', 4, 2);
-	give_item_on_start('L', '5', 18, 2);
+	give_item_on_start('L', GOLDMINE, 4, 2);
+	give_item_on_start('L', GOLDMINE, 18, 2);
 
-	give_item_on_start('R', '5', 4, 56);
-	give_item_on_start('R', '5', 18, 56);
+	give_item_on_start('R', GOLDMINE, 4, 56);
+	give_item_on_start('R', GOLDMINE, 18, 56);
 
 
 
 	return;
 }
 
-//animation of start and victory screans
-int start_screen()
+void o_write_info_about_player_odject(char player, char building_type, int coordinate_h, int coordinate_w)
 {
-	system("mode CON: lines=25 cols=79");
-	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
-#define RESET SetConsoleTextAttribute(col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	coordinate_h = coordinate_h + 1;  // +1 because bellow we need to know central position of obj
+	coordinate_w = coordinate_w + 1;
 
-#define STOP system("pause");
-#define NEXT_SLIDE  Sleep(300);system("cls");
+	if (player == 'L')
+	{
+		element_number_l++;              // if the object is deleted, element_number_l need to reduce
+
+		Elements_Info_Player_Left[b_type][element_number_l] = building_type;
+
+		//start writing datas about obj-s parametrs to players info field acording user select after shopping
+		if (building_type == BIG_GUN)
+		{  //dest                   //n_field  //cell_index
+			Elements_Info_Player_Left[shots][element_number_l] = shots_1;
+			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_l;
+			Elements_Info_Player_Left[HP][element_number_l] = HP_1;
+			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
+			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+		}
+		else if (building_type == SMALL_GUN)
+		{
+			Elements_Info_Player_Left[shots][element_number_l] = shots_2;
+			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_l;
+			Elements_Info_Player_Left[HP][element_number_l] = HP_2;
+			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
+			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+		}
+		else if (building_type == BIG_WALL)
+		{
+			Elements_Info_Player_Left[shots][element_number_l] = shots_3;
+			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_3;
+			Elements_Info_Player_Left[HP][element_number_l] = HP_3;
+			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
+			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+		}
+		else if (building_type == SMALL_WALL)
+		{
+			Elements_Info_Player_Left[shots][element_number_l] = shots_4;
+			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_4;
+			Elements_Info_Player_Left[HP][element_number_l] = HP_4;
+			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
+			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+		}
+		else if (building_type == GOLDMINE)
+		{
+			Elements_Info_Player_Left[shots][element_number_l] = shots_5;
+			Elements_Info_Player_Left[sh_route][element_number_l] = sh_route_5;
+			Elements_Info_Player_Left[HP][element_number_l] = HP_5;
+			Elements_Info_Player_Left[h_cor][element_number_l] = coordinate_h;
+			Elements_Info_Player_Left[w_cor][element_number_l] = coordinate_w;
+		}
+	}
+	else if (player == 'R')
+	{
+		element_number_r++;
+		Elements_Info_Player_Right[b_type][element_number_r] = building_type;
+
+		if (building_type == BIG_GUN)
+		{
+			Elements_Info_Player_Right[shots][element_number_r] = shots_1;
+			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_r;
+			Elements_Info_Player_Right[HP][element_number_r] = HP_1;
+			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
+			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+		}
+		else if (building_type == SMALL_GUN)
+		{
+			Elements_Info_Player_Right[shots][element_number_r] = shots_2;
+			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_r;
+			Elements_Info_Player_Right[HP][element_number_r] = HP_2;
+			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
+			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+		}
+		else if (building_type == BIG_WALL)
+		{
+			Elements_Info_Player_Right[shots][element_number_r] = shots_3;
+			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_3;
+			Elements_Info_Player_Right[HP][element_number_r] = HP_3;
+			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
+			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+		}
+		else if (building_type == SMALL_WALL)
+		{
+			Elements_Info_Player_Right[shots][element_number_r] = shots_4;
+			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_4;
+			Elements_Info_Player_Right[HP][element_number_r] = HP_4;
+			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
+			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+		}
+		else if (building_type == GOLDMINE)
+		{
+			Elements_Info_Player_Right[shots][element_number_r] = shots_5;
+			Elements_Info_Player_Right[sh_route][element_number_r] = sh_route_5;
+			Elements_Info_Player_Right[HP][element_number_r] = HP_5;
+			Elements_Info_Player_Right[h_cor][element_number_r] = coordinate_h;
+			Elements_Info_Player_Right[w_cor][element_number_r] = coordinate_w;
+		}
+	}
+	//end of writing datas about obj-s parametrs to players info field acording user select after shopping
+	return;
+}
 
 
-	BLUE
+//animation of start and victory screans
+void Start_Screen_Animation()
+{
+
+	colorBLUE
 
 		NEXT_SLIDE  cout << R"(
 
@@ -1664,31 +1440,26 @@ int start_screen()
   \____/   \___/  |_| |_| |_| |_.__/  |_|    |____/   \____/   \____/  |_|  |_|
 )";
 
-	RESET
+	colorRESET
 
 
 		printf("\n\n\n\n\n\n\t\t\t Press [any] key to continue.");
 
 	_getwch();
 
-	return 0;
+	return;
 }
 
-void Player1_WIN()
+void Player1_WIN_Animation()
 {
-	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
-#define RESET SetConsoleTextAttribute  (col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-#define GREEN SetConsoleTextAttribute  (col, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-#define NEXT_SLIDE  Sleep(300);system("cls");
-	
-	BLUE
-	
-	
-	for (int i = 0; i < 6; i++)
-	{
-		NEXT_SLIDE
-			cout << R"(
+
+	colorBLUE
+
+
+		for (int i = 0; i < 6; i++)
+		{
+			NEXT_SLIDE
+				cout << R"(
    _______   __         ______   __      __  ________  _______           __ 
   /       \ /  |       /      \ /  \    /  |/        |/       \        _/  | 
   |||||||  ||| |      /||||||  |||  \  /||/ ||||||||/ |||||||  |      / || |
@@ -1699,9 +1470,9 @@ void Player1_WIN()
   || |      ||       ||| |  || |    || |    ||       ||| |  || |      / ||   |
   ||/       ||||||||/ ||/   ||/     ||/     ||||||||/ ||/   ||/       ||||||/
 )";
-		NEXT_SLIDE
+			NEXT_SLIDE
 
-			cout << R"(
+				cout << R"(
    _______   __         ______   __      __  ________  _______           __   
   /       \ /  |       /      \ /  \    /  |/        |/       \        _/  |
   |||||||  ||| |      /||||||  |||  \  /||/ ||||||||/ |||||||  |      / || |
@@ -1724,29 +1495,21 @@ void Player1_WIN()
                 |||/    ||| |      / ||   |      || | ||| |
                 ||/      ||/       ||||||/       ||/   ||/  )";
 
-	}
+		}
 	_getwch();
-	RESET
+	colorRESET
 		return;
 }
 
-void Player2_WIN()
+void Player2_WIN_Animation()
 {
-	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
+	colorBLUE
 
-#define RESET SetConsoleTextAttribute  (col, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-#define BLUE SetConsoleTextAttribute  (col, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-#define GREEN SetConsoleTextAttribute  (col, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-#define NEXT_SLIDE  Sleep(300);system("cls");
+		for (int i = 0; i < 6; i++)
+		{
 
-	BLUE
-	
-
-	for (int i = 0; i < 6; i++)
-	{
-
-		NEXT_SLIDE
-			cout << R"(
+			NEXT_SLIDE
+				cout << R"(
  _______   __         ______  __      __  ________  _______          ______  
 |       \ |  \       /      \|  \    /  \|        \|       \        /      \ 
 | |||||||\| ||      |  ||||||\\||\  /  ||| ||||||||| |||||||\      |  ||||||\
@@ -1759,9 +1522,9 @@ void Player2_WIN()
 )";
 
 
-		NEXT_SLIDE
+			NEXT_SLIDE
 
-			cout << R"(
+				cout << R"(
  _______   __         ______  __      __  ________  _______          ______  
 |       \ |  \       /      \|  \    /  \|        \|       \        /      \ 
 | |||||||\| ||      |  ||||||\\||\  /  ||| ||||||||| |||||||\      |  ||||||\
@@ -1784,22 +1547,21 @@ void Player2_WIN()
               | |||    \|||      |   || \      | ||  \|||                      
                \||      \||       \||||||       \||   \||
 )";
-	}
-	RESET
+		}
+	colorRESET
 		_getwch();
 	return;
+
 }
 
-void TIE()
+void TIE_Animation()
 {
-	HANDLE col = GetStdHandle(STD_OUTPUT_HANDLE);
-
 	for (short i = 0; i < 6; i++)
 	{
 		if (i % 2 == 0)
-			BLUE
+			colorBLUE
 		else
-			GREEN
+			colorGREEN
 
 			NEXT_SLIDE
 
@@ -1818,6 +1580,211 @@ void TIE()
 	 '----------------'    '----------------'    '----------------' 
        	)";
 	}
-	RESET
+	colorRESET
 }
 //end animation of start and victory screans
+
+
+// start functions for dev & debag mode***************************************
+void o_display_h_coordinates_field()
+{
+	//this func used by devs. to make sure of correct instalation of objects to selected position on main field  //ALEXEY uses  that positions 
+	system("cls");
+	for (int h = 0; h < field_height; h++)
+	{
+		printf("         |");
+		for (int w = 0; w < field_width; w++)
+		{
+			if (Batle_field[h_cors_f][h][w] == 0)
+			{
+				printf("%c", (char)32);
+			}
+			else
+			{
+				printf("%c", '+');
+			}
+		}
+		printf("|         ");
+		printf("\n");
+	}
+	//123456789.123456789.123456789.123456789|123456789.123456789.123456789.123456789.
+	printf("                     Back - [P]    X_cors - [X]   ");
+	char input_but;
+	while (true)
+	{
+		input_but = _getwch();
+		switch (input_but)
+		{
+		case 'p': case 'P': o_display_batle_field(panel_width, field_height, field_width); return; break;
+		case'x': case 'X':	o_display_w_coordinates_field(); return; break;
+		default: break;
+		}
+	}
+	return;
+}
+
+void o_display_w_coordinates_field()
+{
+	//this func used by devs. to make sure of correct instalation of objects to selected position on main field  //ALEXEY uses  that positions 
+
+	system("cls");
+
+	for (int h = 0; h < field_height; h++)
+	{
+		printf("%3d", h);
+		printf("      |");
+		for (int w = 0; w < field_width; w++)
+		{
+			if (Batle_field[w_cors_f][h][w] == 0)
+			{
+				printf("%c", (char)32);
+			}
+			else if (h == 23)
+			{
+				printf("%d", w % 10);
+			}
+			else
+			{
+				printf("%c", '+');
+			}
+
+		}
+		printf("|         ");
+		printf("\n");
+	}
+
+	//123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
+	printf("                     Back - [P]    Y_cors - [Y]   ");
+
+
+	char input_but;
+	do
+	{
+		input_but = _getwch();
+		switch (input_but)
+		{
+		case 'P': case 'p': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); return; break;
+		case'y': case 'Y':	o_display_h_coordinates_field(); return;  break;
+		default: break;
+		}
+	} while (input_but != 'p' && input_but != 'P' && input_but != 'y' && input_but != 'Y');
+
+	return;
+}
+
+void print_objects_info()
+{
+	//it used for devs to monitoring of changes in datas of installed/removed objects
+
+	/*    SYMBOLS in players info fields to distinguish objects
+		left :			       cost   right:     char value
+		  1	 -  Big gun        $600  -  1		   (49)
+		  2  -  Small gun      $400  -  2		   (50)
+		  3  -	big wall       $200  -  3		   (51)
+		  4  -  small wall     $100  -  4		   (52)
+		  5  -  gold mine -    $950  -  5		   (53)
+		type                           type
+	 */
+
+
+	system("cls");
+	printf("Player 1 left: \n");
+	for (int h = 0; h < info_h; h++)
+	{
+		if (h == 0)
+		{
+			printf(" Type:   ");
+		}
+		else if (h == 1)
+		{
+			printf(" Shots:  ");
+		}
+		else if (h == 2)
+		{
+			printf(" Route:  ");
+		}
+		else if (h == 3)
+		{
+			printf(" Health: ");
+		}
+		else if (h == 4)
+		{
+			printf(" Cors Y: ");
+		}
+		else if (h == 5)
+		{
+			printf(" Cors X: ");
+		}
+		for (int w = 0; w < info_w; w++)
+		{
+			if (Elements_Info_Player_Left[b_type][w] == 0 && Elements_Info_Player_Left[h][w] == 0)
+			{
+				printf("%3c", '_');
+			}
+			else
+			{
+				printf("%3d", Elements_Info_Player_Left[h][w]);
+			}
+		}
+		printf("\n");
+	}
+
+	printf("\n");
+
+	printf("Player 2 right: \n");
+	for (int h = 0; h < info_h; h++)
+	{
+		if (h == 0)
+		{
+			printf(" Type:   ");
+		}
+		else if (h == 1)
+		{
+			printf(" Shots:  ");
+		}
+		else if (h == 2)
+		{
+			printf(" Route:  ");
+		}
+		else if (h == 3)
+		{
+			printf(" Health: ");
+		}
+		else if (h == 4)
+		{
+			printf(" Cors Y: ");
+		}
+		else if (h == 5)
+		{
+			printf(" Cors X: ");
+		}
+		for (int w = 0; w < info_w; w++)
+
+			if (Elements_Info_Player_Right[b_type][w] == 0 && Elements_Info_Player_Right[h][w] == 0)
+			{
+				printf("%3c", '_');
+			}
+			else
+			{
+				printf("%3d", Elements_Info_Player_Right[h][w]);
+			}
+		printf("\n");
+	}
+	printf("\n\n\n\n\n\n Press [i] to return");
+
+	char movement_to;
+	do
+	{
+		movement_to = _getwch();
+		switch (movement_to)
+		{
+		case 'I':case'i': o_display_batle_field(panel_width, field_height, field_width); o_get_main_screen_actions(); break;
+
+		default: break;
+		}
+	} while (movement_to != 'i' && movement_to != 'I');
+
+	return;
+
+}
+// end functions for dev & debag mode***************************************

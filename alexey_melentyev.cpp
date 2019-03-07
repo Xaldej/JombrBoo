@@ -30,7 +30,7 @@ bool check_win()
 		if (amount_of_building_player_1 < amount_of_building_player_2)
 		{
 			system("cls");
-			Player2_WIN();
+			Player2_WIN_Animation();
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
@@ -38,7 +38,7 @@ bool check_win()
 		else if (amount_of_building_player_1 == amount_of_building_player_2)
 		{
 			system("cls");
-			printf("\n\nNo one win!\n\n");
+			TIE_Animation();
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
@@ -46,7 +46,7 @@ bool check_win()
 		else if (amount_of_building_player_1 > amount_of_building_player_2)
 		{
 			system("cls");
-			Player1_WIN();
+			Player1_WIN_Animation();
 			printf("Amoun of building for player 1 = %d\n", amount_of_building_player_1);
 			printf("Amoun of building for player 2 = %d\n\n", amount_of_building_player_2);
 			return 0;
@@ -302,7 +302,7 @@ void MovementMechanichs(int Player_1_Data[data_M][data_N], int Player_2_Data[dat
 	2. Elements (from data arrays) actions
 	3. ...
 	**********************************/
-	enum element_types { big_gun = 49, gun = 50,  big_wall = 51, wall = 52 };
+	enum element_types { big_gun = 49, gun = 50, big_wall = 51, wall = 52 };
 
 	//Shots movement Player 1
 	for (int i = 0; Player_1_Shots[0][i] != 0;)
@@ -416,15 +416,15 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 	case left:
 		if (n == 0) //for cases when it is an edge of game zone
 		{
-		DeleteInfoFromShots(Player_Shots, number_of_shot, player_number);
-		MainField[m][n] = ' ';
-		return 0;
+			DeleteInfoFromShots(Player_Shots, number_of_shot, player_number);
+			MainField[m][n] = ' ';
+			return 0;
 		}
 		else if (MainField[m][n - 1] == ' ' || MainField[m][n - 1] == '.')
 		{
 			MainField[m][n - 1] = '-';
-			Player_Shots[3][number_of_shot]--;			
-			if (n==30) MainField[m][n] = '.';
+			Player_Shots[3][number_of_shot]--;
+			if (n == 30) MainField[m][n] = '.';
 			else if (MainField[m][n] == '=') MainField[m][n] = '-';
 			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
@@ -440,12 +440,12 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
 		}
-		else if ((MainField[m][n - 1] == 36) ||(MainField[m][n - 1] == 176) || (MainField[m][n - 1] == 177) || (MainField[m][n - 1] == 178) || (MainField[m][n - 1] == 186) 
-			|| (MainField[m][n - 1] == 187) || (MainField[m][n - 1] == 188)	|| (MainField[m][n - 1] == 196)	|| (MainField[m][n - 1] == 200) || (MainField[m][n - 1] == 201) 
+		else if ((MainField[m][n - 1] == 36) || (MainField[m][n - 1] == 176) || (MainField[m][n - 1] == 177) || (MainField[m][n - 1] == 178) || (MainField[m][n - 1] == 186)
+			|| (MainField[m][n - 1] == 187) || (MainField[m][n - 1] == 188) || (MainField[m][n - 1] == 196) || (MainField[m][n - 1] == 200) || (MainField[m][n - 1] == 201)
 			|| (MainField[m][n - 1] == 199) || (MainField[m][n - 1] == 204) || (MainField[m][n - 1] == 205))
 		{
 			m_to_damage = Batle_field[2][m][n - 1];
-			n_to_damage = Batle_field[3][m][n - 1];		
+			n_to_damage = Batle_field[3][m][n - 1];
 			if (player_number == 1) number_of_element_to_damage = FindElementToDamage(Player_2_Data, m_to_damage, n_to_damage);
 			else if (player_number == 2) number_of_element_to_damage = FindElementToDamage(Player_1_Data, m_to_damage, n_to_damage);
 			else /*printf("ShotMovement error 4.1")*/;
@@ -467,15 +467,15 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 				return 0; //if there was a damage Player_Shots array is moved to left for 1 position, because of this return 0
 			}
 			else /*printf("ShotMovement error 2.1")*/;
-		}	
+		}
 		else /*printf("ShotMovement error 1")*/;
 		break;
 	case right:
 		if (n == 58) //for cases when it is an edge of game zone
 		{
-		DeleteInfoFromShots(Player_Shots, number_of_shot, player_number);
-		MainField[m][n] = ' ';
-		return 0;
+			DeleteInfoFromShots(Player_Shots, number_of_shot, player_number);
+			MainField[m][n] = ' ';
+			return 0;
 		}
 		else if (MainField[m][n + 1] == ' ' || MainField[m][n + 1] == '.')
 		{
@@ -486,7 +486,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			else if (MainField[m][n] == '-') MainField[m][n] = ' ';
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
-		}		
+		}
 		else if ((MainField[m][n + 1] == '-') || (MainField[m][n + 1] == '=')) //need to end this case after having copy of main fild
 		{
 			MainField[m][n + 1] = '=';
@@ -497,8 +497,8 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			else MainField[m][n] = Batle_field[1][m][n];
 			return 1;
 		}
-		else if ((MainField[m][n + 1] == 36) ||(MainField[m][n + 1] == 176) || (MainField[m][n + 1] == 177) || (MainField[m][n + 1] == 178) || (MainField[m][n + 1] == 186) 
-			|| (MainField[m][n + 1] == 187) || (MainField[m][n + 1] == 188) || (MainField[m][n + 1] == 196)	|| (MainField[m][n + 1] == 200) || (MainField[m][n + 1] == 201)
+		else if ((MainField[m][n + 1] == 36) || (MainField[m][n + 1] == 176) || (MainField[m][n + 1] == 177) || (MainField[m][n + 1] == 178) || (MainField[m][n + 1] == 186)
+			|| (MainField[m][n + 1] == 187) || (MainField[m][n + 1] == 188) || (MainField[m][n + 1] == 196) || (MainField[m][n + 1] == 200) || (MainField[m][n + 1] == 201)
 			|| (MainField[m][n + 1] == 199) || (MainField[m][n + 1] == 204) || (MainField[m][n + 1] == 205))
 		{
 			m_to_damage = Batle_field[2][m][n + 1];
@@ -528,7 +528,7 @@ int ShotMovement(int Player_1_Data[data_M][data_N], int Player_2_Data[data_M][da
 			}
 			else /*printf("ShotMovement error 2.2")*/;
 		}
-		
+
 		else /*printf("ShotMovement error 2")*/;
 		break;
 	default:
